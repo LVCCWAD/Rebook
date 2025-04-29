@@ -30,7 +30,7 @@ class UserController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect()->route('user.dashbaord')->with('success', 'User registered successfully.');
+        return redirect()->route('user.dashboard')->with('success', 'User registered successfully.');
     }
 
 
