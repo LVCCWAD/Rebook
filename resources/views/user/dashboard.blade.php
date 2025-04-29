@@ -26,8 +26,8 @@
 
         <h2>Categories</h2>
         <ul>
-            @foreach ($categories as $category)
-                <li>{{ $category->name }}</li>
+            @foreach ($category as $categories)
+                <li>{{ $categories->name }}</li>
             @endforeach
         </ul>
 
