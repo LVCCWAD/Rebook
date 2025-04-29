@@ -59,11 +59,7 @@ class User extends Authenticatable
 
     public function products(): HasMany
     {
-       if(!$this->role === 'seller') {
-            abort(403, 'Unauthorized action.');
-        }
         return $this->hasMany(Product::class);
-
     }
 
     public function cart(): HasOne

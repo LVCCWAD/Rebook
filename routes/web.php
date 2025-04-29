@@ -21,6 +21,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/become-a-seller', [UserController::class, 'becomeSellerView'])->name('user.become_seller');
     Route::post('/become-a-seller', [UserController::class, 'becomeSeller'])->name('user.become_seller.post');
+});
+
+Route::middleware(['auth', 'seller'])->group(function () {
     Route::get('/seller-dashboard', [SellerController::class, 'sellerView'])->name('seller.dashboard');
 });
 

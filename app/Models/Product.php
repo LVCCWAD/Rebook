@@ -23,10 +23,7 @@ class Product extends Model
 
     public function user(): BelongsTo
     {
-        if($this->role !== 'seller') {
-            abort(403, 'Unauthorized action.');
-        }
-        return $this->belongTo(User::class, 'seller_id');
+        return $this->belongsTo(User::class, 'seller_id');
     }
 
     public function categories(): BelongsTo
