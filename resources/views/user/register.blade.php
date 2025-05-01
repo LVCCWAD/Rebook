@@ -17,10 +17,16 @@
         <input type="text" name="name" id="name" required>
         <br>
         <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required>
+        <input type="password" name="password" id="password" placeholder="password" required>
+        @error('password')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
         <br>
         <label for="password_confirmation">Confirm Password:</label>
         <input type="password" name="password_confirmation" id="password_confirmation" required>
+        @error('password_confirmation')
+            <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
         <br>
         <button type="submit">Register</button>
     </form>

@@ -20,7 +20,16 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:6',
+                'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).+$/',
+                'confirmed',
+            ],
+        ], [
+            'password.regex' => 'Password must include letters, numbers, and special characters',
+            'password.confirmed' => 'Passwords do not match',
         ]);
 
         $user = User::create([
