@@ -1,6 +1,7 @@
 import  React, { useEffect, useState } from "react";
 import { Link, useForm } from "@inertiajs/react";
-import logo from "../../Assets/logo.png";
+import logo from "../../../../public/Assets/logo.png";
+
 
 
 export default function Register(){
@@ -147,16 +148,16 @@ export default function Register(){
                             Name
                         </label>
                         <input
-                            type="name"
-                            id="name"
-                            name="name"
+                            type="user"
+                            id="user"
+                            name="user"
                             value={data.user}            // This should match your useForm key
                             onChange={handleChange}
                             className="mt-1 w-full px-4 py-2 border border-red-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         {/* NOTE: Key mismatch. This should be `errors.user` (not `errors.name`) */}
-                        {errors.name && (
-                            <div className="text-sm text-red-500">{errors.name}</div>
+                        {errors.user && (
+                            <div className="text-sm text-red-500">{errors.user}</div>
                         )}
                     </div>
 
