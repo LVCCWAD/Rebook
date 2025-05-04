@@ -1,6 +1,6 @@
 import  React, { useEffect, useState } from "react";
 import { Link, useForm } from "@inertiajs/react";
-import logo from "../../Assets/logo.png";
+import logo from "../../../../public/Assets/logo.png";
 
 export default function Login(){
     // validate component
