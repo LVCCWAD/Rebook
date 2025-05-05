@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import Slider from "./Slider";
+import Category from "./Category";
+import Product from "./Product";
 
 export default function Body(){
     // Validate component
@@ -13,8 +15,11 @@ export default function Body(){
                 <Slider />
 
                 {/* --- CATEGORY --- */}
+                <Category />
 
                 {/* --- PRODUCT --- */}
+                <Product />
+
             </div>
         </>
     )
