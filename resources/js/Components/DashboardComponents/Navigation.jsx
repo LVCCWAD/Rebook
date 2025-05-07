@@ -1,4 +1,7 @@
 import React from "react";
+import { Link } from "@inertiajs/react";
+
+// logic to retrieve specific product category
 
 export default function Navigation(){
     return(
@@ -11,7 +14,13 @@ export default function Navigation(){
                     onClick={() => setActiveComponent('SaleItems')}
                     className="hover:bg-red-800 hover:text-white hover:rounded-2xl hover:px-2 px-2"
                 >
-                    Sale Items
+                    {/* return dashboard w/all product */}
+                    <Link
+                        href={"/dashboard"}
+                        className="inline"
+                    >
+                        Sale Items
+                    </Link>
                 </button>
 
                 {/* --- Wireless Earbuds Link --- */}
@@ -19,6 +28,7 @@ export default function Navigation(){
                     onClick={() => setActiveComponent('WirelessEarbuds')}
                     className="hover:bg-red-800 hover:text-white hover:rounded-2xl hover:px-2 px-2"
                 >
+                    {/* retrive specific data */}
                     Wireless Earbuds
                 </button>
 
@@ -27,6 +37,7 @@ export default function Navigation(){
                     onClick={() => setActiveComponent('SchoolBackPacks')}
                     className="hover:bg-red-800 hover:text-white hover:rounded-2xl hover:px-2 px-2"
                 >
+                    {/* retrive specific data */}
                     School Backpack
                 </button>
 
@@ -35,6 +46,7 @@ export default function Navigation(){
                     onClick={() => { setActiveComponent('SpiralNoteBook')}}
                     className="hover:bg-red-800 hover:text-white hover:rounded-2xl hover:px-2 px-2"
                 >
+                    {/* retrive specific data */}
                     Spiral Notebook
                 </button>
 
@@ -43,6 +55,7 @@ export default function Navigation(){
                     onClick={() => setActiveComponent('GelSanitizer')}
                     className="hover:bg-red-800 hover:text-white hover:rounded-2xl hover:px-2 px-2"
                 >
+                    {/* retrive specific data */}
                     Gel Sanitizer
                 </button>
 
@@ -51,6 +64,7 @@ export default function Navigation(){
                     onClick={() => setActiveComponent('Laptop')}
                     className="hover:bg-red-800 hover:text-white hover:rounded-2xl hover:px-2 px-2"
                 >
+                    {/* retrive specific data */}
                     Laptop
                 </button>
 
@@ -59,6 +73,7 @@ export default function Navigation(){
                     onClick={() => setActiveComponent('BallPointPen')}
                     className="hover:bg-red-800 hover:text-white hover:rounded-2xl hover:px-2 px-2"
                 >
+                    {/* retrive specific data */}
                     Ballpoint Pen
                 </button>
             </div>

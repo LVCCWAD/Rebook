@@ -46,12 +46,7 @@ export default function Header(){
                                     <path d="M6 20c0-4 3-7 6-7s6 3 6 7" strokeWidth="2" />
                                 </svg>
                             </div>
-                            {/* --- Heart Icon --- */}
-                            <div className="text-red-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.682l1.318-1.364a4.5 4.5 0 016.364 6.364L12 21.682l-7.682-7.682a4.5 4.5 0 010-6.364z" />
-                                </svg>
-                            </div>
+                            
                             {/* --- Cart Icon --- */}
                             <div className="text-red-800">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
