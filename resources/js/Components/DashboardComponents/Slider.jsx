@@ -3,10 +3,10 @@ import Slider1 from "./Sliders/Slider1";
 import Banner1 from "./Banners/Banner1";
 
 // List of imported images
-import Img1 from "../../../../public/Assets/img1.jpg";
-import Img2 from "../../../../public/Assets/img2.jpg";
-import Img3 from "../../../../public/Assets/img3.jpg";
-import Img4 from "../../../../public/Assets/img4.jpg";
+import Img1 from "../../../../public/Assets/Dashboard/Slider/img1.jpg";
+import Img2 from "../../../../public/Assets/Dashboard/Slider/img2.jpg";
+import Img3 from "../../../../public/Assets/Dashboard/Slider/img3.jpg";
+import Img4 from "../../../../public/Assets/Dashboard/Slider/img4.jpg";
 
 
 export default function Slider() {
@@ -14,7 +14,7 @@ export default function Slider() {
     const data = [
         Img1, Img2, Img3, Img4
     ]
-
+ 
     // Array of component
     const components = [
         <Slider1 data={data}/>
