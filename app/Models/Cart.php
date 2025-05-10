@@ -10,19 +10,16 @@ class Cart extends Model
 {
     protected $fillable = [
         'user_id',
-        'created_at',
-        'updated_at'
     ];
 
     public function users(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'cart_items')
-            ->withPivot('quantity', 'price')
+            ->withPivot('quantity')
             ->withTimestamps();
     }
 }
