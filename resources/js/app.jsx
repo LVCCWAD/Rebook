@@ -18,6 +18,11 @@ createInertiaApp({
 
     const pageModule = pages[`./Pages/${name}.jsx`];
     resolvedPages[name] = pageModule;
+
+    // // testing for default layout if exist or not
+    // pageModule.default.layout =
+    //     pageModule.default.layout || ((page) => <layout />)
+
     return pageModule?.default;
   },
   setup({ el, App, props }) {
