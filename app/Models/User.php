@@ -21,6 +21,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'seller_id',
         'name',
         'email',
         'password',
@@ -50,6 +51,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function shop()
+    {
+        return $this->hasOne(Shop::class, 'seller_id'); 
     }
 
     public function orders(): HasMany

@@ -19,7 +19,7 @@
                 <p>Start Selling</p>
             </a>
         @elseif ($user->role === 'seller')
-            <a href="{{route('seller.dashboard')}}">
+            <a href="{{route('shop.dashboard')}}">
                 <p>Seller View</p>
             </a>
         @endif
@@ -27,7 +27,11 @@
         <h2>Categories</h2>
         <ul>
             @foreach ($category as $categories)
-                <li>{{ $categories->name }}</li>
+                <li>
+                    <a href="{{ route('category.show', $categories->id) }}">
+                        {{ $categories->name }}
+                    </a>
+                </li>
             @endforeach
         </ul>
 

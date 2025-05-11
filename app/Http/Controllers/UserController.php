@@ -23,7 +23,7 @@ class UserController extends Controller
             'password' => [
                 'required',
                 'string',
-                'min:6',
+                'min:8',
                 'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).+$/',
                 'confirmed',
             ],
@@ -75,16 +75,18 @@ class UserController extends Controller
     {
 
         $user = Auth::user();
-        $user->role = "seller";
-        $user->save();
+        $user->update([
+            'role' => $request->role,
+        ]);
 
-        return redirect()->route('user.dashboard')->with('success', 'You are now a seller.');
+        return redirect()->route('shop.create')->with('success', 'You are now a seller.');
+
     }
 
 
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('user.login')->with('success', 'Logged out successfully.');
+        return redirect()->route('login')->with('success', 'Logged out successfully.');
     }
 }

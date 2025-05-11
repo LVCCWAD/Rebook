@@ -3,18 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ReviewAndRating extends Model
+class Review extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'product_id',
         'rating',
         'comment',
-        'created_at',
     ];
-
-    public $timestamps = false;
 
     public function user()
     {

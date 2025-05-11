@@ -30,7 +30,7 @@
         <br>
         <button type="submit">Register</button>
     </form>
-    <a href="{{Route('user.login')}}">Click here if you have an account</a>
+    <a href="{{Route('login')}}">Click here if you have an account</a>
 
     @if (session('success'))
         <p>{{ session('success') }}</p>
