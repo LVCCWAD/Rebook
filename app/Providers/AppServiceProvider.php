@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\Product;
+use App\Policies\ProductPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+
 
 
 class AppServiceProvider extends ServiceProvider
@@ -11,9 +15,11 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+
+
     public function register(): void
     {
-        //
+
     }
 
     /**
@@ -21,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        //policies for products
+        Gate::policy(ProductPolicy::class, Product::class);
+
+        
         // react route test
 
         // Register the new admin route file
