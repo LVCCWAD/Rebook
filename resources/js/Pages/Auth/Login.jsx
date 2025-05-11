@@ -1,5 +1,5 @@
 import  React, { useEffect, useState } from "react";
-import { Link, useForm } from "@inertiajs/react";
+import { Link, useForm, } from "@inertiajs/react";
 import logo from "../../../../public/Assets/logo.png";
 
 export default function Login(){

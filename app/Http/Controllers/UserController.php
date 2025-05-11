@@ -53,7 +53,7 @@ class UserController extends Controller
     {
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
+
             return redirect()->route('user.dashboard')->with('success', 'Logged in successfully.');
         }
         return redirect()->back()->with('error', 'Invalid credentials.');
@@ -73,14 +73,11 @@ class UserController extends Controller
 
     public function becomeSeller(Request $request)
     {
-        $request->validate([
-            'role' => 'required|in:seller',
-        ]);
 
         $user = Auth::user();
-        $user->update([
-            'role' => $request->role,
-        ]);
+        $user->role = "seller";
+        $user->save();
+
         return redirect()->route('user.dashboard')->with('success', 'You are now a seller.');
     }
 

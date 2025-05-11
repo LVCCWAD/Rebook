@@ -16,7 +16,6 @@ class Product extends Model
         'price',
         'stock',
         'category_id',
-        'image',
         'created_at',
         'updated_at',
     ];
@@ -29,6 +28,7 @@ class Product extends Model
     public function categories(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
+        // has many ba to??
     }
 
     public function orders(): BelongsToMany

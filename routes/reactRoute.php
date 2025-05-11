@@ -16,7 +16,8 @@ Route::get('/', function () {
 
 // login page
 Route::get('/login', function () {
-    return Inertia::render('Auth/Login');
+    // return Inertia::render('Auth/Login');
+    return inertia('Auth/Login');
 })->name('login');
 // validate login
 Route::post('/login/post', [ReactController::class, 'login']);
@@ -32,24 +33,30 @@ Route::post('/register/post', [ReactController::class, 'register']);
 // dashboard page
 Route::get('/dashboard', function () {
     // retrieve all all products
-    return Inertia::render('Dashboard');
+    return Inertia::render('Dashboard/Dashboard');
 });
 
 // seller page
 Route::get('/seller', function () {
     // retrieve all all products
-    return Inertia::render('Seller');
+    return Inertia::render('Seller/Seller');
 });
 
 // product page
 Route::get('/product', function () {
     // retrieve all all products
-    return Inertia::render('Product');
+    return Inertia::render('Product/Product');
 });
 
 
 // cart page
 Route::get('/cart', function () {
     // retrieve all all products
-    return Inertia::render('Cart');
+    return Inertia::render('Cart/Cart');
+});
+
+// cart page
+Route::get('/profile', function () {
+    // retrieve all all products
+    return Inertia::render('Profile/Profile');
 });
