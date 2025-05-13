@@ -37,17 +37,15 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function cartS(): BelongsToMany
+    public function carts(): BelongsToMany
     {
         return $this->belongsToMany(Cart::class, 'cart_items')
             ->withPivot('quantity')
             ->withTimestamps();
     }
 
-    public function orders(): BelongsToMany
+    public function orderItems(): HasMany
     {
-        return $this->belongsToMany(Order::class, 'order_items')
-            ->withPivot('quantity', 'price')
-            ->withTimestamps();
+        return $this->hasMany(OrderItem::class);
     }
 }
