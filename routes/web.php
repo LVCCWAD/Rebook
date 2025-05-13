@@ -4,12 +4,14 @@ use Illuminate\Support\Facades\Route;
 
 
 // BACKEND
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ReviewController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -42,6 +44,17 @@ Route::middleware(['auth'])->group(function () {
     //product review
     Route::post('/product/{id}/review', [ReviewController::class, 'storeReview'])->name('product.review.store');
     Route::post('/product/{id}/review/edit', [ReviewController::class, 'editReview'])->name('product.review.edit');
+
+    //cart management
+    Route::post('/product/{id}/add-to-cart', [CartController::class, 'addToCart'])->name('product.add.to.cart');
+    Route::get('/cart/{id}', [CartController::class, 'viewCart'])->name('cart.view');
+    Route::put('/cart/{id}/update', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::delete('/cart/{id}/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
+
+    //order management
+    Route::post('/order/store', [OrderController::class, 'storeOrder'])->name('order.store');
+    Route::get('/order/{id}', [OrderController::class, 'showOrder'])->name('order.show');
 });
 
 Route::middleware(['auth', 'seller'])->group(function () {
@@ -55,6 +68,10 @@ Route::middleware(['auth', 'seller'])->group(function () {
     //product management
     Route::get('/shop/create-product', [ProductController::class, 'productCreate'])->name('product.create');
     Route::post('/shop/create-product', [ProductController::class, 'productStore'])->name('product.store');
+    Route::get('/shop/{id}/edit-product', [ProductController::class, 'productEdit'])->name('seller.product.edit');
+    Route::put('/shop/{id}/edit-product', [ProductController::class, 'productUpdate'])->name('seller.product.update');
+    Route::delete('/shop/{id}/delete-product', [ProductController::class, 'productDelete'])->name('seller.product.delete');
+    Route::get('/shop/{id}/product', [ProductController::class, 'productShow'])->name('seller.product.show');
 });
 
 

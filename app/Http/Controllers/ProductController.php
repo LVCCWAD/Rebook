@@ -68,7 +68,52 @@ class ProductController extends Controller
     public function productEdit($id)
     {
         $product = Product::findOrFail($id);
+        $this->authorize('update', $product);
+        $categories = Category::all();
 
-        return view('seller.product.product_edit', compact('product'));
+        return view('seller.product.product_edit', compact('product', 'categories'));
+    }
+
+    public function productUpdate(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        $this->authorize('update', $product);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:1000',
+            'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'stock' => 'nullable|integer|min:0',
+        ]);
+
+        $product->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'category_id' => $request->category_id,
+            'stock' => $request->input('stock', 0), // Default to 0 if no stock is provided
+        ]);
+
+        return redirect()->route('shop.dashboard')->with('success', 'Product updated successfully.');
+    }
+
+    public function productDelete($id)
+    {
+        $product = Product::findOrFail($id);
+
+        $this->authorize('delete', $product);
+
+        $product->delete();
+
+        return redirect()->route('shop.dashboard')->with('success', 'Product deleted successfully.');
+    }
+
+    public function productShow($id)
+    {
+        $product = Product::findOrFail($id);
+        $category = Category::all();
+        return view('seller.product.product_show', compact('product', 'category'));
     }
 }

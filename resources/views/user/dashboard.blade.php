@@ -10,6 +10,9 @@
     <header>
         <h1>Re:Book</h1>
         <p>Welcome, {{ Auth::user()->name }}</p>
+        <a href="{{route('cart.view', $user->id)}}">
+            <p>Cart</p>
+        </a>
     </header>
 
     <main>
