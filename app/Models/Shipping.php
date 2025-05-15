@@ -2,27 +2,29 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ShippingAddress extends Model
+class Shipping extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'order_id',
-        'address',
-        'city',
+        'city_name',
         'zip_code',
+        'address',
         'country',
-        'created_at'
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function order()
     {
-        return $this->belongsTo(Order::class, 'order_id');
+        return $this->belongsTo(Order::class);
     }
 }

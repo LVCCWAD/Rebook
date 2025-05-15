@@ -9,9 +9,10 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\SellerController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ShippingController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -55,6 +56,14 @@ Route::middleware(['auth'])->group(function () {
     //order management
     Route::post('/order/store', [OrderController::class, 'storeOrder'])->name('order.store');
     Route::get('/order/{id}', [OrderController::class, 'showOrder'])->name('order.show');
+    Route::delete('/order/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('order.cancel');
+
+    //payment
+    Route::post('/payment/{id}', [PaymentController::class, 'storePayment'])->name('payment.store');
+
+    //shipping address
+    Route::get('/shipping/create', [ShippingController::class, 'shippingForm'])->name('shipping.form');
+    Route::post('/shipping/post', [ShippingController::class, 'storeShipping'])->name('shipping.store');
 });
 
 Route::middleware(['auth', 'seller'])->group(function () {

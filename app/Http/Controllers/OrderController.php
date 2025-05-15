@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Order;
 use App\Models\Cart;
+use App\Models\Order;
+use App\Models\Shipping;
 use App\Models\OrderItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -50,9 +51,20 @@ class OrderController extends Controller
 
     public function showOrder($id)
     {
+        $shipping = Shipping::where('user_id', Auth::id())->first();
         $order = Order::with('orderItems.product')->findOrFail($id);
 
-        return view('user.order.order_show', compact('order'));
+        return view('user.order.order_show', compact('order', 'shipping'));
     }
+
+    public function cancelOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->status = 'cancelled';
+        $order->save();
+
+        return redirect()->route('user.dashboard')->with('success', 'Order cancelled successfully.');
+    }
+
 
 }

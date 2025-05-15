@@ -55,7 +55,7 @@ class User extends Authenticatable
 
     public function shop()
     {
-        return $this->hasOne(Shop::class, 'seller_id'); 
+        return $this->hasOne(Shop::class, 'seller_id');
     }
 
     public function orders(): HasMany
@@ -71,6 +71,11 @@ class User extends Authenticatable
     public function cart(): HasOne
     {
         return $this->hasOne(Cart::class);
+    }
+
+    public function shippings(): HasMany
+    {
+        return $this->hasMany(Shipping::class);
     }
 
     public function isSeller(): bool

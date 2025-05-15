@@ -38,6 +38,17 @@
             @endforeach
         </ul>
 
+        <h2>Products</h2>
+        <ul>
+            @foreach ($products as $product)
+                <li>
+                    <a href="{{ route('product.show', $product->id) }}">
+                        {{ $product->name }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+
         <form action="{{route('user.logout')}}" method="POST">
             @csrf
             <button type="submit">Logout</button>

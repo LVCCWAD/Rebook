@@ -19,20 +19,35 @@ class CartController extends Controller
         return view('user.cart.cart_view', compact('cart', 'user'));
     }
 
-    public function addToCart($id)
+    public function addToCart(Request $request, $id)
     {
         $user = Auth::user();
         $cart = Cart::firstOrCreate(['user_id' => $user->id]);
 
+        $product = Product::findOrFail($id);
+        $requestQuantity = (int)$request->input('quantity');
+
+
         $existingItem = $cart->products()->where('product_id', $id)->first();
+
+        $existingQuantity = $existingItem ? $existingItem->pivot->quantity : 0;
+        $quantity = $existingQuantity + $requestQuantity;
+
+        if ($quantity > $product->stock) {
+            return redirect()->back()->with('error', 'Not enough stock available.');
+        }
+
+        if ($quantity <= 0) {
+            return redirect()->back()->with('error', 'Quantity must be atleast 1.');
+        }
 
         if($existingItem) {
             $cart->products()->updateExistingPivot($id, [
-                'quantity' => $existingItem->pivot->quantity + 1
+                'quantity' => $existingItem->pivot->quantity + $quantity
             ]);
         } else {
             $cart->products()->attach($id, [
-                'quantity' => 1
+                'quantity' => $quantity
             ]);
         }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -63,7 +64,8 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $category = Category::all();
-        return view('user.dashboard', compact('user', 'category'));
+        $products = Product::all();
+        return view('user.dashboard', compact('user', 'category', 'products'));
     }
 
     public function becomeSellerView()
@@ -78,12 +80,12 @@ class UserController extends Controller
         ]);
 
         $user = Auth::user();
+
         $user->update([
-            'role' => $request->role,
+            'role' => 'seller',
         ]);
 
         return redirect()->route('shop.create')->with('success', 'You are now a seller.');
-
     }
 
 
@@ -92,4 +94,7 @@ class UserController extends Controller
         Auth::logout();
         return redirect()->route('login')->with('success', 'Logged out successfully.');
     }
+
+    //this is where the user can update their profile
+    
 }
