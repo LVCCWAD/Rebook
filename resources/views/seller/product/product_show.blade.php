@@ -14,6 +14,7 @@
     <p>Seller: {{$product->user->name}}</p>
     <p>Stock: {{$product->stock}}</p>
     <p>Category: {{$product->categories->name}}</p>
+    <img src="{{asset('storage/' . $product->image)}}" alt="Product Image" width="150">
 
     <form action="{{route('seller.product.edit', $product->id)}}">
         <button type="submit">Edit Product</button>

@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Edit Product</h1>
-    <form action="{{ route('seller.product.update', $product->id) }}" method="POST">
+    <form action="{{ route('seller.product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div>
@@ -34,6 +34,13 @@
         <div>
             <label for="stock">Stock: </label>
             <input type="number" id="stock" name="stock" value="{{ $product->stock }}" required>
+        </div>
+        <div>
+            <label for="image">Product Image: </label>
+            <input type="file" id="image" name="image" accept="image/*">
+            @if ($product->image)
+                <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image" width="150">
+            @endif
         </div>
         <button type="submit">Update Product</button>
     </form>

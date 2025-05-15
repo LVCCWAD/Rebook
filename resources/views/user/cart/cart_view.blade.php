@@ -18,6 +18,8 @@
                 <h3>{{ $product->name }}</h3>
                 <p>Price: {{ $product->price }}</p>
                 <p>Quantity: {{ $product->pivot->quantity }}</p>
+                <p>Total: {{ $product->price * $product->pivot->quantity }}</p>
+                <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image" width="150">
             </div>
             <form action="{{ route('cart.remove', $product->id) }}" method="POST">
                 @csrf

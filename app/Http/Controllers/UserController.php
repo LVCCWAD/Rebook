@@ -28,6 +28,7 @@ class UserController extends Controller
                 'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).+$/',
                 'confirmed',
             ],
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'password.regex' => 'Password must include letters, numbers, and special characters',
             'password.confirmed' => 'Passwords do not match',
@@ -36,6 +37,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'image' => $request->file('image') ? $request->file('image')->store('images/users', 'public') : null,
             'password' => Hash::make($request->password),
             'role' => $request->input('role', 'user'), // Default role is 'user'
         ]);
@@ -60,12 +62,18 @@ class UserController extends Controller
         return redirect()->back()->with('error', 'Invalid credentials.');
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $user = Auth::user();
-        $category = Category::all();
-        $products = Product::all();
-        return view('user.dashboard', compact('user', 'category', 'products'));
+        $search = $request->input('search');
+
+        $categories = Category::with(['products' => function ($query) use ($search) {
+            if ($search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            }
+        }])->get();
+
+        return view('user.dashboard', compact('user', 'categories'));
     }
 
     public function becomeSellerView()
@@ -96,5 +104,5 @@ class UserController extends Controller
     }
 
     //this is where the user can update their profile
-    
+
 }

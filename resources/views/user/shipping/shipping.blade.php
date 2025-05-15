@@ -7,6 +7,9 @@
     <title>Document</title>
 </head>
 <body>
+    {{-- back to ordering --}}
+    <a href="{{route('order.show', $order->id)}}">Back to Order</a>
+    <a href="{{route('user.dashboard')}}">Dashboard</a>
     <h1>Shipping Details</h1>
     <form action="{{route('shipping.store')}}" method="POST">
         @csrf

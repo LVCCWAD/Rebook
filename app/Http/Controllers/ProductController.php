@@ -37,6 +37,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'stock' => 'nullable|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Fetch the shop of the currently authenticated user
@@ -60,6 +61,7 @@ class ProductController extends Controller
             'seller_id' => Auth::id(),
             'shop_id' => $shop->id,  // Add the shop_id here
             'stock' => $request->input('stock', 0), // Default to 0 if no stock is provided
+            'image' => $request->file('image') ? $request->file('image')->store('images/products', 'public') : null,
         ]);
 
         return redirect()->route('shop.dashboard')->with('success', 'Product created successfully.');
@@ -86,6 +88,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
             'stock' => 'nullable|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $product->update([
@@ -94,6 +97,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'category_id' => $request->category_id,
             'stock' => $request->input('stock', 0), // Default to 0 if no stock is provided
+            'image' => $request->file('image') ? $request->file('image')->store('images/products', 'public') : $product->image,
         ]);
 
         return redirect()->route('shop.dashboard')->with('success', 'Product updated successfully.');

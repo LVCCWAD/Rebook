@@ -10,7 +10,7 @@
     <a href="{{route('user.dashboard')}}">Dashboard</a>
     <a href="{{route('shop.dashboard')}}">Shop Dashboard</a>
     <h1>Create a Product</h1>
-    <form action="{{ route('product.store') }}" method="POST">
+    <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div>
             <label for="name">Product Name: </label>
@@ -35,6 +35,10 @@
         <div>
             <label for="stock">Stock: </label>
             <input type="number" id="stock" name="stock" min="1" required>
+        </div>
+        <div>
+            <label for="image">Product Image: </label>
+            <input type="file" id="image" name="image" accept="image/*">
         </div>
         <button type="submit">Create Product</button>
 </body>

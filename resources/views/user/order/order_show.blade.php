@@ -28,6 +28,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>Image</th>
                     <th>Product</th>
                     <th>Qty</th>
                     <th>Price</th>
@@ -37,6 +38,9 @@
             <tbody>
                 @foreach ($order->orderItems as $item)
                     <tr>
+                        <td>
+                            <img src="{{ asset('storage/' . $item->product->image) }}" alt="Product Image" width="150">
+                        </td>
                         <td>₱{{$item->product->name}}</td>
                         <td>{{$item->quantity}}</td>
                         <td>{{$item->price}}</td>
