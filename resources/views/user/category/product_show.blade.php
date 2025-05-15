@@ -14,6 +14,15 @@
     <p>Description: {{$product->description}}</p>
     <p>Seller: {{$product->user->name}}</p>
 
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @else
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     {{-- add to cart --}}
     <form action="{{route('product.add.to.cart', $product->id)}}" method="POST">
         @csrf

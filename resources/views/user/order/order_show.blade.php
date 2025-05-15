@@ -13,6 +13,11 @@
 
     <p>Status: {{$order->status}}</p>
     <p>Total: {{$order->total}}</p>
+    @if(!$shipping)
+        <a href="{{ route('shipping.form') }}">Add Shipping Details</a>
+    @else
+        <p>Shipping: {{$shipping->city_name}}, {{$shipping->address}}, {{$shipping->zip_code}}, {{$shipping->country}}</p>
+    @endif
 
     <h3>Items</h3>
 
@@ -37,9 +42,26 @@
                         <td>{{$item->price}}</td>
                         <td>{{$item->price * $item->quantity}}</td>
                     </tr>
+
+                    {{-- cancel order --}}
+                    @if($order->status == 'pending')
+                        <form action="{{ route('order.cancel', $order->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit">Cancel Order</button>
+                        </form>
+                    @endif
                 @endforeach
             </tbody>
         </table>
+        {{-- payment --}}
+        @if($order->status == 'pending')
+            <form action="{{ route('payment.store', $order->id) }}" method="POST">
+                @csrf
+                <input type="hidden" name="amount" id="amount" value="{{$order->total}}">
+                <button type="submit">Pay Now</button>
+            </form>
+        @endif
     @endif
 </body>
 </html>
