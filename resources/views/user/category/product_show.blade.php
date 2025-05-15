@@ -13,6 +13,7 @@
     <p>Price: ₱{{$product->price}}</p>
     <p>Description: {{$product->description}}</p>
     <p>Seller: {{$product->user->name}}</p>
+    <img src="{{asset('storage/' . $product->image)}}" alt="Product Image" width="150">
 
     @if(session('error'))
         <div class="alert alert-danger">

@@ -12,6 +12,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShippingController;
 
 // Route::get('/', function () {
@@ -64,6 +65,10 @@ Route::middleware(['auth'])->group(function () {
     //shipping address
     Route::get('/shipping/create', [ShippingController::class, 'shippingForm'])->name('shipping.form');
     Route::post('/shipping/post', [ShippingController::class, 'storeShipping'])->name('shipping.store');
+
+    //user profile
+    Route::get('/profile', [ProfileController::class, 'showProfile'])->name('user.profile');
+    Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('user.profile.update');
 });
 
 Route::middleware(['auth', 'seller'])->group(function () {

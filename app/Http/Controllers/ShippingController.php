@@ -11,7 +11,9 @@ class ShippingController extends Controller
 {
     public function shippingForm()
     {
-        return view('user.shipping.shipping');
+        $user = Auth::user();
+        $order = Order::where('user_id', $user->id)->first();
+        return view('user.shipping.shipping', compact('user', 'order'));
     }
 
     public function storeShipping(Request $request)
