@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
 use App\Models\Order;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\OrderPlacedNotification;
 
 class ProfileController extends Controller
 {
@@ -39,4 +40,24 @@ class ProfileController extends Controller
         return redirect()->route('user.profile')->with('success', 'Profile updated successfully.');
 
     }
+
+     public function placeOrder(Request $request){
+
+        //Validate and Create Order
+        $order = Order::create([
+            'user_id' =>Auth::id(),
+            'total' => $request->input('total'),
+        ]);
+
+        //Notify the User
+        $user = Auth::user();
+        if ($user) {
+            \Illuminate\Support\Facades\Notification::send($user, new OrderPlacedNotification($order));
+        }
+
+        return redirect()->route('order.show', $order->id)
+                         ->with('success', 'Order placed successfully!');
+
+    }
+
 }
