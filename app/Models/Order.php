@@ -34,9 +34,9 @@ class Order extends Model
         return $this->hasMany(OrderItem::class, 'order_id');
     }
 
-    public function shipping(): HasOne
+    public function shipping(): BelongsTo
     {
-        return $this->hasOne(Shipping::class);
+        return $this->belongsTo(Shipping::class, 'shipping_id');
     }
 
     public function payment(): HasOne

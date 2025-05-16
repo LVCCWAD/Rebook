@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
 
     //option for becoming a seller
     Route::get('/become-a-seller', [UserController::class, 'becomeSellerView'])->name('user.become_seller');
-    Route::post('/become-a-seller', [UserController::class, 'becomeSeller'])->name('user.become_seller.post');
+    Route::put('/become-a-seller', [UserController::class, 'becomeSeller'])->name('user.become_seller.post');
 
     //category to show products
     Route::get('/categories/{id}', [CategoryController::class, 'categoryShow'])->name('category.show');
@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
     //cart management
     Route::post('/product/{id}/add-to-cart', [CartController::class, 'addToCart'])->name('product.add.to.cart');
     Route::get('/cart/{id}', [CartController::class, 'viewCart'])->name('cart.view');
-    Route::put('/cart/{id}/update', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::put('/cart/{product}/update', [CartController::class, 'updateCart'])->name('cart.update');
     Route::delete('/cart/{id}/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 
@@ -58,9 +58,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/order/store', [OrderController::class, 'storeOrder'])->name('order.store');
     Route::get('/order/{id}', [OrderController::class, 'showOrder'])->name('order.show');
     Route::delete('/order/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('order.cancel');
+    Route::post('order/{id}/shipping', [OrderController::class, 'storeShipping'])->name('order.shipping.store');
 
     //payment
-    Route::post('/payment/{id}', [PaymentController::class, 'storePayment'])->name('payment.store');
+    Route::post('/orders/{id}/pay', [PaymentController::class, 'storePayment'])->name('payment.store');
+    Route::post('/orders/{id}/cancelled', [PaymentController::class, 'storeCancelledPayment'])->name('payment.cancelled');
 
     //shipping address
     Route::get('/shipping/create', [ShippingController::class, 'shippingForm'])->name('shipping.form');
@@ -86,6 +88,9 @@ Route::middleware(['auth', 'seller'])->group(function () {
     Route::put('/shop/{id}/edit-product', [ProductController::class, 'productUpdate'])->name('seller.product.update');
     Route::delete('/shop/{id}/delete-product', [ProductController::class, 'productDelete'])->name('seller.product.delete');
     Route::get('/shop/{id}/product', [ProductController::class, 'productShow'])->name('seller.product.show');
+
+    //business analytics
+    Route::get('/shop/business-analytics', [ShopController::class, 'businessAnalytics'])->name('shop.analytics');
 });
 
 

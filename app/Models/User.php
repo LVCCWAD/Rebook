@@ -76,7 +76,7 @@ class User extends Authenticatable
 
     public function shippings(): HasMany
     {
-        return $this->hasMany(Shipping::class);
+        return $this->hasMany(Shipping::class, 'user_id', 'id');
     }
 
     public function isSeller(): bool
