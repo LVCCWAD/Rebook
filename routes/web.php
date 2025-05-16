@@ -15,6 +15,10 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShippingController;
 
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Notification;
+
+
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -88,5 +92,10 @@ Route::middleware(['auth', 'seller'])->group(function () {
     Route::get('/shop/{id}/product', [ProductController::class, 'productShow'])->name('seller.product.show');
 });
 
+    //Task Scheduling
+    Route::get('/check-sales-reminder', function () {
+        return response()->json(['show' => Cache::get('show_sales_popup', false)]);
+    });
 
-
+    //Notification
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->middleware('auth')->name('notifications.index');
