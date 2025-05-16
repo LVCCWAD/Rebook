@@ -34,7 +34,7 @@ class OrderPlacedNotification extends Notification
         return[
             'order_id' => $this->order->id,
             'message' => "Your order #{$this->order->id} has been placed successfully!",
-            'amount' => $this->order->total,
+            'total' => $this->order->total,
         ];
     }
 
