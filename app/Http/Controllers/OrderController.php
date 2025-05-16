@@ -127,6 +127,5 @@ class OrderController extends Controller
 
         return redirect()->route('order.show', $order->id)
          ->with('success', 'Order placed successfully!');
-
     }
 }
