@@ -116,23 +116,20 @@ class OrderController extends Controller
 
         return redirect()->route('order.show', $order->id)->with('success', 'Shipping address updated.');
     }
-        
-
-     public function placeOrder(Request $request){
-
-        //Validate and Create Order
+     public function placeOrder(Request $request)
+    {
         $order = Order::create([
-            'user_id' =>Auth::id(),
+            'user_id' => Auth::id(),
             'total' => $request->input('total'),
+
         ]);
 
-        //Notify the User
-        $user = Auth::user();
-        if ($user) {
-            \Illuminate\Support\Facades\Notification::send($user, new OrderPlacedNotification($order));
-        }
 
-        return redirect()->route('order.show', $order->id)
-         ->with('success', 'Order placed successfully!');
+        // Dispatch the event
+        event(new OrderPlaced($order));
+
+        return redirect()->route('orders.show', $order->id)
+                        ->with('success', 'Order placed!');
     }
+
 }
