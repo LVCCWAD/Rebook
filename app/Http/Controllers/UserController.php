@@ -73,7 +73,12 @@ class UserController extends Controller
             }
         }])->get();
 
-        return view('user.dashboard', compact('user', 'categories'));
+        $unreadNotifications = $user->unreadNotifications;
+        $unreadNotifications->markAsRead();
+
+        $notifications = $user->notifications()->latest()->take(10)->get();
+
+        return view('user.dashboard', compact('user', 'categories', 'notifications', 'unreadNotifications'));
     }
 
     public function becomeSellerView()
@@ -103,7 +108,7 @@ class UserController extends Controller
 
     //this is where the user can update their profile
 
-    
 
-    
+
+
 }

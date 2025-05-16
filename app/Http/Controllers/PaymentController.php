@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Payment;
-use Illuminate\Support\Facades\Auth;
+use App\Events\OrderPlaced;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Notifications\OrderPlacedNotification;
 
 class PaymentController extends Controller
 {
@@ -42,8 +44,13 @@ class PaymentController extends Controller
 
         //conditions whether it will be cancelled or not(not required yet)
 
+        $user->notify(new OrderPlacedNotification($order));
+
         return redirect()->route('order.show', $order->id)
-        ->with('success', 'Payment successful. Transaction ID: ' . $transactionId);
+        ->with([
+            'success' => 'Payment successful. Transaction ID: ' . $transactionId,
+            'payment_id' => $payment->id, // optional if you need it
+        ]);
     }
 
     public function storeCancelledPayment(Request $request, $id)
