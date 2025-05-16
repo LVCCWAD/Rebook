@@ -7,11 +7,12 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user();
-        $notifications = $user->unreadNotifications;
-        
-        return view('user.dashboard', compact('notifications'));
-    }
+  public function index()
+  {
+      $user = Auth::user();
+      $notifications = $user->unreadNotifications;
+      
+      // Mark notifications as read
+      return view('user.dashboard', compact('user', 'notifications'));
+  }
 }
