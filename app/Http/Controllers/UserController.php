@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\User;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -39,6 +40,7 @@ class UserController extends Controller
                 'regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).+$/',
                 'confirmed',
             ],
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'password.regex' => 'Password must include letters, numbers, and special characters',
             'password.confirmed' => 'Passwords do not match',
@@ -47,6 +49,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'image' => $request->file('image') ? $request->file('image')->store('images/users', 'public') : null,
             'password' => Hash::make($request->password),
             'role' => $request->input('role', 'user'), // Default role is 'user'
         ]);
@@ -135,12 +138,12 @@ class UserController extends Controller
     {
 
         $user = Auth::user();
+
         $user->update([
-            'role' => $request->role,
+            'role' => 'seller',
         ]);
 
         return redirect()->route('shop.create')->with('success', 'You are now a seller.');
-
     }
 
 

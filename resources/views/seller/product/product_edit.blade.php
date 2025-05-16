@@ -7,39 +7,42 @@
     <title>Document</title>
 </head>
 <body>
-    <a href="{{route('user.dashboard')}}">Dashboard</a>
-    <a href="{{route('shop.dashboard')}}">Shop Dashboard</a>
-    <h1>Create a Product</h1>
-    <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
+    <h1>Edit Product</h1>
+    <form action="{{ route('seller.product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <div>
             <label for="name">Product Name: </label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name" value="{{ $product->name }}" required>
         </div>
         <div>
             <label for="description">Description: </label>
-            <textarea id="description" name="description" required></textarea>
+            <textarea id="description" name="description" required>{{ $product->description }}</textarea>
         </div>
         <div>
             <label for="price">Price:</label>
-            <input type="number" id="price" name="price" required>
+            <input type="number" id="price" name="price" value="{{ $product->price }}" required>
         </div>
         <div>
             <label for="category_id">Category: </label>
             <select id="category_id" name="category_id">
                 @foreach ($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                 @endforeach
             </select>
         </div>
         <div>
             <label for="stock">Stock: </label>
-            <input type="number" id="stock" name="stock" min="1" required>
+            <input type="number" id="stock" name="stock" value="{{ $product->stock }}" required>
         </div>
         <div>
             <label for="image">Product Image: </label>
             <input type="file" id="image" name="image" accept="image/*">
+            @if ($product->image)
+                <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image" width="150">
+            @endif
         </div>
-        <button type="submit">Create Product</button>
+        <button type="submit">Update Product</button>
+    </form>
 </body>
 </html>

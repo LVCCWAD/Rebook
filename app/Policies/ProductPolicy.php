@@ -11,11 +11,11 @@ class ProductPolicy
     public function before(User $user)
     {
         if(!$user->isSeller()) {
-            return false;
+            return Response::deny('You must be a seller to perform this action');
         }
     }
 
-    private function isOwner(User $user, Product $product): bool
+    public function isOwner(User $user, Product $product): bool
     {
         return $user->isSeller() && $user->id === $product->seller_id;
     }
@@ -27,7 +27,7 @@ class ProductPolicy
 
     public function view(User $user, Product $product): bool
     {
-        return $user->isOwner($user, $product);
+        return $this->isOwner($user, $product);
     }
 
 
@@ -39,22 +39,22 @@ class ProductPolicy
 
     public function update(User $user, Product $product): bool
     {
-        return $user->isOwner($user, $product);
+        return $this->isOwner($user, $product);
     }
 
 
     public function delete(User $user, Product $product): bool
     {
-        return $user->isOwner($user, $product);
+        return $this->isOwner($user, $product);
     }
 
     public function restore(User $user, Product $product): bool
     {
-        return $user->isOwner($user, $product);
+        return $this->isOwner($user, $product);
     }
 
     public function forceDelete(User $user, Product $product): bool
     {
-        return $user->isOwner($user, $product);
+        return $this->isOwner($user, $product);
     }
 }

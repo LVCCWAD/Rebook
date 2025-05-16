@@ -7,22 +7,20 @@
     <title>Document</title>
 </head>
 <body>
+    <a href="{{route('user.dashboard')}}">Dashboard</a>
     <h1>{{Auth::user()->name}}'s Shop</h1>
     <h1>{{$shop->shop_name}}</h1>
 
     <h2>Products</h2>
     @if($products->isEmpty())
+        <p>You have no products yet</p>
         <a href="{{route('product.create')}}">Create Product</a>
     @else
         <ul>
             @foreach($products as $product)
-                <li>
-                    <h3>{{ $product->name }}</h3>
-                    <p>{{ $product->description }}</p>
-                    <p>Price: {{ $product->price }}</p>
-                    <p>Stock: {{ $product->stock }}</p>
-                    <p>Category: {{ $product->categories->name }}</p>
-                </li>
+                <a href="{{route('seller.product.show', $product->id)}}">
+                    <li>{{$product->name}} - ₱{{$product->price}}</li>
+                </a>
             @endforeach
         </ul>
         <a href="{{route('product.create')}}">Create Product</a>

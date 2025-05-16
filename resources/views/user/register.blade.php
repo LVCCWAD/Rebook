@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Register</h1>
-    <form action="{{ route('user.register') }}" method="POST">
+    <form action="{{ route('user.register') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <label for="email">Email:</label>
         <input type="email" name="email" id="email" required>
@@ -27,6 +27,9 @@
         @error('password_confirmation')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
+        <br>
+        <label for="image">Your profile picture: </label>
+        <input type="file" name="image" id="image" accept="image/*">
         <br>
         <button type="submit">Register</button>
     </form>
