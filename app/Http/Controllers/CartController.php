@@ -54,8 +54,24 @@ class CartController extends Controller
         return redirect()->route('product.show', $id)->with('success', 'Product added to cart successfully.');
     }
 
-    public function updateCart(Request $request, $id)
+    public function updateCart(Request $request, Product $product)
     {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $user = Auth::user();
+        $cart = $user->cart;
+
+        if (!$cart || !$cart->products->contains($product->id)) {
+            return redirect()->back()->with('error', 'Product not found in cart.');
+        }
+
+        $cart->products()->updateExistingPivot($product->id, [
+            'quantity' => $request->input('quantity'),
+        ]);
+
+        return redirect()->back()->with('success', 'Cart updated successfully.');
 
     }
 

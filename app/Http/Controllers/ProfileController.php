@@ -13,8 +13,12 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         //this will also fetch user's orders
-        $order = Order::where('user_id', $user->id)->with('payment', 'shipping')->get();
-        return view('user.profile.show', compact('user', 'order'));
+        $orders = Order::where('user_id', $user->id)
+        ->with('payment', 'shipping', 'orderItems.product')->get();
+
+        $user->load('shippings');
+
+        return view('user.profile.show', compact('user', 'orders'));
     }
 
     public function updateProfile(Request $request)
