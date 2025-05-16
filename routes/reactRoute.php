@@ -3,60 +3,42 @@
 
 use Illuminate\Support\Facades\Route;
 
-// REACT ROUTE
+// // REACT ROUTE
 use Inertia\Inertia;
 use App\Http\Controllers\ReactController;
+use App\Http\Controllers\UserController;
 
-// react route test
-Route::get('/', function () {
-    return Inertia::render('Test',[
-        'testProps' => 'prop-a' // passing route as propsRoute::get('', function () {
-    ]);
-});
+// // react route test
+// // Route::get('/', function () {
+// //     return Inertia::render('Test',[
+// //         'testProps' => 'prop-a' // passing route as propsRoute::get('', function () {
+// //     ]);
+// // });
 
-// login page
-Route::get('/login', function () {
-    // return Inertia::render('Auth/Login');
-    return inertia('Auth/Login');
-})->name('login');
-// validate login
-Route::post('/login/post', [ReactController::class, 'login']);
+// Route::get('/', [UserController::class, 'test']);
 
-
-// register page
-Route::get('/register', function () {
-    return Inertia::render('Auth/Register');
-});
-Route::post('/register/post', [ReactController::class, 'register']);
+// // seller page
+// Route::get('/seller', function () {
+//     // retrieve all all products
+//     return Inertia::render('Seller/Seller');
+// });
 
 
-// dashboard page
-Route::get('/dashboard', function () {
-    // retrieve all all products
-    return Inertia::render('Dashboard/Dashboard');
-});
+// // product page
+// // Route::get('/product', function () {
+// //     // retrieve all all products
+// //     return Inertia::render('Product/Product');
+// // });
+// // Route::get('/product{id}', [ReactController::class, 'product']);
 
-// seller page
-Route::get('/seller', function () {
-    // retrieve all all products
-    return Inertia::render('Seller/Seller');
-});
+// // cart page
+// Route::get('/cart', function () {
+//     // retrieve all all products
+//     return Inertia::render('Cart/Cart');
+// });
 
-// product page
-Route::get('/product', function () {
-    // retrieve all all products
-    return Inertia::render('Product/Product');
-});
-
-
-// cart page
-Route::get('/cart', function () {
-    // retrieve all all products
-    return Inertia::render('Cart/Cart');
-});
-
-// cart page
-Route::get('/profile', function () {
-    // retrieve all all products
-    return Inertia::render('Profile/Profile');
-});
+// // cart page
+// Route::get('/profile', function () {
+//     // retrieve all all products
+//     return Inertia::render('Profile/Profile');
+// });

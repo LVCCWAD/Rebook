@@ -3,7 +3,15 @@ import Header from "../../Components/DashboardComponents/Header";
 import Navigation from "../../Components/DashboardComponents/Navigation";
 import Body from "../../Components/ProductComponents/Body";
 
-export default function Product(){
+import { usePage } from "@inertiajs/react";
+
+ function Product({}){
+    const { product } = usePage().props
+
+//    console.log('Passed to get operation message: ', request);
+    console.log('Product data: ', product);
+
+
     return(
         <>
             {/* --- PRODUCT PAGE --- */}
@@ -15,9 +23,9 @@ export default function Product(){
                 <Navigation />
 
                 {/* --- BODY --- */}
-                <div className="mx-[10%] mt-20">
-                    <Body />
-                </div>
+                <Body product={product}/>
         </>
     )
 }
+
+export default Product

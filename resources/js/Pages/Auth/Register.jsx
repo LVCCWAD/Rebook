@@ -10,7 +10,7 @@ export default function Register(){
 
     // useForm hook initializes form state with default values
     const { data, setData, post, processing } = useForm({
-        user: 'exampleusername',            // Default username
+        name: 'examplenamename',            // Default namename
         email: 'test@example.com',         // Default email
         password: '12345678',              // Default password
         password_confirmation: '',         // Empty confirmation field
@@ -23,16 +23,16 @@ export default function Register(){
     const validate = () => {
         // Logging input data to the console for debugging
         console.log('Validating input data');
-        console.log('user: ', data.user);
+        console.log('name: ', data.name);
         console.log('email: ', data.email);
         console.log('password: ', data.password);
         console.log('confirm password: ', data.password_confirmation);
 
         const newErrors = {}; // Object to hold validation errors
 
-        // Validate user field
-        if (!data.user.trim()) {
-            newErrors.user = 'Name is required'; // If user is empty
+        // Validate name field
+        if (!data.name.trim()) {
+            newErrors.name = 'Name is required'; // If name is empty
         }
 
         // Validate email field
@@ -87,7 +87,7 @@ export default function Register(){
             console.log('Form data validation success');
 
             // If valid, send POST request using Inertia's post()
-            post("/register/post", {
+            post("/register", {
                 onSuccess: () => {
                     console.log("Submission success, redirected"); // Success callback
                 },
@@ -142,22 +142,22 @@ export default function Register(){
                         )}
                     </div>
 
-                    {/* --- USER FIELD --- */}
+                    {/* --- NAME FIELD --- */}
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                             Name
                         </label>
                         <input
-                            type="user"
-                            id="user"
-                            name="user"
-                            value={data.user}            // This should match your useForm key
+                            type="name"
+                            id="name"
+                            name="name"
+                            value={data.name}            // This should match your useForm key
                             onChange={handleChange}
                             className="mt-1 w-full px-4 py-2 border border-red-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                        {/* NOTE: Key mismatch. This should be `errors.user` (not `errors.name`) */}
-                        {errors.user && (
-                            <div className="text-sm text-red-500">{errors.user}</div>
+                        {/* NOTE: Key mismatch. This should be `errors.name` (not `errors.name`) */}
+                        {errors.name && (
+                            <div className="text-sm text-red-500">{errors.name}</div>
                         )}
                     </div>
 

@@ -1,26 +1,67 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "./Slider";
 import Category from "./Category";
 import Product from "./Product";
 
-export default function Body(){
-    // Validate component
-    useEffect(() => {console.log("Rendering: Dashboard.jsx");}, []);
+function Body({ user, categories, products }){
+
+
+    const [showCategory, setShowCategory] = useState(true)
+    const [selectedCategory, setSelectedCategory] = useState(null)
+    const [productTitle, setProductTitle] = useState('Discover')
+    const [productList, setProductList] = useState()
+
+    const handleCategoryClick = (category) => {
+        console.log('Category to Body title: ', category)
+        setSelectedCategory(category.products)
+        setProductTitle(category.name);
+        setShowCategory(false)
+    }
 
     return(
         <>
-            {/* --- BODY CONTAINER --- */}
-            <div className="mx-[10%]">
-                {/* --- SLIDER --- */}
-                <Slider />
+            <div  className="mx-[10%]">
+                {showCategory ? (
+                    <div>
+                        {/* <Slider /> */}
 
-                {/* --- CATEGORY --- */}
-                <Category />
+                        <Category
+                            onSendData={handleCategoryClick}
+                            categories={categories}
+                            products={products}
+                        />
 
-                {/* --- PRODUCT --- */}
-                <Product />
-
+                        {/* --- ALL PRODUCT --- */}
+                        <Product
+                            title={productTitle}
+                            products={products}
+                        />
+                    </div>
+                ) : (
+                    // --- PRODUCT ---
+                    <div>
+                        <Product
+                            title={productTitle}
+                            products={selectedCategory}
+                        />
+                    </div>
+                )}
             </div>
+
+            {/* <hr className="mt-20"/> */}
+
+                {/* {category.map((cat) => (
+                    <div key={cat.id}>
+                        <Product
+                            title={cat.name}
+                            products={cat.name}
+                        />
+                    </div>
+                ))} */}
+
+
         </>
     )
 }
+
+export default Body
