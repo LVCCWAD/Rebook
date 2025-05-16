@@ -89,9 +89,7 @@ class UserController extends Controller
 
         $user = Auth::user();
 
-        $user->update([
-            'role' => 'seller',
-        ]);
+        User::where('id', $user->id)->update(['role' => 'seller']);
 
         return redirect()->route('shop.create')->with('success', 'You are now a seller.');
     }
@@ -105,4 +103,7 @@ class UserController extends Controller
 
     //this is where the user can update their profile
 
+    
+
+    
 }
