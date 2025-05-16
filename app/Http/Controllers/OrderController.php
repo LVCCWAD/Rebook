@@ -30,7 +30,7 @@ class OrderController extends Controller
         }
 
         $selectedProductsIds = $request->input('selected_items');
-        
+
         $selectedProducts = $cart->products->whereIn('id', $selectedProductsIds);
 
         if ($selectedProducts->isEmpty()) {

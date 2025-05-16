@@ -7,6 +7,40 @@
     <title>Document</title>
 </head>
 <body>
+   <div class="container">
+    <h2>Your Notifications</h2>
+
+    @isset($notifications)
+        @if ($notifications->count())
+            <ul class="list-group">
+                @foreach ($notifications as $notification)
+                    <li class="list-group-item @if(is_null($notification->read_at)) font-weight-bold @endif">
+                        {{ $notification->data['message'] }}
+                        <br>
+                        <small>
+                            Order ID: {{ $notification->data['order_id'] }} - 
+                            Amount: ${{ number_format($notification->data['amount'], 2) }}
+                        </small>
+                        <br>
+                        <small><em>{{ $notification->created_at->diffForHumans() }}</em></small>
+                    </li>
+                @endforeach
+            </ul>
+
+            {{ $notifications->links() }}
+        @else
+            <p>No notifications found.</p>
+        @endif
+    @else
+        <p>Notifications are not available.</p>
+    @endisset
+</div>
+
+
+
+
+
+
     <header>
         <h1>Re:Book</h1>
         <p>Welcome, {{ Auth::user()->name }}</p>
