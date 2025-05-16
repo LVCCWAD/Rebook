@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Events\OrderPlaced;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Shipping;
 use App\Models\OrderItem;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\OrderPlacedNotification;
@@ -103,14 +106,33 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'You are not authorized to update this order.');
         }
 
-        $shipping = Auth::user()->shippings()->findOrFail($request->shipping_id);
+        // Get the shipping address directly from the database instead of using the relationship
+        $shipping = Shipping::where('user_id', Auth::id())
+                           ->where('id', $request->shipping_id)
+                           ->firstOrFail();
 
         $order->shipping_id = $shipping->id;
         $order->save();
 
         return redirect()->route('order.show', $order->id)->with('success', 'Shipping address updated.');
     }
+        public function placeOrder(Request $request)
+    {
+        $order = Order::create([
+            'user_id' => Auth::id(),
+            'total' => $request->input('total'),
+            // other fields...
+        ]);
 
+<<<<<<< HEAD
+        // Dispatch the event
+        event(new OrderPlaced($order));
+
+        return redirect()->route('orders.show', $order->id)
+                        ->with('success', 'Order placed!');
+    }
+}
+=======
      public function placeOrder(Request $request){
 
         //Validate and Create Order
@@ -129,3 +151,4 @@ class OrderController extends Controller
          ->with('success', 'Order placed successfully!');
     }
 }
+>>>>>>> 623217555708f5f60f7104442005467e84f3049c
