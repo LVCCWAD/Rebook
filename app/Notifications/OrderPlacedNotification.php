@@ -10,14 +10,14 @@ use Illuminate\Notifications\Notification;
 class OrderPlacedNotification extends Notification
 {
     use Queueable;
-    
+
 
     /**
      * Create a new notification instance.
      */
     public function __construct(protected $order)
     {
-       
+
     }
 
     /**
@@ -25,13 +25,14 @@ class OrderPlacedNotification extends Notification
      *
      * @return array<int, string>
      */
-    
+
     public function via(object $notifiable): array
     {   //Notif Store in database
         return ['database'];
     }
     public function toDatabase($notifiable){
         return[
+            'type' => 'order_placed',
             'order_id' => $this->order->id,
             'message' => "Your order #{$this->order->id} has been placed successfully!",
             'amount' => $this->order->total,
