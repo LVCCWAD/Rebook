@@ -2,17 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
+
+use App\Models\Product;
+use App\Models\Review;
+use App\Models\ShippingAddress;
+use App\Models\Shop;
 
 class UserController extends Controller
 {
     public function registerForm()
     {
         return view('user.register');
+        // return Inertia::render('Auth/Register');
     }
 
     public function register(Request $request)
@@ -40,30 +52,78 @@ class UserController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect()->route('user.dashboard')->with('success', 'User registered successfully.');
+        return redirect()
+            ->route('user.dashboard')
+            ->with('success', 'User registered successfully.');
     }
-
 
     public function loginForm()
     {
         return view('user.login');
+        // return Inertia::render('Auth/Login');
     }
 
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
+
         if (Auth::attempt($credentials)) {
 
-            return redirect()->route('user.dashboard')->with('success', 'Logged in successfully.');
+             return redirect()->route('user.dashboard')->with('success', 'Logged in successfully.');
+
+            // return redirect()
+            //     ->route('user.dashboard')
+            //     ->with('success', 'Logged in successfully.');
+
         }
-        return redirect()->back()->with('error', 'Invalid credentials.');
+
+
+
+      // Check if user with that email exists
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return back()->withErrors([
+            'email' => 'Invalid email address.',
+        ]);
     }
 
-    public function dashboard()
+    // If user exists, check password
+    if (!Hash::check($request->password, $user->password)) {
+        return back()->withErrors([
+            'password' => 'Incorrect password.',
+        ]);
+    }
+
+    // Fallback (should not normally reach here)
+    return back()->withErrors([
+        'login' => 'Login failed. Please check your credentials.',
+    ]);
+
+
+        // return back()->withErrors(['error' => 'backend validation error']);
+        // return redirect()->back()->with('error', 'Invalid credentials.');
+    }
+
+    public function dashboard(Request $request)
     {
         $user = Auth::user();
         $category = Category::all();
-        return view('user.dashboard', compact('user', 'category'));
+        $product = Product::all();
+        // return view('user.dashboard', compact('user', 'category'));
+
+
+        if ($request->has('category_id')){
+            $product = Product::where('category_id', $request->category_id)->get();
+        } else {
+            $product = Product::all();
+        }
+
+        return Inertia::render('Dashboard/Dashboard', [
+            'user' => $user,
+            'categories' => $category,
+            'products' => $product,
+        ]);
     }
 
     public function becomeSellerView()
@@ -89,4 +149,35 @@ class UserController extends Controller
         Auth::logout();
         return redirect()->route('login')->with('success', 'Logged out successfully.');
     }
+
+
+    // --- React ---
+    public function test(){
+        $users = User::all();
+        $products = Product::all();
+        // $carts = Cart::all();
+        // $cartItems = CartItem::all();
+        $categories = Category::all();
+        // $orders = Order::all();
+        // $OrderItems = OrderItem::all();
+        // $payments = Payment::all();
+        $reviews = Review::all();
+        // $shippingAddress = ShippingAddress::all();
+        $shops = Shop::all();
+
+        return inertia::render('ReactTest/ReactTest',[
+            'users' => $users,
+            'products' => $products,
+            // 'carts' => $carts,
+            // 'cartItem' => $cartItems,
+            'categories' => $categories,
+            // 'order' => $orders,
+            // 'OrderItems' => $OrderItems,
+            // 'payments' => $payments,
+            'reviews' => $reviews,
+            // 'shippinAddress' => $shippingAddress,
+            'shops' => $shops,
+        ]);
+    }
 }
+

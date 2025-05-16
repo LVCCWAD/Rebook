@@ -1,11 +1,10 @@
 import React from "react";
 
 export default function Slider1( data ){
-    console.log("Props data passed: ", data.data[0])
     const Img1 = data.data[0]
     const Img2 = data.data[1]
     // const Img3 = data.data[2]
-    // const Img4 = data.data[3] 
+    // const Img4 = data.data[3]
     return(
         <>
         {/* --- SLIDER 1 --- */}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../../../public/Assets/logo.png";
+import { Link } from "@inertiajs/react";
 
 
 export default function Header(){
@@ -15,11 +16,13 @@ export default function Header(){
             <div className="flex flex-row w-full justify-center items-center py-5">
                 {/* Left Container */}
                 {/* --- LOGO --- */}
-                <img
-                    src={logo}                            // Source of logo image
-                    alt="Re:Book"                         // Alt text for accessibility
-                    className="w-64 sm:-48 lg:56 m-4"              // Styling: responsive width and margin
-                />
+                <Link href="/dashboard">
+                    <img
+                        src={logo}                            // Source of logo image
+                        alt="Re:Book"                         // Alt text for accessibility
+                        className="w-64 sm:-48 lg:56 m-4"              // Styling: responsive width and margin
+                    />
+                </Link>
                 {/* Right Container */}
                 <div className="w-[60%]">
 
@@ -46,7 +49,7 @@ export default function Header(){
                                     <path d="M6 20c0-4 3-7 6-7s6 3 6 7" strokeWidth="2" />
                                 </svg>
                             </div>
-                            
+
                             {/* --- Cart Icon --- */}
                             <div className="text-red-800">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">

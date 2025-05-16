@@ -3,87 +3,64 @@ import { Link, useForm, } from "@inertiajs/react";
 import logo from "../../../../public/Assets/logo.png";
 
 export default function Login(){
-    // validate component
+    
     useEffect(() => {console.log("Rendering: Login.jsx");}, []);
 
-    // Using useForm hook to handle form state
+    const [errors, setErrors] = useState({});
     const { data, setData, post, processing } = useForm({
-        // data
-        email: 'test@example.com',
-        password: '12345678',
+        email: '',
+        password: '',
     })
 
-    // Local state to track validation errors
-    const [errors, setErrors] = useState({});
 
-    // Validate form input fields
     const validate = () => {
-        // Logging input data to the console for debugging
-        console.log('Validating input data');
-        console.log('email: ', data.email);
-        console.log('password: ', data.password);
+        const newErrors = {};
 
-
-        const newErrors = {}; // Object to hold validation errors
-
-        // Validate email field
         if (!data.email.trim()) {
-            newErrors.email = 'Email is required'; // If email is empty
+            newErrors.email = 'Email is required';
         } else if (!/\S+@\S+\.\S+/.test(data.email)) {
-            newErrors.email = 'Email is invalid'; // If email format is wrong
+            newErrors.email = 'Email is invalid';
         }
 
-        // Validate password field
         if (!data.password.trim()) {
-            newErrors.password = 'Password is required'; // If password is empty
+            newErrors.password = 'Password is required';
         } else if (data.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters'; // If password is too short
+            newErrors.password = 'Password must be at least 6 characters';
         }
 
-        // Set validation errors in state
         setErrors(newErrors);
 
-        // Return true if no errors, otherwise false
         return Object.keys(newErrors).length === 0;
     };
 
-    // Handle input change
     const handleChange = (e) => {
+        console.log('--- Changes Found ---')
+
         const { name, value } = e.target;
 
-        // Update form data using Inertia's setData
         setData(name, value);
 
-        // Clear error message for the current input field
         setErrors({ ...errors, [name]: '' });
     };
 
 
-    // Handle form submission
     const submit = (e) => {
-        e.preventDefault(); // Prevent the browser from reloading the page
+        console.log('--- Validating Form Data ---');
+        e.preventDefault();
 
-        console.log("Form submitted");
-        console.log("Route: /login/post");
-        console.log("Data: ", data);
-
-        // Run validation before submitting
         if (validate()) {
-            console.log('Form data validation success');
 
-            // If valid, send POST request using Inertia's post()
-            post("/login/post", {
+            post("/login", {
                 onSuccess: () => {
-                    console.log("Submission success, redirected"); // Success callback
+                    console.log("<=== SUBMIT SUCCESS ===>");
                 },
                 onError: (errors) => {
-                    console.log("Backend Errors: ", errors); // Show errors from server
-                    console.log("Submission failed"); // Handle backend validation errors
-                    setErrors(errors); // Optionally, set them in your error state
+                    console.log("Backend Errors: ", errors);
+                    console.log('<=== SUBMIT FAILED ===>')
+                    setErrors(errors);
                 }
             });
         } else {
-            // Log failure and prevent form submission
             console.log('Abort submission: Form data validation failed');
         }
     }

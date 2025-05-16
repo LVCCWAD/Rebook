@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Log;
 
 class ReactController extends Controller
 {
@@ -44,6 +45,23 @@ class ReactController extends Controller
         // return back()->withErrors([
         //     'errors' => 'test error',
         // ]);
+    }
+
+    public function product(Request $request, $id){
+
+        // Access data from the request
+        $product = $request->input('product');
+
+        // Example: Save to DB or process logic
+        // Product::create([...]);
+        log::info('check variable --->',[$product]);
+
+
+        return Inertia::render('Product/Product', [
+            // 'message' => 'Data received successfully',
+            // 'title' => $title,
+            'product' => $product
+        ]);
     }
 
 }

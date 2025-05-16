@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Policy;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Log;
+use inertia\Inertia;
 
 class ProductController extends Controller
 {
@@ -70,5 +72,17 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         return view('seller.product.product_edit', compact('product'));
+    }
+
+    public function productPage( $id ){
+
+        $product = Product::findOrFail($id);
+
+        Log::info('ID here: ', ['id' => $id]);
+        Log::info('Product here: ', ['product' => $product]);
+
+        return inertia::render('Product/Product',[
+            'product' => $product->toArray(),
+        ]);
     }
 }

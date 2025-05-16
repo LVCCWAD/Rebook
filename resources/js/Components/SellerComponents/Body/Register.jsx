@@ -1,66 +1,86 @@
 import React, { useState } from "react";
 
+import logo from "../../../../../public/Assets/logo.png";
+
 export default function Register(){
     const [showModal, setShowModal] = useState(true);
 
     return(
         <>
-             <div className="bg-gray-100 h-screen flex items-center justify-center p-4">
-                <div className="max-w-4xl w-full flex flex-col md:flex-row items-center justify-between gap-8">
-                    {/* Left side content */}
-                    <div className="max-w-md">
-                    <h1 className="text-4xl font-bold text-gray-800">
-                        Grow your school supplies business with <span className="text-red-700">Re:Book</span> today!
-                    </h1>
-                    <p className="mt-4 text-gray-700">
-                        Sell your school supplies on Re:Book. Our easy-to-use platform connects you with students, parents, and educators. From notebooks to backpacks, Re:Book helps you boost visibility and grow sales effortlessly.
-                    </p>
-                    </div>
+      <div className="h-auto">
+      {/* Header */}
+      {/* <header className="bg-white px-6 py-4 flex justify-between items-center border-b border-gray-300">
+        <div className="flex items-center">
+          <div className="flex items-center gap-2">
+                    <img src={logo} alt="Logo" className="w-[30%] m-2" />
+                    <span className="text-gray-600 text-sm ml-2 cursor-pointer">
+                      Seller View
+                    </span>
+                  </div>
+        </div>
 
-                    {/* Right side modal */}
-                    {showModal && (
-                       <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                       <div className="w-80 bg-white rounded-lg shadow-lg border-2 border-purple-400 p-8 relative">
-                         {/* Purple shadow effect */}
-                         <div className="absolute inset-0 rounded-lg shadow-lg -right-1 -bottom-1 bg-purple-200 -z-10"></div>
+        <div className="flex items-center space-x-2 text-gray-800">
+          <span className="font-medium">Back to Home page</span>
+        </div>
+      </header> */}
 
-                         {/* Logo */}
-                         <div className="flex justify-center mb-8">
-                           <div className="w-20 h-20">
-                             <svg viewBox="0 0 100 100" className="w-full h-full">
-                               <g stroke="black" strokeWidth="4" fill="none">
-                                 {/* Shopping bag */}
-                                 <rect x="20" y="38" width="60" height="50" rx="2" />
+      {/* Main content */}
+      <main className="container mx-auto px-4 md:px-16 py-16 mt-24">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-12">
+          {/* Left Text Section */}
+          <div className="max-w-lg">
+            <h1 className="text-5xl font-bold text-gray-800 mb-6">
+              Grow your school supplies business with{" "}
+              <span className="text-black">
+                Re:<span className="text-red-800">Book</span>
+              </span>{" "}
+              today!
+            </h1>
+            <p className="text-lg text-gray-700">
+              Sell your school supplies on Re:Book. Our easy-to-use platform connects
+              you with students, parents, and educators. From notebooks to backpacks,
+              Re:Book helps you boost visibility and grow sales effortlessly.
+            </p>
+          </div>
 
-                                 {/* Handle */}
-                                 <path d="M35 38C35 25 65 25 65 38" strokeLinecap="round" />
-                               </g>
+          {/* Registration Modal */}
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <div className="flex items-center mb-6">
+              <div className=" flex justify-center items-center">
+              <img src={logo} alt="Logo" className="w-[30%] m-2" />
+              </div>
+            </div>
 
-                               {/* RB text */}
-                               <text x="33" y="75" fontSize="36" fontWeight="bold" fill="#990000" fontFamily="sans-serif">RB</text>
-                             </svg>
-                           </div>
-                         </div>
+            <form className="space-y-4">
+              <input
+                type="text"
+                placeholder="Shop Name"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+              />
+              <input
+                type="tel"
+                placeholder="Phone Number"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+              />
+              <input
+                type="text"
+                placeholder="Address (e.g. Sainplice, Apatri, Patna.)"
+                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+              />
 
-                         {/* Text */}
-                         <div className="text-center mb-8">
-                           <p className="text-xl font-medium">Do you want to register as a seller?</p>
-                         </div>
-
-                         {/* Buttons */}
-                         <div className="flex flex-col gap-3">
-                           <button className="bg-green-700 hover:bg-green-800 text-white py-3 rounded-md text-lg font-medium">
-                             Yes
-                           </button>
-                           <button className="bg-red-700 hover:bg-red-800 text-white py-3 rounded-md text-lg font-medium">
-                             No
-                           </button>
-                         </div>
-                       </div>
-                     </div>
-                    )}
-                </div>
-                </div>
+              <button className="w-full py-3 bg-green-600 text-white font-medium rounded hover:bg-green-700 transition-colors">
+                Register
+              </button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
         </>
     )
 }

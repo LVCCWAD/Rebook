@@ -29,6 +29,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');
 
+    Route::get('/product/{product}',[ProductController::class,'productPage']);
+
     //option for becoming a seller
     Route::get('/become-a-seller', [UserController::class, 'becomeSellerView'])->name('user.become_seller');
     Route::post('/become-a-seller', [UserController::class, 'becomeSeller'])->name('user.become_seller.post');

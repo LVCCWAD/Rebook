@@ -14,7 +14,7 @@ export default function Slider() {
     const data = [
         Img1, Img2, Img3, Img4
     ]
- 
+
     // Array of component
     const components = [
         <Slider1 data={data}/>
@@ -34,7 +34,7 @@ export default function Slider() {
           const newIndex = prev === 0 ? components.length - 1 : prev - 1;
 
           // Validate previous
-          console.log('Previous activated: ', prev)
+          console.log('Previous Slider activated ---> ', prev)
           return newIndex;
         });
       };
@@ -45,7 +45,7 @@ export default function Slider() {
             const newIndex = prev === components.length - 1 ? 0 : prev + 1;
 
             // Validate previous
-            console.log('Previous activated: ', prev)
+            console.log('Next Slider activated ---> ', prev)
             return newIndex;
         });
     };
