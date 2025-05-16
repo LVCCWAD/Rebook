@@ -121,9 +121,7 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id' => Auth::id(),
             'total' => $request->input('total'),
-
         ]);
-
 
         // Dispatch the event
         event(new OrderPlaced($order));
