@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('image')->nullable(); // Nullable image field
             $table->enum('role', ['user', 'seller', 'admin'])->default('user'); // Default role is 'user'
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

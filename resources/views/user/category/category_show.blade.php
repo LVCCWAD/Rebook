@@ -7,6 +7,7 @@
     <title>Document</title>
 </head>
 <body>
+    <a href="{{route('user.dashboard')}}">Dashboard</a>
     <h1>Category: {{ $category->name }}</h1>
     <h2>Products</h2>
     @if($products->isEmpty())

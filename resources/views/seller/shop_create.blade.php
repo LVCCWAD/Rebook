@@ -14,10 +14,6 @@
             <label for="name">Shop Name: </label>
             <input type="text" id="shop_name" name="shop_name" required>
         </div>
-        <div>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" required></textarea>
-        </div>
         <button type="submit">Create Shop</button>
     </form>
 

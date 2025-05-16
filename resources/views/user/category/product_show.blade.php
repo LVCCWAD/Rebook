@@ -7,11 +7,30 @@
     <title>Document</title>
 </head>
 <body>
+    <a href="{{route('user.dashboard')}}">Dashboard</a>
    <h1>{{$product->name}}</h1>
     <h2>Product Details</h2>
     <p>Price: ₱{{$product->price}}</p>
     <p>Description: {{$product->description}}</p>
     <p>Seller: {{$product->user->name}}</p>
+    <img src="{{asset('storage/' . $product->image)}}" alt="Product Image" width="150">
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @else
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    {{-- add to cart --}}
+    <form action="{{route('product.add.to.cart', $product->id)}}" method="POST">
+        @csrf
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" min="1" max="{{$product->stock}}" required>
+        <button type="submit">Add to Cart</button>
+    </form>
 
     <h2>Reviews</h2>
     @if($reviews->isEmpty())
