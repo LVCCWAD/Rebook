@@ -11,6 +11,7 @@ use App\Models\OrderItem;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\OrderPlacedNotification;
 
 class OrderController extends Controller
 {
@@ -123,6 +124,7 @@ class OrderController extends Controller
             // other fields...
         ]);
 
+<<<<<<< HEAD
         // Dispatch the event
         event(new OrderPlaced($order));
 
@@ -130,3 +132,24 @@ class OrderController extends Controller
                         ->with('success', 'Order placed!');
     }
 }
+=======
+     public function placeOrder(Request $request){
+
+        //Validate and Create Order
+        $order = Order::create([
+            'user_id' =>Auth::id(),
+            'total' => $request->input('total'),
+        ]);
+
+        //Notify the User
+        $user = Auth::user();
+        if ($user) {
+            \Illuminate\Support\Facades\Notification::send($user, new OrderPlacedNotification($order));
+        }
+
+        return redirect()->route('order.show', $order->id)
+         ->with('success', 'Order placed successfully!');
+
+    }
+}
+>>>>>>> 623217555708f5f60f7104442005467e84f3049c
