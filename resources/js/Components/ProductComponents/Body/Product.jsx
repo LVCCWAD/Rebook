@@ -55,18 +55,17 @@ function Product({ product }){
                 <div className="flex flex-col justify-between w-[60%] m-4">
                     <h1 className="text-xl md:text-2xl font-semibold text-gray-800">{product?.name}</h1>
 
-                    <div className="flex items-center mt-2">
+                    {/* <div className="flex items-center mt-2">
                         <div className="flex items-center">
-                            {/* star here */}
                             <span className="ml-1 text-yellow-500 font-medium">4.8</span>
                         </div>
                         <span className="mx-2 text-gray-300">|</span>
                         <span className="text-gray-500">Ratings 250</span>
-                    </div>
+                    </div> */}
 
-                    <div className="mt-2 text-sm text-gray-600">
+                    {/* <div className="mt-2 text-sm text-gray-600">
                         Brand: No Brand | <span className="text-blue-500">More Women Bags from No Brand</span>
-                    </div>
+                    </div> */}
 
                         {/* --- BANNER --- */}
                         {/* <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-3 text-white flex items-center justify-between">
@@ -85,30 +84,35 @@ function Product({ product }){
 
 {/* Price */}
 <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-pink-600">₱110.01</span>
-            <span className="text-gray-500 line-through text-sm">₱1,000.00</span>
-            <span className="bg-pink-100 text-pink-600 px-2 rounded text-sm font-medium">-89%</span>
+            <span className="text-3xl font-bold text-pink-600">₱{product?.price}</span>
+            {/* <span className="text-gray-500 line-through text-sm">₱1,000.00</span> */}
+            {/* <span className="bg-pink-100 text-pink-600 px-2 rounded text-sm font-medium">-89%</span> */}
           </div>
 
           {/* Delivery Options */}
           <div className="space-y-4 border-t border-b py-4">
-            <div className="flex justify-between">
+
+            {/* <div className="flex justify-between">
               <span className="text-gray-600">Delivery Options:</span>
               <div className="flex items-center">
-                {/* <MapPin size={16} className="text-blue-500 mr-1" /> */}
                 <span className="text-sm">Metro Manila-Quezon City, Quezon City, Project 6</span>
                 <span className="text-blue-500 ml-2 text-sm font-medium">CHANGE</span>
               </div>
+            </div> */}
+
+            <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <div className="text-sm">Descriptions</div>
+              </div>
+              <span className="text-gray-500 text-sm">{product?.description}</span>
             </div>
 
-            {/* <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center">
               <div className="flex items-center">
-                <Package size={16} className="text-blue-500 mr-1" />
-                <span className="text-sm">Guaranteed by Thurs, 8 May</span>
-                <ChevronRight size={16} className="text-gray-400" />
+                <div className="text-sm">Stock</div>
               </div>
-              <span className="text-gray-500 text-sm">Priority 48H with shipping fee ₱40.00</span>
-            </div> */}
+              <span className="text-gray-500 text-sm">{product?.stock}</span>
+            </div>
 
             {/* <div className="flex justify-between items-center">
               <div className="flex items-center">

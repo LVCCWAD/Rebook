@@ -4,93 +4,35 @@ import { Link, useForm } from "@inertiajs/react";
 
 const tabs = ["To Ship", "Shipment", "Completed"];
 
-function Order() {
-  const [activeTab, setActiveTab] = useState("To Ship");
-  const [open, setOpen] = useState(false);
-  const dropdownRef = useRef(null);
+function Order({user_order_id, products}) {
 
-  const orders = [
-    {
-      id: 1,
-      productImage: "https://via.placeholder.com/100",
-      productName: "45×18×29cm nk fashion high school grade travel work backpack",
-      total: 450,
-      status: "Unpaid",
-      shipped: false,
-      buyer: "kagemethjayrath",
-    },
-  ];
+    const [activeTab, setActiveTab] = useState("To Ship");
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
-  // Close dropdown if clicked outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    const orders = [
+        {
+            id: 1,
+            productImage: "https://via.placeholder.com/100",
+            productName: "45×18×29cm nk fashion high school grade travel work backpack",
+            total: 450,
+            status: "Unpaid",
+            shipped: false,
+            buyer: "kagemethjayrath",
+        },
+        {
+            id: 2,
+            productImage: "https://via.placeholder.com/100",
+            productName: "45×18×29cm nk fashion high school grade travel work backpack",
+            total: 300,
+            status: "paid",
+            shipped: false,
+            buyer: "machinegun",
+        },
+    ];
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      {/* Header */}
-      {/* <div className="bg-white shadow-md flex justify-between items-center px-6 py-4">
-        <div className="flex items-center gap-2">
-          <img src={logo} alt="Logo" className="w-[30%] m-2" />
-          <span
-            className="text-gray-600 text-sm ml-2 cursor-pointer"
-            onClick={() => (window.location.href = "/Sellerdash")}
-          >
-            Seller View
-          </span>
-        </div> */}
-
-        {/* Dropdown Navigation */}
-        {/* <div className="relative inline-block text-left" ref={dropdownRef}>
-          <button onClick={() => setOpen(!open)} className="p-2">
-            <div className="grid grid-cols-3 gap-0.5 w-6 h-6">
-              {Array.from({ length: 9 }).map((_, i) => (
-                <span key={i} className="w-1 h-1 bg-[#5a1c1c] rounded-full"></span>
-              ))}
-            </div>
-          </button>
-
-          {open && (
-            <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg p-4 grid grid-cols-2 gap-4 z-50">
-              <Link href="/sellerdash" className="flex flex-col items-center">
-                <div className="bg-[#7a0d0d] text-white rounded-full p-3 text-xl">🛍️</div>
-                <span className="text-xs mt-1 text-center">Seller View</span>
-              </Link>
-
-              <Link href="/sellerorder" className="flex flex-col items-center">
-                <div className="bg-[#1b6e0b] text-white rounded-full p-3 text-xl">📋</div>
-                <span className="text-xs mt-1 text-center">My Orders</span>
-              </Link>
-
-              <Link href="/sellerproduct" className="flex flex-col items-center">
-                <div className="bg-[#796008] text-white rounded-full p-3 text-xl">🏷️</div>
-                <span className="text-xs mt-1 text-center">My Products</span>
-              </Link>
-
-              <Link href="/dashboard" className="flex flex-col items-center">
-                <div className="bg-[#0d1f7a] text-white rounded-full p-3 text-xl w-[48px] h-[48px]">🛒</div>
-                <span className="text-xs mt-1 text-center">Customer View</span>
-              </Link>
-
-              <button
-                onClick={() => alert("Logging out...")}
-                className="flex flex-col items-center cursor-pointer focus:outline-none"
-              >
-                <div className="bg-gray-600 text-white rounded-full p-3 text-xl">↩️</div>
-                <span className="text-xs mt-1 text-center">Log Out</span>
-              </button>
-            </div>
-          )}
-        </div>
-      </div> */}
 
       {/* Tabs */}
       <div className="max-w-4xl mx-auto mt-6">

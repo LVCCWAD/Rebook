@@ -4,19 +4,31 @@ import PassPropTest from "./PassPropTest"; // ipasok mo sa prop na ito
 
 function ReactTest(){
 
-    const {
-        users,
-        products,
+     const {
+        carts,
         categories,
+        cartItems,
+        orders,
+        orderItems,
+        payments,
+        products,
         reviews,
+        shippings,
         shops,
-     } = usePage().props
+        users,
+    } = usePage().props;
 
-    // console.log(users)
-    console.log('products --->',products)
-    console.log('categories --->',categories)
-    console.log('reviews --->',(reviews))
-    console.log('shops --->',shops)
+    console.log('🛒 carts --->', carts);
+    console.log('🧾 cartItems --->', cartItems);
+    console.log('📦 categories --->', categories);
+    console.log('🛍️ orders --->', orders);
+    console.log('🧩 orderItems --->', orderItems);
+    console.log('💳 payments --->', payments);
+    console.log('🧃 products --->', products);
+    console.log('⭐ reviews --->', reviews);
+    console.log('🚚 shippings --->', shippings);
+    console.log('🏬 shops --->', shops);
+    console.log('👤 users --->', users);
 
     return(
         <>
@@ -31,11 +43,17 @@ function ReactTest(){
             ))} */}
 
             <PassPropTest
-                users={users}
-                products={products}
+                carts={carts}
+                cartItems={cartItems}
                 categories={categories}
+                orders={orders}
+                orderItems={orderItems}
+                payments={payments}
+                products={products}
                 reviews={reviews}
+                shippings={shippings}
                 shops={shops}
+                users={users}
             /> {/** ganito mag pasa sa components */}
 
         </>

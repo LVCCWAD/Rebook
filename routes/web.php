@@ -33,14 +33,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');
 
-    Route::get('/product/{product}',[ProductController::class,'productPage']);
-
     //option for becoming a seller
     Route::get('/become-a-seller', [UserController::class, 'becomeSellerView'])->name('user.become_seller');
     Route::post('/become-a-seller', [UserController::class, 'becomeSeller'])->name('user.become_seller.post');
 
     //category to show products
     Route::get('/categories/{id}', [CategoryController::class, 'categoryShow'])->name('category.show');
+
+
+
 
     //product show and review
     Route::get('/product/{id}', [ReviewController::class, 'viewOneProduct'])->name('product.show');
@@ -71,6 +72,10 @@ Route::middleware(['auth'])->group(function () {
     //user profile
     Route::get('/profile', [ProfileController::class, 'showProfile'])->name('user.profile');
     Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('user.profile.update');
+
+    // react
+    // Route::get('/product/{product}',[ProductController::class,'productPage']);
+
 });
 
 Route::middleware(['auth', 'seller'])->group(function () {
@@ -92,3 +97,6 @@ Route::middleware(['auth', 'seller'])->group(function () {
 
 
 
+
+// react
+Route::get('/', [UserController::class, 'test']);

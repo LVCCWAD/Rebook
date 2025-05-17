@@ -23,7 +23,7 @@ function Body({ user, categories, products }){
             <div  className="mx-[10%]">
                 {showCategory ? (
                     <div>
-                        {/* <Slider /> */}
+                        <Slider />
 
                         <Category
                             onSendData={handleCategoryClick}

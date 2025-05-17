@@ -15,10 +15,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-use App\Models\Product;
 use App\Models\Review;
-use App\Models\ShippingAddress;
+use App\Models\Shipping;
 use App\Models\Shop;
+use Illuminate\Support\Facades\Log;
+
+
 
 class UserController extends Controller
 {
@@ -45,6 +47,8 @@ class UserController extends Controller
             'password.regex' => 'Password must include letters, numbers, and special characters',
             'password.confirmed' => 'Passwords do not match',
         ]);
+
+Log::info('show request ---------->', $request->all());
 
         $user = User::create([
             'name' => $request->name,
@@ -111,27 +115,56 @@ class UserController extends Controller
     public function dashboard(Request $request)
     {
         $user = Auth::user();
-        $category = Category::all();
+        $categories = Category::all();
         $product = Product::all();
-        // return view('user.dashboard', compact('user', 'category'));
+
+        return view('user.dashboard', compact('user', 'categories'));
 
 
-        if ($request->has('category_id')){
-            $product = Product::where('category_id', $request->category_id)->get();
-        } else {
-            $product = Product::all();
-        }
+        // if ($request->has('category_id')){
+        //     $product = Product::where('category_id', $request->category_id)->get();
+        // } else {
+        //     $product = Product::all();
+        // }
 
-        return Inertia::render('Dashboard/Dashboard', [
-            'user' => $user,
-            'categories' => $category,
-            'products' => $product,
-        ]);
+        // return Inertia::render('Dashboard/Dashboard', [
+        //     'user' => $user,
+        //     'categories' => $categories,
+        //     'products' => $product,
+        // ]);
     }
 
     public function becomeSellerView()
     {
         return view('user.become_seller');
+
+
+    //   $user = Auth::user();
+
+
+
+    //     // Ensure user is a seller
+    //     if (!$user->isSeller()) {
+    //         abort(403, 'Unauthorized');
+    //     }
+
+    //     // Get products sold by this seller (via shop)
+    //     $products = Product::where('seller_id', $user->id)->pluck('id');
+
+    //     // Get all order items that include the seller's products
+    //     $orderItems = OrderItem::whereIn('product_id', $products)
+    //         ->with(['order', 'product'])
+    //         ->get();
+
+    //     // Extract unique orders
+    //     $orders = $orderItems->pluck('order')->unique('id')->values();
+
+    //     // Pass data to Inertia
+    //     return Inertia::render('Seller/Seller', [
+    //         'user' => $user,
+    //         'orders' => $orders,
+    //         'products' => $products,
+    //     ]);
     }
 
     public function becomeSeller(Request $request)
@@ -143,7 +176,8 @@ class UserController extends Controller
             'role' => 'seller',
         ]);
 
-        return redirect()->route('shop.create')->with('success', 'You are now a seller.');
+        // return redirect()->route('shop.create')->with('success', 'You are now a seller.');
+        return redirect()->route('user.become_seller');
     }
 
 
@@ -154,32 +188,32 @@ class UserController extends Controller
     }
 
 
-    // --- React ---
+    // --- React Test ---
     public function test(){
-        $users = User::all();
-        $products = Product::all();
-        // $carts = Cart::all();
-        // $cartItems = CartItem::all();
+        $carts = Cart::all();
+        $cartItems = CartItem::all();
         $categories = Category::all();
-        // $orders = Order::all();
-        // $OrderItems = OrderItem::all();
-        // $payments = Payment::all();
+        $orders = Order::all();
+        $orderItems = OrderItem::all();
+        $payments = Payment::all();
+        $products = Product::all();
         $reviews = Review::all();
-        // $shippingAddress = ShippingAddress::all();
+        $shippings = Shipping::all();
         $shops = Shop::all();
+        $users = User::all();
 
-        return inertia::render('ReactTest/ReactTest',[
-            'users' => $users,
-            'products' => $products,
-            // 'carts' => $carts,
-            // 'cartItem' => $cartItems,
+        return Inertia::render('ReactTest/ReactTest', [
+            'carts' => $carts,
             'categories' => $categories,
-            // 'order' => $orders,
-            // 'OrderItems' => $OrderItems,
-            // 'payments' => $payments,
+            'cartItems' => $cartItems,
+            'orders' => $orders,
+            'orderItems' => $orderItems,
+            'payments' => $payments,
+            'products' => $products,
             'reviews' => $reviews,
-            // 'shippinAddress' => $shippingAddress,
+            'shippings' => $shippings,
             'shops' => $shops,
+            'users' => $users,
         ]);
     }
 }
