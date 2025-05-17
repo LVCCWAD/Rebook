@@ -1,6 +1,11 @@
 import React from "react";
 
-export default function Dashboard(){
+export default function Dashboard({ setCurrentComponent }){
+
+    const handleClick = (target) => {
+        setCurrentComponent(target); // Calls parent directly
+    }
+    
     return(
         <>
             {/* --- DASHBOARD --- */}
@@ -29,7 +34,11 @@ export default function Dashboard(){
                 {/* --- CONTAINER: ORDER DETAIL ---*/}
                 <div className="bg-white p-6 rounded shadow-md">
                     <h2 className="text-lg font-semibold mb-2">Order Details</h2>
-                    <a href="#" className="text-blue-600 font-medium">Check</a>
+
+
+                    <button onClick={() => handleClick('order')} className="text-blue-600 font-medium">Check</button>
+
+
                     <p className="text-sm text-gray-600">Specifies items, stock, and prices</p>
                 </div>
 
@@ -58,7 +67,11 @@ export default function Dashboard(){
                 {/* --- CONTAINER: MY PRODUCTS ---*/}
                 <div className="bg-white p-6 rounded shadow-md">
                     <h2 className="text-lg font-semibold mb-2">My Products</h2>
-                    <a href="#" className="text-blue-600 font-medium">Add New Product</a>
+
+                    <button onClick={() => handleClick('product')} className="text-blue-600 font-medium">
+                        Add New Product
+                    </button>
+
                     <p className="text-sm text-gray-600">Quickly stock up on school essentials.</p>
                 </div>
             </div>

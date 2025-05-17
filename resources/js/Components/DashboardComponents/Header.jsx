@@ -42,7 +42,12 @@ export default function Header(){
                         </div>
                         {/* --- ICONS --- */}
                         <span className="flex gap-x-8 mx-[3%]">
-                            {/* --- User Icon --- */}
+                            {/* PROFILE ICON */}
+                            <Link
+                                href={"/"}
+                            >
+
+                            </Link>
                             <div className="text-red-800">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <circle cx="12" cy="8" r="4" strokeWidth="2" />

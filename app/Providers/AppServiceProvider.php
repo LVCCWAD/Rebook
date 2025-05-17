@@ -30,11 +30,5 @@ class AppServiceProvider extends ServiceProvider
         //policies for products
         Gate::policy(ProductPolicy::class, Product::class);
 
-        
-        // react route test
-
-        // Register the new admin route file
-        Route::middleware('web') // or 'api' depending on the use case
-            ->group(base_path('routes/reactRoute.php'));
     }
 }
