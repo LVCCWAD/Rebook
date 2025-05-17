@@ -9,6 +9,7 @@
 <body>
     <form action="{{ route('user.become_seller.post') }}" method="POST">
         @csrf
+        @method('PUT')
         <input type="hidden" name="role" value="seller">
 
         <div class="mb-3">
@@ -18,6 +19,9 @@
         <button type="submit" class="btn btn-success">
             Confirm Become Seller
         </button>
+    </form>
+    <form action="{{route('user.dashboard')}}">
+        <button type="submit">Cancel</button>
     </form>
 </body>
 </html>

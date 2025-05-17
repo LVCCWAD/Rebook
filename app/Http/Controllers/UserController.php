@@ -120,6 +120,12 @@ Log::info('show request ---------->', $request->all());
 
         return view('user.dashboard', compact('user', 'categories'));
 
+        $unreadNotifications = $user->unreadNotifications;
+        $unreadNotifications->markAsRead();
+
+        $notifications = $user->notifications()->latest()->take(10)->get();
+
+        return view('user.dashboard', compact('user', 'categories', 'notifications', 'unreadNotifications'));
 
         // if ($request->has('category_id')){
         //     $product = Product::where('category_id', $request->category_id)->get();
@@ -172,9 +178,7 @@ Log::info('show request ---------->', $request->all());
 
         $user = Auth::user();
 
-        $user->update([
-            'role' => 'seller',
-        ]);
+        User::where('id', $user->id)->update(['role' => 'seller']);
 
         // return redirect()->route('shop.create')->with('success', 'You are now a seller.');
         return redirect()->route('user.become_seller');
