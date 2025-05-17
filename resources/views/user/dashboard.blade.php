@@ -36,7 +36,7 @@
                         <br>
                         <small>
                             Order ID: {{ $notification->data['order_id'] }} -
-                            Amount: ₱{{ number_format($notification->data['amount'], 2) }}
+                            Amount: ₱{{ number_format($notification->data['total'] ?? 0,2) }}
                         </small>
                         <br>
                         <small><em>{{ $notification->created_at->diffForHumans() }}</em></small>
@@ -85,7 +85,7 @@
     <ul>
         @foreach ($categories as $category)
             <li>
-                <p>{{ $category->name }}</p>
+                <a href="{{route('category.show', $category->id)}}"><p>{{ $category->name }}</p></a>
             </li>
         @endforeach
     </ul>
