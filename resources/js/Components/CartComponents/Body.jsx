@@ -1,269 +1,367 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useForm, router } from "@inertiajs/react";
 
-export default function Body(){
-        // extract data to backend
 
-        // cart table
-        const [cartItems, setCartItems] = useState([
-            {
-              id: 1,
-              seller: "sharke Mother & Baby",
-              name: "Mixed Nuts 7In1 Trail Daily Nuts Dried Fruits and Nuts Ready to Eat Nuts Healthy Snack Slimming",
-              price: 137.33,
-              quantity: 1,
-              isFlashSale: true,
-              weight: "250g",
-              promo: "Buy 2 Get additional 1% off",
-              image: "/api/placeholder/80/80",
-              selected: false
-            },
-            {
-              id: 2,
-              seller: "vivibag shop",
-              name: "VIVI#030 KOREAN FASHION SHOULDER BAG FOR WOMEN",
-              price: 110.01,
-              quantity: 1,
-              color: "Blue",
-              image: "/api/placeholder/80/80",
-              selected: false
-            }
-          ]);
+function Body({ user, cart, cart_Items }) {
+    console.log('=-=-=-==-=-=-=-=-=-=-==-=-===-=-=-=--')
+    console.log(cart_Items)
 
-          // get all the user cart product
-          const [allSelected, setAllSelected] = useState(false);
+const [cartItems, setCartItems] = useState([]);
+const updateForm = useForm({
+  id: null,
+  quantity: 0
+});
 
-          // how this works?
-          const toggleSelectAll = () => {
-            const newState = !allSelected;
-            setAllSelected(newState);
-            setCartItems(cartItems.map(item => ({...item, selected: newState})));
-          };
+// Load cart items from props when component mounts
+useEffect(() => {
+    if (cartItems.length === 0 && cart_Items?.length > 0) {
+        const formattedItems = cart_Items.map(item => ({
+            ...item,
+            selected: false
+        }));
+        setCartItems(formattedItems);
+    }
+}, [cart_Items]); // Only depend on cart_Items prop, not updateForm.data
 
-          // how?
-          const toggleSelectItem = (id) => {
-            const updatedItems = cartItems.map(item =>
-              item.id === id ? {...item, selected: !item.selected} : item
-            );
-            setCartItems(updatedItems);
+// WORKING: delete form
+const deleteForm = useForm({});
 
-            // Update all selected state
-            setAllSelected(updatedItems.every(item => item.selected));
-          };
+// WORKING: Form for clearing all selected items
+const clearForm = useForm({});
 
-          // quantity increase primary key
-          const increaseQuantity = (id) => {
-            setCartItems(cartItems.map(item =>
-              item.id === id ? {...item, quantity: item.quantity + 1} : item
-            ));
-          };
+// WORKING: get all the user cart product
+const [allSelected, setAllSelected] = useState(false);
 
-          // quantity increase primary key
-          const decreaseQuantity = (id) => {
-            setCartItems(cartItems.map(item =>
-              item.id === id && item.quantity > 1 ? {...item, quantity: item.quantity - 1} : item
-            ));
-          };
+// Toggle select all items
+const toggleSelectAll = () => {
+  const newState = !allSelected;
+  setAllSelected(newState);
+  setCartItems(cartItems.map(item => ({...item, selected: newState})));
+};
 
-        // selected item into jsx view
-          const selectedItemCount = cartItems.filter(item => item.selected).length;
+// Toggle selection for a single item
+const toggleSelectItem = (id) => {
+  const updatedItems = cartItems.map(item =>
+    item.id === id ? {...item, selected: !item.selected} : item
+  );
+  setCartItems(updatedItems);
 
-        // calculate all the product
-          const calculateSubtotal = () => {
-            return cartItems
-              .filter(item => item.selected)
-              .reduce((total, item) => total + (item.price * item.quantity), 0);
-          };
+  // Update all selected state
+  setAllSelected(updatedItems.every(item => item.selected));
+};
 
-        // return jsx view
-          const subtotal = calculateSubtotal();
+// Increase quantity for an item
+const increaseQuantity = (id) => {
+  console.log('Increasing quantity for item:', id);
 
-    return(
-        <>
-            {/* --- CART --- */}
-            <div className="mx-[10%]">
+  const item = cartItems.find(i => i.id === id);
+  if (!item || !item.pivot || typeof item.pivot.quantity !== 'number') {
+    console.warn('❌ Item not found or invalid pivot structure:', item);
+    return;
+  }
 
-            <div className="w-full p-4 mt-20">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    {/* Left Side - Cart Items */}
-                    <div className="lg:col-span-2 space-y-4">
-                    {/* Select All Header */}
-                    <div className="bg-white p-4 flex items-center justify-between rounded-md shadow-sm">
-                        <div className="flex items-center space-x-2">
-                        <input
-                            type="checkbox"
-                            checked={allSelected}
-                            onChange={toggleSelectAll}
-                            className="w-4 h-4 accent-orange-500"
-                        />
-                        <span className="text-sm text-gray-700">SELECT ALL ({cartItems.length} ITEM{cartItems.length !== 1 ? 'S' : ''})</span>
-                        </div>
-                        <button className="flex items-center text-gray-500 text-sm">
-                        {/* <Trash2 size={16} className="mr-1" /> */}
-                        DELETE
-                        </button>
-                    </div>
+  const currentQty = item.pivot.quantity;
+  console.log('Current quantity:', currentQty);
 
-                    {/* Cart Items */}
-                    {cartItems.map(item => (
-                        <div key={item.id} className="bg-white rounded-md shadow-sm overflow-hidden">
-                        {/* Seller Info */}
-                        <div className="flex items-center p-4 border-b border-gray-100">
-                            <input
-                            type="checkbox"
-                            checked={item.selected}
-                            onChange={() => toggleSelectItem(item.id)}
-                            className="w-4 h-4 accent-orange-500 mr-2"
-                            />
-                            <div className="flex items-center text-sm font-medium">
-                            {item.seller === "sharke Mother & Baby" && (
-                                <span className="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-1">M</span>
-                            )}
-                            <span>{item.seller}</span>
-                            {/* <ChevronRight size={16} className="ml-1 text-gray-400" /> */}
-                            </div>
-                        </div>
+  // Check if we have enough stock to increase quantity
+  if (currentQty >= item.stock) {
+    console.warn(`❌ Cannot increase quantity beyond available stock (${item.stock})`);
+    // Optionally show an alert or notification to the user
+    alert(`Sorry, only ${item.stock} units available in stock.`);
+    return;
+  }
 
-                        {/* Product Info */}
-                        <div className="p-4 flex">
-                            <div className="w-20 h-20 flex-shrink-0">
-                            <img
-                                src={item.image}
-                                alt={item.name}
-                                className="w-full h-full object-cover"
-                            />
-                            </div>
+  const newQty = currentQty + 1;
+  console.log('New quantity:', newQty);
 
-                            <div className="ml-4 flex-grow">
-                            <div className="flex justify-between">
-                                <div className="space-y-2">
-                                {/* Product Tags and Name */}
-                                <div>
-                                    {item.isFlashSale && (
-                                    <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded mr-1">5.5</span>
-                                    )}
-                                    <span className="text-sm">{item.name}</span>
-                                </div>
-
-                                {/* Product Details */}
-                                <div className="text-xs text-gray-500 space-y-1">
-                                    {item.color && <div>{item.color}</div>}
-                                    {item.weight && <div>{item.weight}</div>}
-                                    {item.isFlashSale && (
-                                    <div className="flex items-center">
-                                        <span className="bg-orange-100  px-2 rounded text-xs">Flash Sale</span>
-                                        <span className="ml-1 bg-gray-100 text-gray-600 px-2 rounded text-xs">₱ Flash Sale ₱ 250g</span>
-                                    </div>
-                                    )}
-                                    {item.promo && (
-                                    <div className="bg-blue-100 text-blue-600 px-2 rounded text-xs inline-block">
-                                        {item.promo}
-                                    </div>
-                                    )}
-                                </div>
-                                </div>
-
-                                {/* Price and Actions */}
-                                <div className="text-right space-y-2">
-                                <div className="text-red-700 font-medium">₱{item.price.toFixed(2)}</div>
-                                <div className="flex items-center justify-end space-x-2">
-                                    <button>
-                                    {/* <Heart size={16} className="text-gray-400" /> */}
-                                    </button>
-                                    <button>
-                                    {/* <Trash2 size={16} className="text-gray-400" /> */}
-                                    </button>
-                                </div>
-                                </div>
-                            </div>
-
-                            {/* Quantity */}
-                            <div className="flex justify-end mt-2">
-                                <div className="flex items-center border border-gray-300 rounded-sm">
-                                <button
-                                    onClick={() => decreaseQuantity(item.id)}
-                                    className="px-2 py-1 text-gray-500 hover:bg-gray-100"
-                                >
-                                    {/* <Minus size={14} /> */}
-                                </button>
-                                <input
-                                    type="text"
-                                    value={item.quantity}
-                                    readOnly
-                                    className="w-10 text-center border-l border-r border-gray-300"
-                                />
-                                <button
-                                    onClick={() => increaseQuantity(item.id)}
-                                    className="px-2 py-1 text-gray-500 hover:bg-gray-100"
-                                >
-                                    {/* <Plus size={14} /> */}
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                    ))}
-                    </div>
-
-                    {/* Right Side - Order Summary */}
-                    <div className="space-y-4">
-                    {/* Location */}
-                    <div className="bg-white p-4 rounded-md shadow-sm">
-                        <h3 className="text-lg font-medium text-gray-800 mb-3">Location</h3>
-                        <button className="flex items-center text-blue-600 hover:text-blue-700">
-                        {/* <MapPin size={18} className="mr-2" /> */}
-                        <span>Add Shipping Address</span>
-                        </button>
-                    </div>
-
-                    {/* Order Summary */}
-                    <div className="bg-white p-4 rounded-md shadow-sm">
-                        <h3 className="text-lg font-medium text-gray-800 mb-3">Order Summary</h3>
-
-                        <div className="space-y-2 pb-3">
-                        <div className="flex justify-between">
-                            <span className="text-gray-600">Subtotal ({selectedItemCount} items)</span>
-                            <span className="font-medium">₱{subtotal.toFixed(2)}</span>
-                        </div>
-
-                        <div className="flex justify-between">
-                            <span className="text-gray-600">Shipping Fee</span>
-                            <span className="font-medium">₱0.00</span>
-                        </div>
-                        </div>
-
-                        {/* Voucher Input */}
-                        <div className="flex mt-4 mb-4">
-                        <input
-                            type="text"
-                            placeholder="Enter Voucher Code"
-                            className="flex-grow border border-gray-300 rounded-l px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                        />
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600 uppercase text-sm font-medium">
-                            Apply
-                        </button>
-                        </div>
-
-                        {/* Total */}
-                        <div className="border-t pt-3">
-                        <div className="flex justify-between">
-                            <span className="text-gray-700 font-medium">Subtotal</span>
-                            <div className="text-right">
-                            <div className="text-red-700 font-bold">₱{subtotal.toFixed(2)}</div>
-                            <div className="text-xs text-gray-500">VAT included, where applicable</div>
-                            </div>
-                        </div>
-                        </div>
-
-                        {/* Checkout Button */}
-                        <button className="w-full bg-red-700 text-white py-3 rounded mt-4 font-medium hover:bg-red-400 transition">
-                        PROCEED TO CHECKOUT({selectedItemCount})
-                        </button>
-                    </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </>
+  // First update local state for immediate UI feedback
+  setCartItems(prev =>
+    prev.map(i =>
+      i.id === id
+        ? { ...i, pivot: { ...i.pivot, quantity: newQty } }
+        : i
     )
+  );
+
+  // Then update on server
+  updateQuantity(id, newQty);
+};
+
+// Decrease quantity for an item
+const decreaseQuantity = (id) => {
+  const item = cartItems.find(i => i.id === id);
+  if (!item || !item.pivot || typeof item.pivot.quantity !== 'number') {
+    console.warn('❌ Item not found or invalid pivot structure:', item);
+    return;
+  }
+
+  const currentQty = item.pivot.quantity;
+  const newQty = Math.max(1, currentQty - 1); // Ensure quantity doesn't go below 1
+
+  // First update local state for immediate UI feedback
+  setCartItems(prev =>
+    prev.map(i =>
+      i.id === id
+        ? { ...i, pivot: { ...i.pivot, quantity: newQty } }
+        : i
+    )
+  );
+
+  // Then update on server
+  updateQuantity(id, newQty);
+};
+
+// Core function to update quantity on server
+const updateQuantity = (id, quantity) => {
+  console.log(`🟡 Updating item ${id} to quantity: ${quantity}`);
+
+  // Store original state for rollback
+  const originalCartItems = [...cartItems];
+
+  // Using direct key-value pairs for Inertia form data
+  updateForm.data.id = id;
+  updateForm.data.quantity = quantity;
+
+  // Log form data after direct assignment
+  console.log("✅ Form data to be sent:", updateForm.data);
+
+  // Send update to server
+  updateForm.put(`/cart/${id}/update`, {
+    preserveScroll: true,
+    onSuccess: () => {
+      console.log(`✅ Server confirmed quantity ${quantity} for item ${id}`);
+      setTimeout(() => {
+        router.reload({ only: ['Carts'] });
+      }, 300);
+    },
+    onError: (errors) => {
+      console.warn(`❌ Failed to update item ${id}:`, errors);
+      // Rollback to previous state on error
+      setCartItems(originalCartItems);
+    }
+  });
+};
+
+// Handle item deletion
+const deleteSelectedItems = () => {
+  // Get all selected item IDs
+  const selectedIds = cartItems
+    .filter(item => item.selected)
+    .map(item => item.id);
+
+  if (selectedIds.length > 0) {
+    clearForm.delete('/cart/clear', {
+      preserveScroll: true,
+      onSuccess: () => {
+        setCartItems(cartItems.filter(item => !item.selected));
+        setAllSelected(false);
+      }
+    });
+  }
+};
+
+// Delete a single item
+const deleteItem = (id) => {
+  deleteForm.delete(`/cart/${id}/remove`, {
+    preserveScroll: true,
+    onSuccess: () => {
+      setCartItems(cartItems.filter(item => item.id !== id));
+    }
+  });
+};
+
+// Handle quantity input changes
+const handleQuantityChange = (id, value) => {
+  const cleanValue = value.replace(/[^\d]/g, ""); // Remove non-digits
+  const numValue = parseInt(cleanValue, 10) || 1;
+
+  const item = cartItems.find(i => i.id === id);
+  if (!item) return;
+
+  // Cap the quantity at the available stock
+  const quantity = Math.min(Math.max(1, numValue), item.stock);
+
+  // If user tried to enter a value higher than stock, warn them
+  if (numValue > item.stock) {
+    alert(`Sorry, only ${item.stock} units available in stock.`);
+  }
+
+  setCartItems(prevItems =>
+    prevItems.map(item =>
+      item.id === id
+        ? {
+            ...item,
+            pivot: {
+              ...item.pivot,
+              quantity,
+            },
+          }
+        : item
+    )
+  );
+};
+
+// Handle input blur to update server
+const handleQuantityBlur = (id) => {
+  const item = cartItems.find(item => item.id === id);
+  if (item) {
+    updateQuantity(id, item.pivot.quantity);
+  }
+};
+
+// Calculate totals
+const selectedItemCount = cartItems.filter(item => item.selected).length;
+
+const calculateSubtotal = () => {
+  return cartItems
+    .filter(item => item.selected)
+    .reduce((total, item) => total + (item.price * item.pivot.quantity), 0);
+};
+
+const subtotal = calculateSubtotal();
+  return(
+    <>
+      <div className="max-w-4xl mx-auto p-4">
+        {/* Header with selection controls */}
+        <div className="flex justify-between items-center mb-4 p-3 bg-white border border-gray-200 rounded">
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              checked={allSelected}
+              onChange={toggleSelectAll}
+              className="w-4 h-4 mr-2"
+            />
+            <span>Select All ({cartItems.length})</span>
+          </div>
+          <button
+            onClick={deleteSelectedItems}
+            disabled={!selectedItemCount}
+            className="text-red-600 hover:text-red-800 disabled:text-gray-400"
+          >
+            Delete
+          </button>
+        </div>
+
+        {/* Cart Items */}
+        {cartItems.length > 0 ? (
+          <div className="space-y-4">
+
+            {cartItems.map(item => (
+              <div key={item.id} className="p-4 bg-white border border-gray-200 rounded">
+                {/* Seller info */}
+                <div className="flex items-center pb-2 border-b border-gray-100">
+                  <input
+                    type="checkbox"
+                    checked={item.selected}
+                    onChange={() => toggleSelectItem(item.id)}
+                    className="w-4 h-4 mr-2"
+                  />
+                  <span className="text-sm">{item.seller}</span>
+                </div>
+
+                {/* Product details */}
+                <div className="flex mt-2">
+                  <div className="w-16 h-16">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="ml-3 flex-grow">
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="text-sm">{item.name}</p>
+                        {item.weight && <p className="text-xs text-gray-500">{item.weight}</p>}
+                        {item.color && <p className="text-xs text-gray-500">{item.color}</p>}
+                      </div>
+                      <div className="text-right">
+                        <p className="text-red-600 font-medium">₱{item.price.toFixed(2)}</p>
+
+                        <button
+                          onClick={() => deleteItem(item.id)}
+                          className="text-sm text-gray-500 hover:text-red-600"
+                        >
+                          Delete
+                        </button>
+
+                      </div>
+                    </div>
+
+                    {/* Quantity controls */}
+                    <div className="flex justify-end mt-2">
+                      <div className="flex items-center border border-gray-300 rounded">
+                        <button
+                          onClick={() => decreaseQuantity(item.id, item.pivot.quantity)}
+                          disabled={item.quantity <= 1}
+                          className="px-2 py-1 text-gray-600 hover:bg-gray-100 disabled:text-gray-300"
+                        >
+                          -
+                        </button>
+
+                        <input
+                            type="number"
+                            min="1"
+                            value={item.pivot.quantity}
+                            onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                            onBlur={() => handleQuantityBlur(item.id)}
+                        />
+
+                        <button
+                          onClick={() => increaseQuantity(item.id, item.pivot.quantity)}
+                          disabled={item.quantity <= 1}
+                          className="px-2 py-1 text-gray-600 hover:bg-gray-100 disabled:text-gray-300"
+                        >
+                          +
+                        </button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-8 text-center bg-white border border-gray-200 rounded">
+            <p className="text-gray-500">Your cart is empty</p>
+          </div>
+        )}
+
+        {/* Order Summary */}
+        <div className="mt-6 p-4 bg-white border border-gray-200 rounded">
+          <h3 className="font-medium mb-3">Order Summary</h3>
+
+          <div className="flex justify-between mb-2">
+            <span>Subtotal ({selectedItemCount} items)</span>
+            <span>₱{subtotal.toFixed(2)}</span>
+          </div>
+
+          <div className="flex justify-between mb-4">
+            <span>Shipping Fee</span>
+            <span>₱0.00</span>
+          </div>
+
+          <div className="border-t pt-3 flex justify-between">
+            <span className="font-medium">Total</span>
+            <span className="font-bold text-red-600">₱{subtotal.toFixed(2)}</span>
+          </div>
+
+          <button
+            disabled={selectedItemCount === 0}
+            className={`w-full mt-4 py-2 rounded font-medium ${
+              selectedItemCount > 0
+                ? 'bg-red-600 text-white hover:bg-red-700'
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            }`}
+          >
+            Checkout ({selectedItemCount})
+          </button>
+        </div>
+      </div>
+    </>
+  )
 }
+
+export default Body

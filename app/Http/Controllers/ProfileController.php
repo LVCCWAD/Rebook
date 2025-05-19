@@ -7,19 +7,32 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\OrderPlacedNotification;
+use inertia\Inertia;
 
 class ProfileController extends Controller
 {
     public function showProfile()
     {
+        // $user = Auth::user();
+        // //this will also fetch user's orders
+        // $orders = Order::where('user_id', $user->id)
+        // ->with('payment', 'shipping', 'orderItems.product')->get();
+
+        // $user->load('shippings');
+
+        // // return view('user.profile.show', compact('user', 'orders'));
+
         $user = Auth::user();
-        //this will also fetch user's orders
-        $orders = Order::where('user_id', $user->id)
+        $orders = Order::where('user_id',$user->id)
         ->with('payment', 'shipping', 'orderItems.product')->get();
 
-        $user->load('shippings');
+        // $user->load();
 
-        return view('user.profile.show', compact('user', 'orders'));
+        return inertia::render('Profile/Profile', [
+            'user' => $user,
+            'orders' => $orders,
+        ]);
+
     }
 
     public function updateProfile(Request $request)

@@ -3,9 +3,10 @@ import logo from "../../../../public/Assets/logo.png";
 import { Link } from "@inertiajs/react";
 
 
-export default function Header(){
+export default function Header({user}){
+    // console.log(user)
     // Validate component
-    useEffect(() => {console.log("Rendering: Dashboard.jsx");}, []);
+    // useEffect(() => {console.log("Rendering: Dashboard.jsx");}, []);
 
     // Link slider component
     const [activeComponent, setActiveComponent] = useState('SaleItems');
@@ -44,22 +45,25 @@ export default function Header(){
                         <span className="flex gap-x-8 mx-[3%]">
                             {/* PROFILE ICON */}
                             <Link
-                                href={"/"}
+                                href={"/profile"}
                             >
-
+                                <div className="text-red-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <circle cx="12" cy="8" r="4" strokeWidth="2" />
+                                        <path d="M6 20c0-4 3-7 6-7s6 3 6 7" strokeWidth="2" />
+                                    </svg>
+                                </div>
                             </Link>
-                            <div className="text-red-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <circle cx="12" cy="8" r="4" strokeWidth="2" />
-                                    <path d="M6 20c0-4 3-7 6-7s6 3 6 7" strokeWidth="2" />
-                                </svg>
-                            </div>
 
                             {/* --- Cart Icon --- */}
                             <div className="text-red-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H3m4 8v6a2 2 0 002 2h8a2 2 0 002-2v-6M9 17h6" />
-                                </svg>
+                                <Link
+                                    href={`/cart/${user}`}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-9 w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5H3m4 8v6a2 2 0 002 2h8a2 2 0 002-2v-6M9 17h6" />
+                                    </svg>
+                                </Link>
                             </div>
                         </span>
                     </div>

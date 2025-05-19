@@ -7,11 +7,23 @@ export default function Seller(){
 
     // usepage to retrieve data
     const [currentComponent, setCurrentComponent] = useState('dashboard')
-    const { user, orders, products } = usePage().props
+    const {
+        user,
+        seller_id,
+        shop,
+        categories,
+        orderItems,
+        products,
+     } = usePage().props
 
-    console.log('user:', user)
-    console.log('orders:', orders)
-    console.log('products:', products)
+     console.log('user: ', user);
+     console.log('seller_id: ', seller_id);
+     console.log('shop: ', shop);
+     console.log('categories: ', categories);
+     console.log('orderItems: ', orderItems);
+     console.log('product: ', products);
+
+
 
 
     const handleComponentChange = (component) => {
@@ -24,15 +36,24 @@ export default function Seller(){
     return(
         <>
             {/* --- HEADER --- */}
-            <Header user={user} currentComponent={currentComponent} onChangeComponent={handleComponentChange} />
+            <Header
+                currentComponent={currentComponent}
+                onChangeComponent={handleComponentChange}
+                user={user}
+            />
 
             {/* --- BODY --- */}
             <Body
                 component={currentComponent}
-                user={user}
                 onChangeComponent={handleComponentChange}
-                orders={orders}
-                products={products}/>
+                user={user}
+                seller_id={seller_id}
+                shop={shop}
+                categories={categories}
+                orderItems={orderItems}
+                products={products}
+
+            />
         </>
     )
 }

@@ -18,7 +18,7 @@ export default function Dashboard({}){
             {/* --- DASHBOARD ---*/}
 
             {/* --- Header --- */}
-            <Header />
+            <Header user={user}/>
 
             {/* --- Navigation --- */}
             <Navigation />

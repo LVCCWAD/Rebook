@@ -14,8 +14,14 @@ export default defineConfig({
     ],
 
     server: {
-        // host: 'localhost',
-        host: '127.0.0.1',
+        host: 'laravel.local',
         port: 5173,
+        strictPort: true,
+        cors: true,
+        hmr: {
+                host: 'laravel.local',
+                protocol: 'ws',
+                port: 5173,
+            },
     },
 });
