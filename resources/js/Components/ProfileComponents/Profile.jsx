@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
-export default function Profile(){
+export default function Profile({user}){
 
     const [formData, setFormData] = useState({
-        username: 'jonjonski14',
-        name: '',
-        email: 'al************@gmail.com',
+        name: user.name,
+        email: user.email,
         phone: '**********85',
         gender: '',
         birthDate: {
@@ -52,12 +51,6 @@ export default function Profile(){
 
                 <div className="border w-full mx-auto p-6 bg-white shadow-sm">
                     <div className="space-y-4">
-                        <div className="flex items-center">
-                        <label className="w-32 text-right text-gray-500 text-sm pr-4">Username</label>
-                        <div className="flex-1">
-                            <p className="text-gray-700">{formData.username}</p>
-                        </div>
-                        </div>
 
                         <div className="flex items-center">
                         <label className="w-32 text-right text-gray-500 text-sm pr-4">Name</label>

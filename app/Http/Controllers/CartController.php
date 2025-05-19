@@ -7,16 +7,34 @@ use App\Models\User;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use inertia\Inertia;
 
 class CartController extends Controller
 {
 
     public function viewCart($id)
     {
-        $cart = Cart::where('user_id', $id)->with('products')->first();
-        $user = User::findOrFail($id);
+        // $user = User::findOrFail($id);
+        // $cart = Cart::where('user_id', $id)->with('products')->first();
+        // return view('user.cart.cart_view', compact('cart', 'user'));
 
-        return view('user.cart.cart_view', compact('cart', 'user'));
+        // react
+
+        $user = Auth::user();
+        $cart = Cart::where('user_id', $user->id)->first();
+
+        // If cart doesn't exist, optionally create one
+        if (!$cart) {
+            $cart = Cart::create(['user_id' => $user->id]);
+        }
+
+       $cartItems = $cart->products()->withPivot('quantity')->get();
+
+        return Inertia::render('Cart/Cart', [
+            'user' => $user,
+            'cart' => $cart,
+            'cartItems' => $cartItems,
+        ]);
     }
 
     public function addToCart(Request $request, $id)

@@ -7,7 +7,7 @@ export default function Navigation(){
     return(
         <>
             {/* --- NAVIGATION --- */}
-            <div className="flex flex-row justify-center flex-wrap gap-x-[3%] text-red-800 font-medium text-[18px]">
+            <div className="flex flex-row justify-center flex-wrap gap-x-[3%] text-red-800 font-medium text-[18px] shadow-md pb-4">
 
                 {/* --- Sale Items Link --- */}
                 <button

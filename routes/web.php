@@ -17,6 +17,7 @@ use App\Http\Controllers\ShippingController;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
+use inertia\Inertia;
 
 
 // Route::get('/', function () {
@@ -44,19 +45,19 @@ Route::middleware(['auth'])->group(function () {
     //category to show products
     Route::get('/categories/{id}', [CategoryController::class, 'categoryShow'])->name('category.show');
 
-
-
-
     //product show and review
     Route::get('/product/{id}', [ReviewController::class, 'viewOneProduct'])->name('product.show');
+
 
     //product review
     Route::post('/product/{id}/review', [ReviewController::class, 'storeReview'])->name('product.review.store');
     Route::post('/product/{id}/review/edit', [ReviewController::class, 'editReview'])->name('product.review.edit');
 
+
     //cart management
-    Route::post('/product/{id}/add-to-cart', [CartController::class, 'addToCart'])->name('product.add.to.cart');
     Route::get('/cart/{id}', [CartController::class, 'viewCart'])->name('cart.view');
+    Route::post('/product/{id}/add-to-cart', [CartController::class, 'addToCart'])->name('product.add.to.cart');
+
     Route::put('/cart/{product}/update', [CartController::class, 'updateCart'])->name('cart.update');
     Route::delete('/cart/{id}/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
@@ -75,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/shipping/create', [ShippingController::class, 'shippingForm'])->name('shipping.form');
     Route::post('/shipping/post', [ShippingController::class, 'storeShipping'])->name('shipping.store');
 
+
     //user profile
     Route::get('/profile', [ProfileController::class, 'showProfile'])->name('user.profile');
     Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('user.profile.update');
@@ -87,7 +89,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'seller'])->group(function () {
     //initial stage on creating a shop
     Route::get('/create-shop', [ShopController::class, 'shopCreate'])->name('shop.create');
-    Route::post('/create-shop', [ShopController::class, 'shopStore'])->name('shop.store');
+    Route::post( '/create-shop', [ShopController::class, 'shopStore'])->name('shop.store');
 
     //shop overview of the seller
     Route::get('/shop/dashboard/', [ShopController::class, 'shopDashboard'])->name('shop.dashboard');
@@ -114,3 +116,7 @@ Route::get('/notifications', [App\Http\Controllers\NotificationController::class
 
 // react
 Route::get('/', [UserController::class, 'test']);
+Route::get('/cart-react', function() {
+    return inertia::render('Cart/Cart');
+});
+Route::get('/images/{path}', [ReviewController::class, 'image']);

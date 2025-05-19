@@ -4,28 +4,18 @@ import Navigation from "../../Components/DashboardComponents/Navigation";
 import Body from "../../Components/ProductComponents/Body";
 
 import { usePage } from "@inertiajs/react";
-
  function Product({}){
-    const { product } = usePage().props
-
-//    console.log('Passed to get operation message: ', request);
-    console.log('Product data: ', product);
-
-
+    const { product, reviews, user } = usePage().props
+    console.log('product image',product.image_url)
     return(
         <>
-            {/* --- PRODUCT PAGE --- */}
+            <Header />
+            <Navigation />
 
-                {/* --- HEADER --- */}
-                <Header />
-
-                {/* --- NAVIGATION --- */}
-                <Navigation />
-
-                {/* --- BODY --- */}
-                <Body product={product}/>
+            <div className="mx-[10%] mt-20">
+                <Body product={product} reviews={reviews} user={user}/>
+            </div>
         </>
     )
 }
-
 export default Product

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 
 import Profile from "./Profile";
 
-import user from "../../../../public/Assets/Profile/Menu/user.png"
+import userIcon from "../../../../public/Assets/Profile/Menu/user.png"
 import bell from "../../../../public/Assets/Profile/Menu/bell.png"
 import task from "../../../../public/Assets/Profile/Menu/task.png"
 
-export default function Body(){
+export default function Body({user}){
 
     // logic to change the body
 
@@ -59,7 +59,7 @@ export default function Body(){
                             className="border w-full flex flex-row justify-start items-center gap-x-4"
                         >
                             <img
-                                src={user}
+                                src={userIcon}
                                 alt=""
                                 className="h-5 w-5"
                             />
@@ -123,7 +123,7 @@ export default function Body(){
                 </div>
 
                 {/* --- RIGHT CONTAINER --- */}
-                <Profile />
+                <Profile user={user}/>
 
 
             </div>

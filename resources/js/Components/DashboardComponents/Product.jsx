@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
 import pen from "../../../../public/Assets/Dashboard/Product/pen.jpg"
 import iconCart from "../../../../public/Assets/Dashboard/Product/iconCart.png"
-import iconStar1 from "../../../../public/Assets/Dashboard/Product/iconStar1.png"
+import iconStar1 from "../../../../public/Assets/Dashboard/Product/iconStar1.png" 
 
 function Product({ title, products }){
     return(

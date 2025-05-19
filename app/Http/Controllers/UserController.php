@@ -26,8 +26,8 @@ class UserController extends Controller
 {
     public function registerForm()
     {
-        return view('user.register');
-        // return Inertia::render('Auth/Register');
+        // return view('user.register');
+        return Inertia::render('Auth/Register');
     }
 
     public function register(Request $request)
@@ -66,8 +66,8 @@ Log::info('show request ---------->', $request->all());
 
     public function loginForm()
     {
-        return view('user.login');
-        // return Inertia::render('Auth/Login');
+        // return view('user.login');
+        return Inertia::render('Auth/Login');
     }
 
     public function login(Request $request)
@@ -118,59 +118,65 @@ Log::info('show request ---------->', $request->all());
         $categories = Category::all();
         $product = Product::all();
 
-        return view('user.dashboard', compact('user', 'categories'));
+        // // return view('user.dashboard', compact('user', 'categories'));
 
-        $unreadNotifications = $user->unreadNotifications;
-        $unreadNotifications->markAsRead();
+        // $unreadNotifications = $user->unreadNotifications;
+        // $unreadNotifications->markAsRead();
 
-        $notifications = $user->notifications()->latest()->take(10)->get();
+        // $notifications = $user->notifications()->latest()->take(10)->get();
 
-        return view('user.dashboard', compact('user', 'categories', 'notifications', 'unreadNotifications'));
+        // return view('user.dashboard', compact('user', 'categories', 'notifications', 'unreadNotifications'));
 
-        // if ($request->has('category_id')){
-        //     $product = Product::where('category_id', $request->category_id)->get();
-        // } else {
-        //     $product = Product::all();
-        // }
 
-        // return Inertia::render('Dashboard/Dashboard', [
-        //     'user' => $user,
-        //     'categories' => $categories,
-        //     'products' => $product,
-        // ]);
+        // react
+        if ($request->has('category_id')){
+            $product = Product::where('category_id', $request->category_id)->get();
+        } else {
+            $product = Product::all();
+        }
+
+        return Inertia::render('Dashboard/Dashboard', [
+            'user' => $user,
+            'categories' => $categories,
+            'products' => $product,
+        ]);
     }
 
     public function becomeSellerView()
     {
-        return view('user.become_seller');
+        // return view('user.become_seller');
+
+        // react
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $products = Product::where('seller_id', $user->id)->get(); // full objects
+        $productIds = $products->pluck('id');
+
+        $orderItems = OrderItem::whereIn('product_id', $productIds)
+        ->with(['order', 'product'])
+        ->get();
+
+        $orders = $orderItems->pluck('order')->unique('id')->values();
+
+        $shop = $user->shop; // assumes a User hasOne Shop relationship
+        $categories = Category::all(); // if relevant to seller
+        $seller_id = $user->id;
 
 
-    //   $user = Auth::user();
+        return Inertia::render('Seller/Seller', [
+            'user' => $user,
+            'seller_id' => $seller_id,
+            'shop' => $shop,
+            'categories' => $categories,
+            'orderItems' => $orderItems,
+            'products' => $products,
+            'orders' => $orders,
+        ]);
 
-
-
-    //     // Ensure user is a seller
-    //     if (!$user->isSeller()) {
-    //         abort(403, 'Unauthorized');
-    //     }
-
-    //     // Get products sold by this seller (via shop)
-    //     $products = Product::where('seller_id', $user->id)->pluck('id');
-
-    //     // Get all order items that include the seller's products
-    //     $orderItems = OrderItem::whereIn('product_id', $products)
-    //         ->with(['order', 'product'])
-    //         ->get();
-
-    //     // Extract unique orders
-    //     $orders = $orderItems->pluck('order')->unique('id')->values();
-
-    //     // Pass data to Inertia
-    //     return Inertia::render('Seller/Seller', [
-    //         'user' => $user,
-    //         'orders' => $orders,
-    //         'products' => $products,
-    //     ]);
     }
 
     public function becomeSeller(Request $request)
@@ -181,7 +187,8 @@ Log::info('show request ---------->', $request->all());
         User::where('id', $user->id)->update(['role' => 'seller']);
 
         // return redirect()->route('shop.create')->with('success', 'You are now a seller.');
-        return redirect()->route('user.become_seller');
+
+        return back();
     }
 
 

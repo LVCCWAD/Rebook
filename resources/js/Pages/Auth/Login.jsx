@@ -3,68 +3,79 @@ import { Link, useForm, } from "@inertiajs/react";
 import logo from "../../../../public/Assets/logo.png";
 
 export default function Login(){
-    
-    useEffect(() => {console.log("Rendering: Login.jsx");}, []);
 
-    const [errors, setErrors] = useState({});
-    const { data, setData, post, processing } = useForm({
-        email: '',
-        password: '',
-    })
+useEffect(() => {
+  console.log("Rendering: Login.jsx");
+}, []);
 
+const [errors, setErrors] = useState({});
+const { data, setData, post, processing } = useForm({
+  email: '',
+  password: '',
+});
 
-    const validate = () => {
-        const newErrors = {};
+// Real-time validation (can be debounced for better performance)
+useEffect(() => {
+  if (data.email || data.password) {
+    validateField('email', data.email);
+    validateField('password', data.password);
+  }
+}, [data]);
 
-        if (!data.email.trim()) {
-            newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(data.email)) {
-            newErrors.email = 'Email is invalid';
-        }
+const validateField = (field, value) => {
+  let error = '';
 
-        if (!data.password.trim()) {
-            newErrors.password = 'Password is required';
-        } else if (data.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
-        }
-
-        setErrors(newErrors);
-
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleChange = (e) => {
-        console.log('--- Changes Found ---')
-
-        const { name, value } = e.target;
-
-        setData(name, value);
-
-        setErrors({ ...errors, [name]: '' });
-    };
-
-
-    const submit = (e) => {
-        console.log('--- Validating Form Data ---');
-        e.preventDefault();
-
-        if (validate()) {
-
-            post("/login", {
-                onSuccess: () => {
-                    console.log("<=== SUBMIT SUCCESS ===>");
-                },
-                onError: (errors) => {
-                    console.log("Backend Errors: ", errors);
-                    console.log('<=== SUBMIT FAILED ===>')
-                    setErrors(errors);
-                }
-            });
-        } else {
-            console.log('Abort submission: Form data validation failed');
-        }
+  if (field === 'email') {
+    if (!value.trim()) {
+      error = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(value)) {
+      error = 'Email is invalid';
     }
+  } else if (field === 'password') {
+    if (!value.trim()) {
+      error = 'Password is required';
+    } else if (value.length < 6) {
+      error = 'Password must be at least 6 characters';
+    }
+  }
 
+  setErrors(prev => ({ ...prev, [field]: error }));
+  return !error;
+};
+
+const validate = () => {
+  const isEmailValid = validateField('email', data.email);
+  const isPasswordValid = validateField('password', data.password);
+
+  return isEmailValid && isPasswordValid;
+};
+
+const handleChange = (e) => {
+  console.log('--- Changes Found ---');
+  const { name, value } = e.target;
+  setData(name, value);
+};
+
+const submit = (e) => {
+  console.log('--- Validating Form Data ---');
+  e.preventDefault();
+
+  if (validate()) {
+    post("/login", {
+      onSuccess: () => {
+        console.log("<=== SUBMIT SUCCESS ===>");
+        // Add redirect logic here
+      },
+      onError: (errors) => {
+        console.log("Backend Errors: ", errors);
+        console.log('<=== SUBMIT FAILED ===>');
+        setErrors(errors);
+      }
+    });
+  } else {
+    console.log('Abort submission: Form data validation failed');
+  }
+};
     return(
         <>
             {/* Page container with centered content */}
@@ -74,7 +85,7 @@ export default function Login(){
                 <img
                     src={logo}                            // Source of logo image
                     alt="Re:Book"                         // Alt text for accessibility
-                    className="w-[15%] m-4"              // Styling: responsive width and margin
+                    className="w-[15%] m-8"              // Styling: responsive width and margin
                 />
 
                 {/* Main form container */}
