@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Slider2({data}){
+export default function Slider3({data}){
     const Img1 = data[0]
     const Img2 = data[1]
     const Img3 = data[2]
@@ -41,17 +41,16 @@ export default function Slider2({data}){
                     <div className="flex flex-col justify-between items-center gap-1 h-auto rounded-xl shadow-md  bg-white">
 
                         {/* --- TEXT 1 --- */}
-                        <div className="bg-black w-full text-white font-bold">
-                            <p className="text-5xl tracking-wider text-right pt-3 pb-2">Tablet & earphones</p>
+                        <div className="bg-red-800 w-full text-white font-bold">
+                            <p className="text-5xl tracking-wider text-right pt-3 pb-2">Health & Safety Items</p>
                         </div>
 
                         {/* --- TEXT 2 --- */}
                         <div className="flex justify-end w-full text-right">
                             <div className="flex flex-row text-4xl font-bold gap-x-5 ">
-                                <p>
-                                    Get up to
+                                <p className="m-2">
+                                    Stay Safe & Stocked UP
                                 </p>
-                                <span className="text-7xl font-extrabold tracking-wider">20% Off</span>
                             </div>
                         </div>
 

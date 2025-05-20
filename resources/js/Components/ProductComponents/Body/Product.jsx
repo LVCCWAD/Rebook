@@ -45,11 +45,17 @@ function Product({ product, reviews }) {
             <div className="rounded-xl bg-white shadow-md  w-full h-150 flex flex-row ">
                 <div className="w-[40%] border-r border-gray-400">
                     <div className="rounded-xl flex justify-center items-start bg-gray-100 overflow-hidden m-8">
-                        <img
+                        {product.image_url ? (
+                            <img
                             src={product.image_url}
                             alt={product.name}
-                            className="w-full h-125"
-                        />
+                            className="w-full h-125 object-cover"
+                            />
+                        ) : (
+                            <div className="w-full h-125 flex items-center justify-center text-gray-500 text-xl">
+                            No image
+                            </div>
+                        )}
                     </div>
                 </div>
 
