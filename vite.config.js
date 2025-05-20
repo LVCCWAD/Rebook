@@ -13,15 +13,51 @@ export default defineConfig({
         react()
     ],
 
+    // server:{
+    //     host: 'http://localhost:8000',
+    //     port: 5173,
+    // }
+
+    // server: {
+    //     host: '127.0.0.1',
+    //     port: 5173,
+    //     strictPort: true,
+    //     cors: true,
+    //     hmr: {
+    //         host: '127.0.0.1',
+    //         protocol: 'ws',
+    //         port: 5173,
+    //     },
+    // }
+
+//     server: {
+//   host: '127.0.0.1',
+//   port: 5173,
+//   strictPort: true,
+// //   cors: true,
+//   hmr: {
+//     host: '127.0.0.1',
+//     protocol: 'ws',
+//     port: 5173,
+//   },
+// }
+
+//   server: {
+//     host: '127.0.0.1',
+//     port: 5173,
+//     strictPort: true,
+//     cors: true,
+//     hmr: {
+//       host: '127.0.0.1',
+//       protocol: 'ws',
+//       port: 5173,
+//     },
+//   },
+
     server: {
-        host: 'laravel.local',
         port: 5173,
         strictPort: true,
         cors: true,
-        hmr: {
-                host: 'laravel.local',
-                protocol: 'ws',
-                port: 5173,
-            },
-    },
+    }
+
 });

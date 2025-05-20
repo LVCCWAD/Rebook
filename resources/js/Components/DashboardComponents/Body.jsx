@@ -31,14 +31,12 @@ function Body({ user, categories, products }){
                             products={products}
                         />
 
-                        {/* --- ALL PRODUCT --- */}
                         <Product
                             title={productTitle}
                             products={products}
                         />
                     </div>
                 ) : (
-                    // --- PRODUCT ---
                     <div>
                         <Product
                             title={productTitle}
@@ -47,19 +45,6 @@ function Body({ user, categories, products }){
                     </div>
                 )}
             </div>
-
-            {/* <hr className="mt-20"/> */}
-
-                {/* {category.map((cat) => (
-                    <div key={cat.id}>
-                        <Product
-                            title={cat.name}
-                            products={cat.name}
-                        />
-                    </div>
-                ))} */}
-
-
         </>
     )
 }

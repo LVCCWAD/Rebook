@@ -28,40 +28,37 @@ export default function Body({user}){
 
     return(
         <>
-            {/* --- BODY --- */}
-            <div className="border mx-[10%] flex h-140 mt-20">
+            <div className="mx-[10%] flex h-auto mt-20 rounded-xl bg-white shadow-md mb-20">
 
-                {/* --- LEFT CONTAINER --- */}
-                <div className="border w-[20%] flex flex-col items-center m-4">
+                <div className="w-[20%] flex flex-col items-center m-4">
 
 
-                    {/* --- ACCOUNT --- */}
-                    <div className="border w-full h-24  flex flex-row justify-start items-center">
+                    <div className="w-full h-24 flex flex-row justify-start items-center bg-white shadow-md rounded-xl mb-4">
 
-                        {/* --- IMAGE or ICON --- */}
-                        <div className="bg-purple-500 ml-4 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-semibold">
-                            A
+                        <div className="bg-purple-500 ml-4 text-white w-12 h-12 rounded-full shadow-md flex items-center justify-center">
+                            {/* First letter of user without uploaded image */}
+                            <span className="m-12 text-xl font-semibold">A</span>
                         </div>
 
                         {/* --- ACCOUNT DESCRIPTION --- */}
-                        <div className="ml-4 flex flex-col justify-center items-start">
-                            <p>User account</p>
-                            <p>Edit</p>
+                        <div className="w-full flex flex-row justify-around ">
+                            <p>{user.name}</p>
+                            <div>Edit</div>
                         </div>
                     </div>
 
                     {/* --- MENU --- */}
-                    <div className="border w-full h-full p-4 space-y-4 ">
+                    <div className="w-full h-auto p-4 space-y-4 bg-white shadow-md rounded-xl flex-col">
 
                         {/* --- MY ACCOUNT --- */}
                         <button
                             onClick={() => toggleMenu('myAccount')}
-                            className="border w-full flex flex-row justify-start items-center gap-x-4"
+                            className="w-full flex flex-row justify-start items-center gap-x-4 bg-white shadow-md rounded-md"
                         >
                             <img
                                 src={userIcon}
                                 alt=""
-                                className="h-5 w-5"
+                                className="h-5 w-5 m-4"
                             />
                             <p>
                                 My Account
@@ -93,13 +90,13 @@ export default function Body({user}){
 
                         {/* --- MY ACCOUNT --- */}
                         <button
-                            className="border w-full flex flex-row justify-start items-center gap-x-4"
+                            className="w-full flex flex-row justify-start items-center gap-x-4 bg-white shadow-md rounded-md"
                         >
 
                             <img
                                 src={task}
                                 alt=""
-                                className="h-5 w-5"
+                                className="h-5 w-5 m-4"
                             />
                             <p>
                                 My Purchase
@@ -108,14 +105,40 @@ export default function Body({user}){
 
                         {/* --- MY ACCOUNT --- */}
                         <button
-                            className="border w-full flex flex-row justify-start items-center gap-x-4">
+                            className="w-full flex flex-row justify-start items-center gap-x-4 bg-white shadow-md rounded-md">
                             <img
                                 src={bell}
                                 alt=""
-                                className="h-5 w-5"
+                                className="h-5 w-5 m-4"
                             />
                             <p>
                                 Notification
+                            </p>
+                        </button>
+
+                        {/* Go to Seller Page */}
+                        <button
+                            className="w-full flex flex-row justify-start items-center gap-x-4 bg-white shadow-md rounded-md">
+                            <img
+                                src={bell}
+                                alt=""
+                                className="h-5 w-5 m-4"
+                            />
+                            <p>
+                                Become seller
+                            </p>
+                        </button>
+
+                        {/* Logout user */}
+                        <button
+                            className="w-full flex flex-row justify-start items-center gap-x-4 bg-white shadow-md rounded-md">
+                            <img
+                                src={bell}
+                                alt=""
+                                className="h-5 w-5 m-4"
+                            />
+                            <p>
+                                Logout
                             </p>
                         </button>
 

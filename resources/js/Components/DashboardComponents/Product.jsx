@@ -2,49 +2,44 @@ import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
 import pen from "../../../../public/Assets/Dashboard/Product/pen.jpg"
 import iconCart from "../../../../public/Assets/Dashboard/Product/iconCart.png"
-import iconStar1 from "../../../../public/Assets/Dashboard/Product/iconStar1.png" 
+import iconStar1 from "../../../../public/Assets/Dashboard/Product/iconStar1.png"
 
 function Product({ title, products }){
     return(
         <>
-            {/* --- PRODUCT TITLE --- */}
-            <h2 className="mt-20 text-2xl font-bold text-[#5a1c1c] border-b border-gray-300 pb-2 uppercase text-center mb-8">
+            <h2 className="shadow-md border-b mt-20 text-3xl font-bold text-[#5a1c1c] border-gray-300 py-4 uppercase text-center mb-8">
                 {title}
             </h2>
 
-            {/* --- PRODUCT CONTAINER --- */}
             <div  className="flex flex-wrap flex-row justify-center w-full gap-10 px-[5%]">
 
-                {/* --- PRODUCT CARD --- */}
                 {products?.map((product) => (
-
 
                 <Link
                     key={product.id}
                     href={`/product/${product.id}`}
                     method="get"
-                    className="border rounded-md flex flex-col bg-gray-50"
+                    className="rounded-xl shadow-md flex flex-col bg-white"
                 >
-                    {/* {product} */}
 
-
-                    {/* --- CARD IMG & TITLE --- */}
                     <div className="">
-                        {/* --- IMG --- */}
-                        <img
-                            src={pen}
-                            alt="product"
-                            className="w-80 h-80"
-                        />
+                        {product.image_url ? (
+                            <img
+                            src={product.image_url}
+                            alt={product.name}
+                            className="rounded-xl shadow-md w-80 h-80 m-4 object-cover"
+                            />
+                        ) : (
+                            <div className="w-80 h-80 m-4 flex items-center justify-center rounded-xl shadow-md bg-gray-100 text-gray-500">
+                            No image
+                            </div>
+                        )}
 
-                        {/* --- TITLE --- */}
-                        <p className="text-center text-xl font-bold text-[#5a1c1c] p-4">{product.name}</p>
+                        <p className="text-center text-2xl font-bold text-[#5a1c1c] p-4">{product.name}</p>
                     </div>
 
-                    {/* --- CARD DESCRIPTION --- */}
-                    <div className="p-2">
+                    <div className="p-4">
 
-                        {/* --- RATING --- */}
                         <div className="flex flex-row justify-end mb-4">
 
                             {/* --- STAR --- */}
@@ -55,10 +50,10 @@ function Product({ title, products }){
                             />
 
                             {/* --- NUMBER --- */}
-                            <p>
+                            <span>
                                 {/* logic rating */}
                                 {5}
-                            </p>
+                            </span>
                         </div>
 
                         {/* --- ICON & PRICE ---*/}
@@ -73,11 +68,10 @@ function Product({ title, products }){
                             {/* --- PRICE --- */}
                             <p className="text-xl font-bold">
                                 {/* logic pricing */}
-                                ₱{100}
+                                ₱{product.price}
                             </p>
                         </div>
                     </div>
-
                 </Link>
                 ))}
 

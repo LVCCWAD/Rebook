@@ -120,3 +120,7 @@ Route::get('/cart-react', function() {
     return inertia::render('Cart/Cart');
 });
 Route::get('/images/{path}', [ReviewController::class, 'image']);
+
+Route::get('/test', function () {
+    return response('Laravel is working!')->header('Content-Type', 'text/plain');
+});

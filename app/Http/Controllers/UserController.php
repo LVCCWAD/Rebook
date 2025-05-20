@@ -48,64 +48,64 @@ class UserController extends Controller
             'password.confirmed' => 'Passwords do not match',
         ]);
 
-Log::info('show request ---------->', $request->all());
+        Log::info('show request ---------->', $request->all());
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'image' => $request->file('image') ? $request->file('image')->store('images/users', 'public') : null,
-            'password' => Hash::make($request->password),
-            'role' => $request->input('role', 'user'), // Default role is 'user'
-        ]);
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'image' => $request->file('image') ? $request->file('image')->store('images/users', 'public') : null,
+                    'password' => Hash::make($request->password),
+                    'role' => $request->input('role', 'user'), // Default role is 'user'
+                ]);
 
-        Auth::login($user);
-        return redirect()
-            ->route('user.dashboard')
-            ->with('success', 'User registered successfully.');
-    }
+                Auth::login($user);
+                return redirect()
+                    ->route('user.dashboard')
+                    ->with('success', 'User registered successfully.');
+            }
 
-    public function loginForm()
-    {
-        // return view('user.login');
-        return Inertia::render('Auth/Login');
-    }
+            public function loginForm()
+            {
+                // return view('user.login');
+                return Inertia::render('Auth/Login');
+            }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+            public function login(Request $request)
+            {
+                $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
+                if (Auth::attempt($credentials)) {
 
-             return redirect()->route('user.dashboard')->with('success', 'Logged in successfully.');
+                    return redirect()->route('user.dashboard')->with('success', 'Logged in successfully.');
 
-            // return redirect()
-            //     ->route('user.dashboard')
-            //     ->with('success', 'Logged in successfully.');
+                    // return redirect()
+                    //     ->route('user.dashboard')
+                    //     ->with('success', 'Logged in successfully.');
 
-        }
+                }
 
 
 
-      // Check if user with that email exists
-    $user = User::where('email', $request->email)->first();
+            // Check if user with that email exists
+            $user = User::where('email', $request->email)->first();
 
-    if (!$user) {
-        return back()->withErrors([
-            'email' => 'Invalid email address.',
-        ]);
-    }
+            if (!$user) {
+                return back()->withErrors([
+                    'email' => 'Invalid email address.',
+                ]);
+            }
 
-    // If user exists, check password
-    if (!Hash::check($request->password, $user->password)) {
-        return back()->withErrors([
-            'password' => 'Incorrect password.',
-        ]);
-    }
+            // If user exists, check password
+            if (!Hash::check($request->password, $user->password)) {
+                return back()->withErrors([
+                    'password' => 'Incorrect password.',
+                ]);
+            }
 
-    // Fallback (should not normally reach here)
-    return back()->withErrors([
-        'login' => 'Login failed. Please check your credentials.',
-    ]);
+            // Fallback (should not normally reach here)
+            return back()->withErrors([
+                'login' => 'Login failed. Please check your credentials.',
+            ]);
 
 
         // return back()->withErrors(['error' => 'backend validation error']);
@@ -114,9 +114,9 @@ Log::info('show request ---------->', $request->all());
 
     public function dashboard(Request $request)
     {
-        $user = Auth::user();
+        // $user = Auth::user();
         $categories = Category::all();
-        $product = Product::all();
+        // $product = Product::all();
 
         // // return view('user.dashboard', compact('user', 'categories'));
 
@@ -129,16 +129,30 @@ Log::info('show request ---------->', $request->all());
 
 
         // react
-        if ($request->has('category_id')){
-            $product = Product::where('category_id', $request->category_id)->get();
-        } else {
-            $product = Product::all();
-        }
+          $user = Auth::user();
+
+        // Get all products (you can add pagination or filters here)
+        $products = Product::all();
+
+        // Append image_url to each product
+        $products->transform(function ($product) {
+            if ($product->image) {
+                $product->image_url = asset('storage/' . $product->image);
+                $product->image_url = $product->image
+            ? asset('storage/' . $product->image)
+            : asset('images/default.png'); // Store a placeholder in public/images/
+
+            } else {
+                $product->image_url = null; // or use asset('images/default.png')
+            }
+            return $product;
+        });
+
 
         return Inertia::render('Dashboard/Dashboard', [
             'user' => $user,
             'categories' => $categories,
-            'products' => $product,
+            'products' => $products,
         ]);
     }
 

@@ -64,13 +64,12 @@ function Category({ onSendData , categories, products }){
 
             {/* --- CATEGORY --- */}
                 {/* --- HEADER TEXT --- */}
-                {/* <h2 className="mt-20 text-2xl font-bold text-[#5a1c1c] border-b border-gray-300 pb-2 uppercase text-center">
+                <h2 className="mt-20 text-4xl font-bold text-[#5a1c1c] border-b border-gray-300 pb-4 uppercase text-center shadow-md rounded-xl">
                     Categories
-                </h2> */}
+                </h2>
 
 
-                {/* --- CATEGORY LIST --- */}
-                {/* <div className="overflow-x-auto hide-scrollbar mt-6">
+                <div className="overflow-x-auto hide-scrollbar mt-6">
                     <div className="flex flex-nowrap gap-8 px-4 justify-center">
 
                         <button onClick={() => {selectCategory('Stationery')}} className="flex flex-col items-center w-52 flex-shrink-0">
@@ -117,7 +116,7 @@ function Category({ onSendData , categories, products }){
                         </button>
 
                     </div>
-                </div> */}
+                </div>
 
         </>
     )
