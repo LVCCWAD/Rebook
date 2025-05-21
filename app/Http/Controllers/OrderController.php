@@ -116,18 +116,5 @@ class OrderController extends Controller
 
         return redirect()->route('order.show', $order->id)->with('success', 'Shipping address updated.');
     }
-     public function placeOrder(Request $request)
-    {
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'total' => $request->input('total'),
-        ]);
-
-        // Dispatch the event
-        event(new OrderPlaced($order));
-
-        return redirect()->route('orders.show', $order->id)
-                        ->with('success', 'Order placed!');
-    }
 
 }

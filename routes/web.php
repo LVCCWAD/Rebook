@@ -49,7 +49,8 @@ Route::middleware(['auth'])->group(function () {
 
     //product review
     Route::post('/product/{id}/review', [ReviewController::class, 'storeReview'])->name('product.review.store');
-    Route::post('/product/{id}/review/edit', [ReviewController::class, 'editReview'])->name('product.review.edit');
+    Route::put('/product/{id}/review/edit', [ReviewController::class, 'editReview'])->name('product.review.edit');
+    Route::delete('/product/{id}/review/delete', [ReviewController::class, 'deleteReview'])->name('product.review.destroy');
 
     //cart management
     Route::post('/product/{id}/add-to-cart', [CartController::class, 'addToCart'])->name('product.add.to.cart');
