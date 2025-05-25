@@ -89,4 +89,9 @@ class User extends Authenticatable
     {
         return $this->role === 'seller';
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

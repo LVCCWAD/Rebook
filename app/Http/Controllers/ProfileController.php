@@ -10,6 +10,7 @@ use App\Notifications\OrderPlacedNotification;
 
 class ProfileController extends Controller
 {
+    
     public function showProfile()
     {
         $user = Auth::user();
