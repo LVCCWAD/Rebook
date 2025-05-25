@@ -6,15 +6,15 @@ import Body from "../../Components/ProductComponents/Body";
 import { usePage } from "@inertiajs/react";
  function Product({}){
     const { product, reviews, user } = usePage().props
-    console.log('product image',product.image_url)
+
+    console.log("check data comming product stock: ", product.stock)
+
     return(
         <>
             <Header />
             <Navigation />
 
-            <div className="mx-[10%] mt-20">
                 <Body product={product} reviews={reviews} user={user}/>
-            </div>
         </>
     )
 }

@@ -1,36 +1,56 @@
-import React, { useEffect } from "react";
-import Header from "../../Components/DashboardComponents/Header";
-import Navigation from "../../Components/DashboardComponents/Navigation";
-import Body from "../../Components/DashboardComponents/Body";
-import { Link, usePage } from "@inertiajs/react";
+import React, { useState, useEffect } from "react"
+import Header from "../../Components/DashboardComponents/Header"
+import Navigation from "../../Components/DashboardComponents/Navigation"
+import Body from "../../Components/DashboardComponents/Body"
+import { Link, usePage } from "@inertiajs/react"
 
-
-export default function Dashboard({}){
-
+export default function Dashboard() {
+    // Extracting props from the page using Inertia's usePage hook
     const {
         user,
         categories,
-        products
-    } = usePage().props;
+        products,
+        reviewedProducts
+    } = usePage().props
 
-    return(
+    // State to manage filtered products and search status
+    const [filteredProducts, setFilteredProducts] = useState(products)
+    const [isSearching, setIsSearching] = useState(false)
+
+    // Update filtered products when products prop changes
+    useEffect(() => {
+        setFilteredProducts(products)
+    }, [products])
+
+    // Function to handle product search logic
+    function handleSearchProduct(searchTerm) {
+
+        if (!searchTerm || searchTerm.trim() === '') {
+            setFilteredProducts(products)
+            setIsSearching(false)
+        } else {
+            const filtered = products.filter(product =>
+                product.name.toLowerCase().includes(searchTerm.toLowerCase().trim())
+            )
+            setFilteredProducts(filtered)
+            setIsSearching(true)
+        }
+    }
+
+    return (
         <>
-            <Header user={user}/>
-            <Navigation />
+            {/* Rendering the dashboard components */}
+            <Header user={user} searchProduct={handleSearchProduct}/>
+            {/* Navigation component with filtered products passed as props */}
+            <Navigation reviewedProducts={reviewedProducts} />
+            {/* Body component with user, categories, and filtered products passed as props */}
             <Body
                 user={user}
                 categories={categories}
-                products={products}
+                products={filteredProducts}
+                searchProduct={handleSearchProduct}
+                isSearching={isSearching}
             />
-
-            <Link
-                href='/logout'
-                method='post'
-                as='button'
-                className='p-4 m-4 border rounded-md '
-            >
-                    Logout
-            </Link>
         </>
     )
 }

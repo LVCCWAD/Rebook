@@ -62,15 +62,15 @@ class UserController extends Controller
                 return redirect()
                     ->route('user.dashboard')
                     ->with('success', 'User registered successfully.');
-            }
+    }
 
-            public function loginForm()
-            {
-                // return view('user.login');
-                return Inertia::render('Auth/Login');
-            }
+    public function loginForm()
+    {
+        // return view('user.login');
+        return Inertia::render('Auth/Login');
+    }
 
-            public function login(Request $request)
+    public function login(Request $request)
             {
                 $credentials = $request->only('email', 'password');
 
@@ -128,31 +128,50 @@ class UserController extends Controller
         // return view('user.dashboard', compact('user', 'categories', 'notifications', 'unreadNotifications'));
 
 
-        // react
-          $user = Auth::user();
+        // Get authenticated user
+        $user = Auth::user();
 
-        // Get all products (you can add pagination or filters here)
+        // Get all products with image URLs
         $products = Product::all();
-
-        // Append image_url to each product
         $products->transform(function ($product) {
-            if ($product->image) {
-                $product->image_url = asset('storage/' . $product->image);
-                $product->image_url = $product->image
-            ? asset('storage/' . $product->image)
-            : asset('images/default.png'); // Store a placeholder in public/images/
-
-            } else {
-                $product->image_url = null; // or use asset('images/default.png')
-            }
+            $product->image_url = $product->image
+                ? asset('storage/' . $product->image)
+                : asset('images/default.png');
             return $product;
         });
 
+        // Get top 10 products ordered by number of reviews (highest first), then by average review rating (highest first)
+        $reviewedProducts = Review::selectRaw('product_id, AVG(rating) as avg_rating, COUNT(*) as review_count')
+            ->groupBy('product_id')
+            ->orderByDesc('review_count')   // 1. Order by number of reviews
+            ->orderByDesc('avg_rating')     // 2. Then by average rating
+            ->take(10)
+            ->get()
+            ->map(function ($item) {
+            $product = Product::find($item->product_id);
+            $latestReview = Review::where('product_id', $item->product_id)
+                ->orderByDesc('created_at')
+                ->first();
+
+            if ($product) {
+                $product->image_url = $product->image
+                ? asset('storage/' . $product->image)
+                : asset('images/default.png');
+            }
+
+            return [
+                'product' => $product,
+                'latest_review' => $latestReview,
+                'avg_rating' => round($item->avg_rating, 2),
+                'review_count' => $item->review_count,
+            ];
+            });
 
         return Inertia::render('Dashboard/Dashboard', [
             'user' => $user,
             'categories' => $categories,
             'products' => $products,
+            'reviewedProducts' => $reviewedProducts,
         ]);
     }
 
@@ -167,19 +186,26 @@ class UserController extends Controller
             return redirect()->route('login');
         }
 
-        $products = Product::where('seller_id', $user->id)->get(); // full objects
+        // Get all products belonging to the current seller
+        $products = Product::where('seller_id', $user->id)->get();
+
+        // Extract the IDs of the seller's products
         $productIds = $products->pluck('id');
 
+        // Retrieve OrderItems that contain the seller's products
         $orderItems = OrderItem::whereIn('product_id', $productIds)
-        ->with(['order', 'product'])
-        ->get();
+            ->with(['order', 'product'])
+            ->get();
 
+        // Extract the unique orders from the OrderItems
         $orders = $orderItems->pluck('order')->unique('id')->values();
 
         $shop = $user->shop; // assumes a User hasOne Shop relationship
         $categories = Category::all(); // if relevant to seller
         $seller_id = $user->id;
 
+        $shippings = Shipping::all();
+        $allUsers = User::all();
 
         return Inertia::render('Seller/Seller', [
             'user' => $user,
@@ -189,8 +215,9 @@ class UserController extends Controller
             'orderItems' => $orderItems,
             'products' => $products,
             'orders' => $orders,
+            'shippings' => $shippings,
+            'allUsers' => $allUsers,
         ]);
-
     }
 
     public function becomeSeller(Request $request)
@@ -211,7 +238,6 @@ class UserController extends Controller
         Auth::logout();
         return redirect()->route('login')->with('success', 'Logged out successfully.');
     }
-
 
     // --- React Test ---
     public function test(){

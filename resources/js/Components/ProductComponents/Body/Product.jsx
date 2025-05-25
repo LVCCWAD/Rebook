@@ -6,22 +6,23 @@ function Product({ product, reviews }) {
         quantity: 1,
     });
 
-    const [selectedColor, setSelectedColor] = useState("blue") // default color
+    console.log('initial quantity: ', form.data.quantity)
 
     const decreaseQuantity = () => {
         if (form.data.quantity > 1) {
             form.setData('quantity', form.data.quantity - 1);
         }
     };
-
     const increaseQuantity = () => {
         if (form.data.quantity < product?.stock) {
-            form.setData('quantity', form.data.quantity + 1);
+            form.setData('quantity', form.data.quantity + 1)
         }
     };
 
     const handleAddToCart = (e) => {
         e.preventDefault();
+
+        console.log('current quantity to pass ---> ', form.data.quantity)
 
         // Basic client-side validation
         if (form.data.quantity <= 0) {
@@ -34,11 +35,16 @@ function Product({ product, reviews }) {
             return;
         }
 
+        console.log('check quantity: ', form.data.quantity)
+
         // Submit the form using Inertia
         form.post(`/product/${product.id}/add-to-cart`), {
             preserveScroll: true,
         }
     };
+
+
+    // changes
 
     return(
         <>

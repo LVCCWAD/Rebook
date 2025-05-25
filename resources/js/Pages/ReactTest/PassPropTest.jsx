@@ -13,7 +13,7 @@ function PassPropTest({
   shops,
   users,
 }) {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("renderDataCard");
   const [expandedSection, setExpandedSection] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 

@@ -5,15 +5,15 @@ export default function Dashboard({ setCurrentComponent }){
     const handleClick = (target) => {
         setCurrentComponent(target); // Calls parent directly
     }
-    
+
     return(
         <>
             {/* --- DASHBOARD --- */}
             {/* grid based design */}
-            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mt-20">
 
                 {/* --- CONTAINER: TO DO LIST --- */}
-                <div className="bg-white p-6 rounded shadow-md col-span-2">
+                <div className="bg-white p-6 rounded-xl shadow-md col-span-2">
                     <h2 className="text-lg font-semibold mb-4">To Do List</h2>
                     <div className="flex justify-between text-center">
                         <div>
@@ -32,7 +32,7 @@ export default function Dashboard({ setCurrentComponent }){
                 </div>
 
                 {/* --- CONTAINER: ORDER DETAIL ---*/}
-                <div className="bg-white p-6 rounded shadow-md">
+                <div className="bg-white p-6 rounded-xl shadow-md">
                     <h2 className="text-lg font-semibold mb-2">Order Details</h2>
 
 
@@ -43,7 +43,7 @@ export default function Dashboard({ setCurrentComponent }){
                 </div>
 
                 {/* --- CONTAINER: INSIGHTS ---*/}
-                <div className="bg-white p-6 rounded shadow-md col-span-2">
+                <div className="bg-white p-6 rounded-xl shadow-md col-span-2">
                     <h2 className="text-lg font-semibold mb-4">Business Insights</h2>
                     <div className="flex justify-between text-center">
                         <div>
@@ -65,7 +65,7 @@ export default function Dashboard({ setCurrentComponent }){
                 </div>
 
                 {/* --- CONTAINER: MY PRODUCTS ---*/}
-                <div className="bg-white p-6 rounded shadow-md">
+                <div className="bg-white p-6 rounded-xl shadow-md">
                     <h2 className="text-lg font-semibold mb-2">My Products</h2>
 
                     <button onClick={() => handleClick('product')} className="text-blue-600 font-medium">

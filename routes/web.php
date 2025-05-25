@@ -14,7 +14,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShippingController;
-
+use App\Models\Shipping;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use inertia\Inertia;
@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/order/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('order.cancel');
     Route::post('order/{id}/shipping', [OrderController::class, 'storeShipping'])->name('order.shipping.store');
 
+Route::put('/order/{id}/status', [OrderController::class, 'updateStatus']);
     //payment
     Route::post('/orders/{id}/pay', [PaymentController::class, 'storePayment'])->name('payment.store');
     Route::post('/orders/{id}/cancelled', [PaymentController::class, 'storeCancelledPayment'])->name('payment.cancelled');
@@ -75,6 +76,8 @@ Route::middleware(['auth'])->group(function () {
     //shipping address
     Route::get('/shipping/create', [ShippingController::class, 'shippingForm'])->name('shipping.form');
     Route::post('/shipping/post', [ShippingController::class, 'storeShipping'])->name('shipping.store');
+    Route::put('/shipping/{id}/update',[ShippingController::class, 'updateShipping']);
+    Route::delete('shipping/{id}', [ShippingController::class, 'deleteShipping']);
 
 
     //user profile
