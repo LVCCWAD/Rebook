@@ -1,42 +1,40 @@
-import React, { useState }  from "react";
+import React, { useState } from "react";
 import Dashboard from "./Body/Dashboard";
-import Register from "./Body/Register"
+import Register from "./Body/Register";
 import Product from "./Body/Product";
 import Order from "./Body/Order";
 
 function Body({
-        component,
-        onChangeComponent,
-        user,
-        seller_id,
-        shop,
-        categories,
-        orderItems,
-        products,
-    }){
-
+    component,
+    onChangeComponent,
+    user,
+    seller_id,
+    shop,
+    categories,
+    orders,
+    orderItems,
+    products,
+    shippings,
+    allUsers,
+}) {
     const renderComponent = () => {
-        console.log("dashboard component:", component)
-
-         if (user?.role !== "seller" || shop == null) return <Register user={user}/>
+        if (user?.role !== "seller" || shop == null) return <Register user={user} />;
 
         switch (component?.toLowerCase()) {
-
             case "order":
-                return <Order/>
+                return <Order orders={orders} orderItems={orderItems} allUsers={allUsers}/>;
             case "product":
-                return <Product products={products} categories={categories}/>
+                return <Product products={products} categories={categories} shippings={shippings} />;
             default:
-                return <Dashboard setCurrentComponent={onChangeComponent} />
+                return <Dashboard setCurrentComponent={onChangeComponent} />;
         }
-  }
+    };
 
-
-    return(
+    return (
         <>
             {renderComponent()}
         </>
-    )
+    );
 }
 
-export default Body
+export default Body;

@@ -8,8 +8,10 @@ export default function Body({ product, reviews, user}){
 
     return(
         <>
-            <Product product={product} reviews={reviews}/>
-            <Rating product={product} reviews={reviews} user={user} />
+            <div className="mx-[10%] mt-20">
+                <Product product={product} reviews={reviews}/>
+                <Rating product={product} reviews={reviews} user={user} />
+            </div>
         </>
     )
 }

@@ -13,6 +13,13 @@ export default defineConfig({
         react()
     ],
 
+    server: {
+        port: 5173,
+        strictPort: true,
+        cors: true,
+    }
+
+    // TEST SERVER HOST
     // server:{
     //     host: 'http://localhost:8000',
     //     port: 5173,
@@ -54,10 +61,6 @@ export default defineConfig({
 //     },
 //   },
 
-    server: {
-        port: 5173,
-        strictPort: true,
-        cors: true,
-    }
+
 
 });

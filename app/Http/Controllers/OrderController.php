@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\OrderPlacedNotification;
 
+use Illuminate\Support\Facades\Validator;
+
 class OrderController extends Controller
 {
     public function storeOrder(Request $request)
@@ -24,7 +26,6 @@ class OrderController extends Controller
 
         $user = Auth::user();
 
-        //get the user cart with products
         $cart = Cart::where('user_id', $user->id)->with('products')->first();
 
         if (!$cart || $cart->products->isEmpty()) {
@@ -45,7 +46,6 @@ class OrderController extends Controller
             return $product->price * $product->pivot->quantity;
         });
 
-        //create the order
 
         $order = Order::create([
             'user_id' => $user->id,
@@ -54,7 +54,9 @@ class OrderController extends Controller
             'total' => $total
         ]);
 
-        //create the order items
+        Shipping::where('id', $request->shipping_address_id)
+        ->update(['order_id' => $order->id]);
+
 
         foreach ($selectedProducts as $product) {
             OrderItem::create([
@@ -63,9 +65,16 @@ class OrderController extends Controller
                 'quantity' => $product->pivot->quantity,
                 'price' => $product->price,
             ]);
+
+            // Remove the product from the cart
+            $cart->products()->detach($product->id);
         }
 
-        return redirect()->route('order.show', $order->id)->with('success', 'Order placed successfully.');
+        // Optionally, you can reload the cart to reflect the changes
+        $cart->load('products');
+
+        // return redirect()->route('order.show', $order->id)->with('success', 'Order placed successfully.');
+        return redirect()->back()->with('success', 'Order placed successfully and items removed from cart.');
     }
 
     public function showOrder($id)
@@ -130,4 +139,19 @@ class OrderController extends Controller
                         ->with('success', 'Order placed!');
     }
 
+    public function updateStatus(Request $request, $id)
+    {
+        // ... validation ...
+
+        $order = Order::findOrFail($id);
+        $order->status = $request->input('status');
+
+        if ($request->input('status') === 'completed' && $request->has('shipping_id')) {
+            $order->shipping_id = $request->input('shipping_id');
+        }
+
+        $order->save();
+
+        return redirect()->back()->with('success', 'Order status updated successfully.');
+    }
 }

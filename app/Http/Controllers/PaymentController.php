@@ -39,7 +39,7 @@ class PaymentController extends Controller
 
         //update order status to completed
         $order->update([
-            'status' => 'completed',
+            'status' => 'completed', 
         ]);
 
         //conditions whether it will be cancelled or not(not required yet)

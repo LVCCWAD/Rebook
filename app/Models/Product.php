@@ -35,7 +35,6 @@ class Product extends Model
     public function categories(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
-        // has many ba to??
     }
 
     public function carts(): BelongsToMany
