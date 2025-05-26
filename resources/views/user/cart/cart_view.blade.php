@@ -1,43 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ $user->name }}'s Cart</title>
 </head>
 <body>
-    <a href="{{route('user.dashboard')}}">Dashboard</a>
-    <h1>{{$user->name}}'s cart</h1>
+    <a href="{{ route('user.dashboard') }}">Dashboard</a>
+    <h1>{{ $user->name }}'s Cart</h1>
     <h2>Items in Cart</h2>
-    @if(!$cart || $cart->products->isEmpty())
+
+
+
+    @if (!$cart || $cart->products->isEmpty())
         <p>Your cart is empty.</p>
     @else
-        @foreach($cart->products as $product)
-            <div>
-                <h3>{{ $product->name }}</h3>
-                <p>Price: {{ $product->price }}</p>
-                <p>Quantity: {{ $product->pivot->quantity }}</p>
-                <p>Total: {{ $product->price * $product->pivot->quantity }}</p>
-                <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image" width="150">
-            </div>
-            <form action="{{ route('cart.remove', $product->id) }}" method="POST">
+        <!-- Checkout form (selected items only) -->
+        <form action="{{ route('order.store') }}" method="POST">
+            @csrf
+
+            @foreach ($cart->products as $product)
+                <div style="margin-bottom: 30px; border-bottom: 1px solid #ccc; padding-bottom: 15px;">
+                    <h3>{{ $product->name }}</h3>
+                    <p>Price: ₱{{ $product->price }}</p>
+                    <p>Total: ₱{{ $product->price * $product->pivot->quantity }}</p>
+                    <img src="{{ asset('storage/' . $product->image) }}" width="150" alt="Product Image">
+
+                    <!-- Select for checkout -->
+                    <label>
+                        <input type="checkbox" name="selected_items[]" value="{{ $product->id }}">
+                        Select for Checkout
+                    </label>
+                </div>
+            @endforeach
+
+            <button type="submit" style="margin-top: 20px;">Proceed to Checkout</button>
+        </form>
+
+        <hr>
+
+        <!-- Update quantity & remove item (independent forms) -->
+        <h2>Manage Cart</h2>
+        @foreach ($cart->products as $product)
+            <!-- Update quantity form -->
+            <form action="{{ route('cart.update', $product->id) }}" method="POST" style="margin-bottom: 10px;">
+                @csrf
+                @method('PUT')
+                <label>Update Quantity for {{ $product->name }}: </label>
+
+                <input type="number" name="quantity" value="{{ $product->pivot->quantity }}" min="1" required>
+
+                <button type="submit">Update</button>
+            </form>
+
+            <!-- Remove from cart form -->
+            <form action="{{ route('cart.remove', $product->id) }}" method="POST" style="margin-bottom: 20px;">
                 @csrf
                 @method('DELETE')
-                <button type="submit">Remove from Cart</button>
+                <button type="submit">Remove {{ $product->name }}</button>
             </form>
         @endforeach
 
-        <form action="{{route('cart.clear')}}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type="submit">Clear Cart</button>
-        </form>
-
-        <form action="{{route('order.store')}}" method="POST">
+        <!-- Clear entire cart -->
+        <form action="{{ route('cart.clear') }}" method="POST" style="margin-top: 30px;">
             @csrf
-            <button type="submit">Checkout</button>
+            @method('DELETE')
+            <button type="submit" style="color: red;">Clear Entire Cart</button>
         </form>
     @endif
+
+
+
 </body>
 </html>

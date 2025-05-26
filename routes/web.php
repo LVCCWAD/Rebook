@@ -14,6 +14,11 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShippingController;
+use App\Models\Shipping;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Notification;
+use inertia\Inertia;
+
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -35,25 +40,26 @@ Route::middleware(['auth'])->group(function () {
 
     //option for becoming a seller
     Route::get('/become-a-seller', [UserController::class, 'becomeSellerView'])->name('user.become_seller');
-    Route::post('/become-a-seller', [UserController::class, 'becomeSeller'])->name('user.become_seller.post');
+    Route::put('/become-a-seller', [UserController::class, 'becomeSeller'])->name('user.become_seller.post');
 
     //category to show products
     Route::get('/categories/{id}', [CategoryController::class, 'categoryShow'])->name('category.show');
 
-
-
-
     //product show and review
     Route::get('/product/{id}', [ReviewController::class, 'viewOneProduct'])->name('product.show');
+
 
     //product review
     Route::post('/product/{id}/review', [ReviewController::class, 'storeReview'])->name('product.review.store');
     Route::post('/product/{id}/review/edit', [ReviewController::class, 'editReview'])->name('product.review.edit');
+    Route::delete('/product/{id}/review/delete', [ReviewController::class, 'deleteReview'])->name('product.review.delete');
+
 
     //cart management
-    Route::post('/product/{id}/add-to-cart', [CartController::class, 'addToCart'])->name('product.add.to.cart');
     Route::get('/cart/{id}', [CartController::class, 'viewCart'])->name('cart.view');
-    Route::put('/cart/{id}/update', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::post('/product/{id}/add-to-cart', [CartController::class, 'addToCart'])->name('product.add.to.cart');
+
+    Route::put('/cart/{product}/update', [CartController::class, 'updateCart'])->name('cart.update');
     Route::delete('/cart/{id}/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 
@@ -61,27 +67,30 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/order/store', [OrderController::class, 'storeOrder'])->name('order.store');
     Route::get('/order/{id}', [OrderController::class, 'showOrder'])->name('order.show');
     Route::delete('/order/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('order.cancel');
+    Route::post('order/{id}/shipping', [OrderController::class, 'storeShipping'])->name('order.shipping.store');
 
+    Route::put('/order/{id}/status', [OrderController::class, 'updateStatus']);
     //payment
-    Route::post('/payment/{id}', [PaymentController::class, 'storePayment'])->name('payment.store');
+    Route::post('/orders/{id}/pay', [PaymentController::class, 'storePayment'])->name('payment.store');
+    Route::post('/orders/{id}/cancelled', [PaymentController::class, 'storeCancelledPayment'])->name('payment.cancelled');
 
     //shipping address
     Route::get('/shipping/create', [ShippingController::class, 'shippingForm'])->name('shipping.form');
     Route::post('/shipping/post', [ShippingController::class, 'storeShipping'])->name('shipping.store');
+    Route::put('/shipping/{id}/update',[ShippingController::class, 'updateShipping']);
+    Route::delete('shipping/{id}', [ShippingController::class, 'deleteShipping']);
+
 
     //user profile
     Route::get('/profile', [ProfileController::class, 'showProfile'])->name('user.profile');
     Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('user.profile.update');
-
-    // react
-    // Route::get('/product/{product}',[ProductController::class,'productPage']);
 
 });
 
 Route::middleware(['auth', 'seller'])->group(function () {
     //initial stage on creating a shop
     Route::get('/create-shop', [ShopController::class, 'shopCreate'])->name('shop.create');
-    Route::post('/create-shop', [ShopController::class, 'shopStore'])->name('shop.store');
+    Route::post( '/create-shop', [ShopController::class, 'shopStore'])->name('shop.store');
 
     //shop overview of the seller
     Route::get('/shop/dashboard/', [ShopController::class, 'shopDashboard'])->name('shop.dashboard');
@@ -93,9 +102,27 @@ Route::middleware(['auth', 'seller'])->group(function () {
     Route::put('/shop/{id}/edit-product', [ProductController::class, 'productUpdate'])->name('seller.product.update');
     Route::delete('/shop/{id}/delete-product', [ProductController::class, 'productDelete'])->name('seller.product.delete');
     Route::get('/shop/{id}/product', [ProductController::class, 'productShow'])->name('seller.product.show');
+
+    //business analytics
+    Route::get('/shop/business-analytics', [ShopController::class, 'businessAnalytics'])->name('shop.analytics');
 });
 
+//Task Scheduling
+Route::get('/check-sales-reminder', function () {
+    return response()->json(['show' => Cache::get('show_sales_popup', false)]);
+    });
 
+
+//Notification
+Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->middleware('auth')->name('notifications.index');
 
 // react
 Route::get('/', [UserController::class, 'test']);
+Route::get('/cart-react', function() {
+    return inertia::render('Cart/Cart');
+});
+Route::get('/images/{path}', [ReviewController::class, 'image']);
+
+Route::get('/test', function () {
+    return response('Laravel is working!')->header('Content-Type', 'text/plain');
+});

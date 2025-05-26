@@ -19,7 +19,11 @@ return new class extends Migration
             $table->string('country');
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('order_id')->constrained()->onDelete('cascade');
+
+             $table->dropForeign(['order_id']);               // drop FK constraint first
+            $table->unsignedBigInteger('order_id')->nullable()->change();  // make nullable
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');  // re-add FK
+
             $table->timestamps();
         });
     }
@@ -27,8 +31,12 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('shippings');
+        Schema::table('shippings', function (Blueprint $table) {
+            $table->dropForeign(['order_id']);
+            $table->unsignedBigInteger('order_id')->nullable(false)->change();
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+        });
     }
 };

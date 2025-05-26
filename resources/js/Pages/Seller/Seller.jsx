@@ -1,38 +1,46 @@
-import React, { useState } from "react";
-import Header from "../../Components/SellerComponents/Header";
-import Body from "../../Components/SellerComponents/Body";
-import { usePage } from "@inertiajs/react";
+import React, { useState } from "react"
+import Header from "../../Components/SellerComponents/Header"
+import Body from "../../Components/SellerComponents/Body"
+import { usePage } from "@inertiajs/react"
 
-export default function Seller(){
-
-    // usepage to retrieve data
-    const [currentComponent, setCurrentComponent] = useState('dashboard')
-    const { user, orders, products } = usePage().props
-
-    console.log('user:', user)
-    console.log('orders:', orders)
-    console.log('products:', products)
-
+export default function Seller() {
+    const [currentComponent, setCurrentComponent] = useState("dashboard")
+    const {
+        user,
+        seller_id,
+        shop,
+        categories,
+        orders,
+        orderItems,
+        products,
+        shippings,
+        allUsers,
+    } = usePage().props
 
     const handleComponentChange = (component) => {
-        setCurrentComponent(component);
+        setCurrentComponent(component)
     }
 
-
-    // logic for user orders
-
-    return(
+    return (
         <>
-            {/* --- HEADER --- */}
-            <Header user={user} currentComponent={currentComponent} onChangeComponent={handleComponentChange} />
-
-            {/* --- BODY --- */}
+            <Header
+                currentComponent={currentComponent}
+                onChangeComponent={handleComponentChange}
+                user={user}
+            />
             <Body
                 component={currentComponent}
-                user={user}
                 onChangeComponent={handleComponentChange}
+                user={user}
+                seller_id={seller_id}
+                shop={shop}
+                categories={categories}
                 orders={orders}
-                products={products}/>
+                orderItems={orderItems}
+                products={products}
+                shippings={shippings}
+                allUsers={allUsers}
+            />
         </>
     )
 }
