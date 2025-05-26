@@ -16,6 +16,7 @@ function Product({
     const [showEditModal, setShowEditModal] = useState(false)
     const [products, setProducts] = useState(initialProducts || [])
     const [editingProductId, setEditingProductId] = useState(null)
+    const [editImagePreview, setEditImagePreview] = useState(null)
     const deleteForm = useForm({ _method: 'delete' })
 
     const dropdownRef = useRef()
@@ -44,6 +45,7 @@ function Product({
 
     const handleEditClick = (product) => {
         setEditingProductId(product.id)
+        setEditImagePreview(product.image_url) // Set current product image as preview
         editForm.setData({
             id: product.id,
             name: product.name,
@@ -85,7 +87,7 @@ function Product({
                         stock: data.stock || 0,
                         description: data.description,
                         category_id: data.category_id,
-                        image: data.image instanceof File ? URL.createObjectURL(data.image) : null
+                        image_url: data.image instanceof File ? URL.createObjectURL(data.image) : null
                     }
                     setProducts(prevProducts => [...prevProducts, tempProduct])
                     setTimeout(() => {
@@ -118,9 +120,9 @@ function Product({
                     const tempUpdatedProduct = {
                         ...editForm.data,
                         id: editingProductId,
-                        image: editForm.data.image instanceof File
+                        image_url: editForm.data.image instanceof File
                             ? URL.createObjectURL(editForm.data.image)
-                            : products.find(p => p.id === editingProductId)?.image
+                            : products.find(p => p.id === editingProductId)?.image_url
                     }
                     setProducts(prevProducts =>
                         prevProducts.map(product =>
@@ -133,6 +135,7 @@ function Product({
                 }
                 setShowEditModal(false)
                 setEditingProductId(null)
+                setEditImagePreview(null)
             },
             onError: (errors) => {
                 console.error("Edit operation failed:", errors)
@@ -151,6 +154,19 @@ function Product({
                     console.error("Delete operation failed:", errors)
                 }
             })
+        }
+    }
+
+    const handleEditImageChange = (e) => {
+        const file = e.target.files[0]
+        editForm.setData('image', file)
+
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                setEditImagePreview(e.target.result)
+            }
+            reader.readAsDataURL(file)
         }
     }
 
@@ -180,11 +196,17 @@ function Product({
                         products.map(product => (
                             <div key={product.id} className="grid grid-cols-4 gap-4 px-6 py-4 border-b border-gray-200 bg-white shadow-md items-center">
                                 <div className="flex items-center ">
-                                    <img
-                                        src={product.image || "/api/placeholder/100/100"}
-                                        alt={product.name}
-                                        className="w-24 h-24 mr-4 rounded-md shadow-md object-cover"
-                                    />
+                                    {product.image_url ? (
+                                        <img
+                                            src={product.image_url}
+                                            alt={product.name}
+                                            className="w-24 h-24 mr-4 rounded-md shadow-md object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-24 h-24 mr-4 rounded-md shadow-md bg-gray-100 flex items-center justify-center text-gray-500 text-xs">
+                                            No Image
+                                        </div>
+                                    )}
                                     <span className="text-sm">{product.name}</span>
                                 </div>
                                 <div>₱{product.price}</div>
@@ -326,17 +348,24 @@ function Product({
           <div>
             <label className="block mb-1 text-sm">Product Image</label>
             <div className="bg-white shadow-md rounded-xl p-1 h-48 flex items-center justify-center">
-              <img
-                src={editForm.data.image_preview || "/api/placeholder/100/100"}
-                alt="Product"
-                className="max-h-full max-w-full object-contain"
-              />
+              {editImagePreview ? (
+                <img
+                  src={editImagePreview}
+                  alt="Product Preview"
+                  className="max-h-full max-w-full object-contain"
+                />
+              ) : (
+                <div className="text-gray-500 text-center">
+                  <p>No image selected</p>
+                  <p className="text-sm">Choose an image to preview</p>
+                </div>
+              )}
             </div>
             <input
               type="file"
               accept="image/*,video/*"
               className={`mt-2 w-full p-4 bg-white shadow-md rounded-xl ${editForm.errors.image ? 'border-red-500' : ''}`}
-              onChange={(e) => editForm.setData('image', e.target.files[0])}
+              onChange={handleEditImageChange}
             />
             {editForm.errors.image && <p className="text-red-500 text-xs mt-1">{editForm.errors.image}</p>}
           </div>
@@ -414,7 +443,10 @@ function Product({
           <div className="flex justify-end space-x-2 mt-6">
             <button
               type="button"
-              onClick={() => setShowEditModal(false)}
+              onClick={() => {
+                setShowEditModal(false)
+                setEditImagePreview(null)
+              }}
               className="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded-md"
             >
               Cancel Edit

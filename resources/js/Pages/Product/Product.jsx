@@ -14,7 +14,7 @@ import { usePage } from "@inertiajs/react";
             <Header />
             <Navigation />
 
-                <Body product={product} reviews={reviews} user={user}/>
+            <Body product={product} reviews={reviews} user={user}/>
         </>
     )
 }

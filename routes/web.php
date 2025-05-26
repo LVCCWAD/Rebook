@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
     //product review
     Route::post('/product/{id}/review', [ReviewController::class, 'storeReview'])->name('product.review.store');
     Route::post('/product/{id}/review/edit', [ReviewController::class, 'editReview'])->name('product.review.edit');
+    Route::delete('/product/{id}/review/delete', [ReviewController::class, 'deleteReview'])->name('product.review.delete');
 
 
     //cart management
@@ -68,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/order/{id}/cancel', [OrderController::class, 'cancelOrder'])->name('order.cancel');
     Route::post('order/{id}/shipping', [OrderController::class, 'storeShipping'])->name('order.shipping.store');
 
-Route::put('/order/{id}/status', [OrderController::class, 'updateStatus']);
+    Route::put('/order/{id}/status', [OrderController::class, 'updateStatus']);
     //payment
     Route::post('/orders/{id}/pay', [PaymentController::class, 'storePayment'])->name('payment.store');
     Route::post('/orders/{id}/cancelled', [PaymentController::class, 'storeCancelledPayment'])->name('payment.cancelled');
@@ -83,9 +84,6 @@ Route::put('/order/{id}/status', [OrderController::class, 'updateStatus']);
     //user profile
     Route::get('/profile', [ProfileController::class, 'showProfile'])->name('user.profile');
     Route::put('/profile/update', [ProfileController::class, 'updateProfile'])->name('user.profile.update');
-
-    // react
-    // Route::get('/product/{product}',[ProductController::class,'productPage']);
 
 });
 

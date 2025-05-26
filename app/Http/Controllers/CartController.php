@@ -40,12 +40,22 @@ class CartController extends Controller
 
         $cartItems = $cart->products()->withPivot('quantity')->get();
 
+        // retrive users cart product image
+        $products = Product::all();
+        $products->transform(function ($product) {
+            $product->image_url = $product->image
+                ? asset('storage/' . $product->image)
+                : null; // Default image if no image is set
+            return $product;
+        });
+
         return Inertia::render('Cart/Cart', [
             'user' => $user,
             'cart' => $cart,
             'cartItems' => $cartItems,
-            'shippingAddresses' => $shippingAddresses, // Pass shipping addresses to the frontend
-            'orders' => $orders, // Pass orders to the frontend (optional)
+            'shippingAddresses' => $shippingAddresses,
+            'orders' => $orders,
+            'products' => $products,
         ]);
     }
 

@@ -5,8 +5,7 @@ import Body from "../../Components/CartComponents/Body"
 import { usePage } from "@inertiajs/react"
 
 export default function Cart() {
-    const { user, cart, cartItems, shippingAddresses, orders } = usePage().props
-
+    const { user, cart, cartItems, shippingAddresses, orders , products} = usePage().props
     return (
         <>
             <Header />
@@ -18,6 +17,7 @@ export default function Cart() {
                 cart_Items={cartItems}
                 shippingAddresses={shippingAddresses}
                 orders={orders}
+                products={products}
             />
         </>
     )

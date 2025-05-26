@@ -28,7 +28,7 @@ function Product({ title, products }) {
                                 />
                             ) : (
                                 <div className="w-80 h-80 m-4 flex items-center justify-center rounded-xl shadow-md bg-gray-100 text-gray-500">
-                                    No image
+                                    No image preview
                                 </div>
                             )}
 

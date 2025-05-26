@@ -135,15 +135,4 @@ class ProductController extends Controller
         return view('seller.product.product_show', compact('product', 'category'));
     }
 
-    public function productPage( $id ){
-
-        $product = Product::findOrFail($id);
-
-        Log::info('ID here: ', ['id' => $id]);
-        Log::info('Product here: ', ['product' => $product]);
-
-        return inertia::render('Product/Product',[
-            'product' => $product->toArray(),
-        ]);
-    }
 }

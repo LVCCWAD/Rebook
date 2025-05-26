@@ -234,27 +234,19 @@ export default function AddressBlock({ user, shippingAddresses, onAddressSelecte
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Country *
                                 </label>
-                                <select
+                                <input
+                                    type="text"
                                     value={addressForm.data.country}
                                     onChange={(e) => addressForm.setData('country', e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                    placeholder="Country"
                                     required
-                                >
-                                    <option value="US">United States</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="UK">United Kingdom</option>
-                                    <option value="AU">Australia</option>
-                                    <option value="DE">Germany</option>
-                                    <option value="FR">France</option>
-                                    <option value="JP">Japan</option>
-                                    <option value="OTHER">Other</option>
-                                </select>
+                                />
                                 {addressForm.errors.country && (
                                     <p className="text-red-500 text-sm mt-1">{addressForm.errors.country}</p>
                                 )}
                             </div>
 
-                            {/* Form Buttons */}
                             <div className="flex space-x-3 pt-4">
                                 <button
                                     type="submit"

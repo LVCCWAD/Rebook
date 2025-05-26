@@ -1,65 +1,63 @@
-import React, { useState } from "react";
-import { useForm,router } from "@inertiajs/react";
+import React, { useState } from "react"
+import { useForm, router } from "@inertiajs/react"
 
 function Product({ product, reviews }) {
     const form = useForm({
         quantity: 1,
-    });
+    })
 
     console.log('initial quantity: ', form.data.quantity)
 
     const decreaseQuantity = () => {
         if (form.data.quantity > 1) {
-            form.setData('quantity', form.data.quantity - 1);
+            form.setData('quantity', form.data.quantity - 1)
         }
-    };
+    }
+
     const increaseQuantity = () => {
         if (form.data.quantity < product?.stock) {
             form.setData('quantity', form.data.quantity + 1)
         }
-    };
+    }
 
     const handleAddToCart = (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
         console.log('current quantity to pass ---> ', form.data.quantity)
 
         // Basic client-side validation
         if (form.data.quantity <= 0) {
-            form.setError('quantity', 'Quantity must be at least 1');
-            return;
+            form.setError('quantity', 'Quantity must be at least 1')
+            return
         }
 
         if (form.data.quantity > product?.stock) {
-            form.setError('quantity', 'Not enough stock available');
-            return;
+            form.setError('quantity', 'Not enough stock available')
+            return
         }
 
         console.log('check quantity: ', form.data.quantity)
 
         // Submit the form using Inertia
-        form.post(`/product/${product.id}/add-to-cart`), {
+        form.post(`/product/${product.id}/add-to-cart`, {
             preserveScroll: true,
-        }
-    };
+        })
+    }
 
-
-    // changes
-
-    return(
+    return (
         <>
-            <div className="rounded-xl bg-white shadow-md  w-full h-150 flex flex-row ">
+            <div className="rounded-xl bg-white shadow-md w-full h-150 flex flex-row">
                 <div className="w-[40%] border-r border-gray-400">
                     <div className="rounded-xl flex justify-center items-start bg-gray-100 overflow-hidden m-8">
                         {product.image_url ? (
                             <img
-                            src={product.image_url}
-                            alt={product.name}
-                            className="w-full h-125 object-cover"
+                                src={product.image_url}
+                                alt={product.name}
+                                className="w-full h-125 object-cover"
                             />
                         ) : (
-                            <div className="w-full h-125 flex items-center justify-center text-gray-500 text-xl">
-                            No image
+                            <div className="w-full h-125 flex items-center justify-center text-gray-500 text-xl bg-gray-200">
+                                No image preview
                             </div>
                         )}
                     </div>

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use inertia\Inertia;
 
-class ReviewController extends Controller
+class ReviewController extends Controller 
 {
     public function viewOneProduct($id)
     {
@@ -25,8 +25,6 @@ class ReviewController extends Controller
         } else {
             $product->image_url = null; // or a default image URL if you want
         }
-
-        Log::info('image path: ', [$product->image_url]);
 
         $reviews = Review::where('product_id', $id)->with('user')->get();
 
@@ -58,7 +56,17 @@ class ReviewController extends Controller
 
     public function editReview(Request $request, $id)
     {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
         $review = Review::findOrFail($id);
+
+        if ($review->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
         $review->update([
             'rating' => $request->rating,
             'comment' => $request->comment,

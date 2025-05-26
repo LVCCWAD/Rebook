@@ -20,8 +20,6 @@ use App\Models\Shipping;
 use App\Models\Shop;
 use Illuminate\Support\Facades\Log;
 
-
-
 class UserController extends Controller
 {
     public function registerForm()
@@ -50,18 +48,18 @@ class UserController extends Controller
 
         Log::info('show request ---------->', $request->all());
 
-                $user = User::create([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'image' => $request->file('image') ? $request->file('image')->store('images/users', 'public') : null,
-                    'password' => Hash::make($request->password),
-                    'role' => $request->input('role', 'user'), // Default role is 'user'
-                ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'image' => $request->file('image') ? $request->file('image')->store('images/users', 'public') : null,
+            'password' => Hash::make($request->password),
+            'role' => $request->input('role', 'user'), // Default role is 'user'
+        ]);
 
-                Auth::login($user);
-                return redirect()
-                    ->route('user.dashboard')
-                    ->with('success', 'User registered successfully.');
+        Auth::login($user);
+        return redirect()
+            ->route('user.dashboard')
+            ->with('success', 'User registered successfully.');
     }
 
     public function loginForm()
@@ -71,42 +69,36 @@ class UserController extends Controller
     }
 
     public function login(Request $request)
-            {
-                $credentials = $request->only('email', 'password');
+    {
+        $credentials = $request->only('email', 'password');
 
-                if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
+            return redirect()->route('user.dashboard')->with('success', 'Logged in successfully.');
+            // return redirect()
+            //     ->route('user.dashboard')
+            //     ->with('success', 'Logged in successfully.');
+        }
 
-                    return redirect()->route('user.dashboard')->with('success', 'Logged in successfully.');
+        // Check if user with that email exists
+        $user = User::where('email', $request->email)->first();
 
-                    // return redirect()
-                    //     ->route('user.dashboard')
-                    //     ->with('success', 'Logged in successfully.');
-
-                }
-
-
-
-            // Check if user with that email exists
-            $user = User::where('email', $request->email)->first();
-
-            if (!$user) {
-                return back()->withErrors([
-                    'email' => 'Invalid email address.',
-                ]);
-            }
-
-            // If user exists, check password
-            if (!Hash::check($request->password, $user->password)) {
-                return back()->withErrors([
-                    'password' => 'Incorrect password.',
-                ]);
-            }
-
-            // Fallback (should not normally reach here)
+        if (!$user) {
             return back()->withErrors([
-                'login' => 'Login failed. Please check your credentials.',
+                'email' => 'Invalid email address.',
             ]);
+        }
 
+        // If user exists, check password
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => 'Incorrect password.',
+            ]);
+        }
+
+        // Fallback (should not normally reach here)
+        return back()->withErrors([
+            'login' => 'Login failed. Please check your credentials.',
+        ]);
 
         // return back()->withErrors(['error' => 'backend validation error']);
         // return redirect()->back()->with('error', 'Invalid credentials.');
@@ -127,7 +119,6 @@ class UserController extends Controller
 
         // return view('user.dashboard', compact('user', 'categories', 'notifications', 'unreadNotifications'));
 
-
         // Get authenticated user
         $user = Auth::user();
 
@@ -136,7 +127,7 @@ class UserController extends Controller
         $products->transform(function ($product) {
             $product->image_url = $product->image
                 ? asset('storage/' . $product->image)
-                : asset('images/default.png');
+                : null;
             return $product;
         });
 
@@ -148,23 +139,23 @@ class UserController extends Controller
             ->take(10)
             ->get()
             ->map(function ($item) {
-            $product = Product::find($item->product_id);
-            $latestReview = Review::where('product_id', $item->product_id)
-                ->orderByDesc('created_at')
-                ->first();
+                $product = Product::find($item->product_id);
+                $latestReview = Review::where('product_id', $item->product_id)
+                    ->orderByDesc('created_at')
+                    ->first();
 
-            if ($product) {
-                $product->image_url = $product->image
-                ? asset('storage/' . $product->image)
-                : asset('images/default.png');
-            }
+                if ($product) {
+                    $product->image_url = $product->image
+                        ? asset('storage/' . $product->image)
+                        : asset('images/default.png');
+                }
 
-            return [
-                'product' => $product,
-                'latest_review' => $latestReview,
-                'avg_rating' => round($item->avg_rating, 2),
-                'review_count' => $item->review_count,
-            ];
+                return [
+                    'product' => $product,
+                    'latest_review' => $latestReview,
+                    'avg_rating' => round($item->avg_rating, 2),
+                    'review_count' => $item->review_count,
+                ];
             });
 
         return Inertia::render('Dashboard/Dashboard', [
@@ -177,9 +168,6 @@ class UserController extends Controller
 
     public function becomeSellerView()
     {
-        // return view('user.become_seller');
-
-        // react
         $user = Auth::user();
 
         if (!$user) {
@@ -189,6 +177,14 @@ class UserController extends Controller
         // Get all products belonging to the current seller
         $products = Product::where('seller_id', $user->id)->get();
 
+        // Add image_url to products
+        $products->transform(function ($product) {
+            $product->image_url = $product->image
+                ? asset('storage/' . $product->image)
+                : null;
+            return $product;
+        });
+
         // Extract the IDs of the seller's products
         $productIds = $products->pluck('id');
 
@@ -196,6 +192,16 @@ class UserController extends Controller
         $orderItems = OrderItem::whereIn('product_id', $productIds)
             ->with(['order', 'product'])
             ->get();
+
+        // Transform orderItems to add image_url to each product
+        $orderItems->transform(function ($orderItem) {
+            if ($orderItem->product) {
+                $orderItem->product->image_url = $orderItem->product->image
+                    ? asset('storage/' . $orderItem->product->image)
+                    : null;
+            }
+            return $orderItem;
+        });
 
         // Extract the unique orders from the OrderItems
         $orders = $orderItems->pluck('order')->unique('id')->values();
@@ -222,7 +228,6 @@ class UserController extends Controller
 
     public function becomeSeller(Request $request)
     {
-
         $user = Auth::user();
 
         User::where('id', $user->id)->update(['role' => 'seller']);
@@ -231,8 +236,6 @@ class UserController extends Controller
 
         return back();
     }
-
-
     public function logout()
     {
         Auth::logout();
@@ -240,7 +243,8 @@ class UserController extends Controller
     }
 
     // --- React Test ---
-    public function test(){
+    public function test()
+    {
         $carts = Cart::all();
         $cartItems = CartItem::all();
         $categories = Category::all();
@@ -268,4 +272,3 @@ class UserController extends Controller
         ]);
     }
 }
-
