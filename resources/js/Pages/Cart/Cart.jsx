@@ -1,22 +1,24 @@
-import React, { useState } from "react";
-import Header from "../../Components/DashboardComponents/Header";
-import Navigation from "../../Components/DashboardComponents/Navigation";
-import Body from "../../Components/CartComponents/Body";
+import React, { useState } from "react"
+import Header from "../../Components/DashboardComponents/Header"
+import Navigation from "../../Components/DashboardComponents/Navigation"
+import Body from "../../Components/CartComponents/Body"
+import { usePage } from "@inertiajs/react"
 
-export default function Cart(){
-
-    return(
+export default function Cart() {
+    const { user, cart, cartItems, shippingAddresses, orders , products} = usePage().props
+    return (
         <>
-            {/* --- CART PAGE --- */}
+            <Header />
+            <Navigation />
 
-                {/* --- HEADER --- */}
-                <Header />
-
-                {/* --- NAVIGATION --- */}
-                <Navigation />
-
-                {/* --- BODY --- */}
-                <Body />
-</>
+            <Body
+                user={user}
+                cart={cart}
+                cart_Items={cartItems}
+                shippingAddresses={shippingAddresses}
+                orders={orders}
+                products={products}
+            />
+        </>
     )
 }

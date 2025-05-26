@@ -13,7 +13,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -76,7 +77,7 @@ class User extends Authenticatable
 
     public function shippings(): HasMany
     {
-        return $this->hasMany(Shipping::class);
+        return $this->hasMany(Shipping::class, 'user_id', 'id');
     }
 
     public function isSeller(): bool

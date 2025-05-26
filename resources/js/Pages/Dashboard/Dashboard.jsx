@@ -1,77 +1,56 @@
-import React, { useEffect } from "react";
-import Header from "../../Components/DashboardComponents/Header";
-import Navigation from "../../Components/DashboardComponents/Navigation";
-import Body from "../../Components/DashboardComponents/Body";
-import { Link, usePage } from "@inertiajs/react";
+import React, { useState, useEffect } from "react"
+import Header from "../../Components/DashboardComponents/Header"
+import Navigation from "../../Components/DashboardComponents/Navigation"
+import Body from "../../Components/DashboardComponents/Body"
+import { Link, usePage } from "@inertiajs/react"
 
-
-export default function Dashboard({}){
-
+export default function Dashboard() {
+    // Extracting props from the page using Inertia's usePage hook
     const {
         user,
         categories,
-        products
-    } = usePage().props;
+        products,
+        reviewedProducts
+    } = usePage().props
 
-    return(
+    // State to manage filtered products and search status
+    const [filteredProducts, setFilteredProducts] = useState(products)
+    const [isSearching, setIsSearching] = useState(false)
+
+    // Update filtered products when products prop changes
+    useEffect(() => {
+        setFilteredProducts(products)
+    }, [products])
+
+    // Function to handle product search logic
+    function handleSearchProduct(searchTerm) {
+
+        if (!searchTerm || searchTerm.trim() === '') {
+            setFilteredProducts(products)
+            setIsSearching(false)
+        } else {
+            const filtered = products.filter(product =>
+                product.name.toLowerCase().includes(searchTerm.toLowerCase().trim())
+            )
+            setFilteredProducts(filtered)
+            setIsSearching(true)
+        }
+    }
+
+    return (
         <>
-            {/* --- DASHBOARD ---*/}
-
-            {/* --- Header --- */}
-            <Header />
-
-            {/* --- Navigation --- */}
-            <Navigation />
-
-            {/* --- Body --- */}
+            {/* Rendering the dashboard components */}
+            <Header user={user} searchProduct={handleSearchProduct}/>
+            {/* Navigation component with filtered products passed as props */}
+            <Navigation reviewedProducts={reviewedProducts} />
+            {/* Body component with user, categories, and filtered products passed as props */}
             <Body
                 user={user}
                 categories={categories}
-                products={products}
+                products={filteredProducts}
+                searchProduct={handleSearchProduct}
+                isSearching={isSearching}
             />
-
-            {/* --- Footer --- */}
-
-
-            {/* ========= END ========= */}
-            <Link
-                href='/logout'
-                method='post'
-                as='button'
-                className='p-4 m-4 border rounded-md '
-            >
-                    Logout
-            </Link>
-            {/* <hr className="mt-20"/>
-                <div className="flex flex-row justify-center items-center">
-                </div>
-
-            <hr />
-                <h2 className="text-2xl">CATEGORY</h2>
-                <ul>
-                    {category?.map((item) => (
-                        <li key={item.id}>{item.name}</li>
-                    ))}
-                </ul>
-
-            <hr />
-                <h2 className="text-2xl">USER</h2>
-
-                 <h1>Welcome, {user.name}</h1>
-            <hr />
-                <h2 className="text-2xl">Product</h2>
-
-                {products && products.length > 0 ?
-                (
-                    <ul>
-                        {products.map((product) => (
-                            <li key={product.id}>{product.name}</li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No products available.</p>
-                )} */}
-
         </>
     )
 }

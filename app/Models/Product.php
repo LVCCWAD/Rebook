@@ -35,7 +35,6 @@ class Product extends Model
     public function categories(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
-        // has many ba to??
     }
 
     public function carts(): BelongsToMany
@@ -48,5 +47,10 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(User::class, 'seller_id'); // Assuming 'seller_id' is the foreign key in your 'products' table referencing the 'users' table
     }
 }

@@ -14,8 +14,53 @@ export default defineConfig({
     ],
 
     server: {
-        // host: 'localhost',
-        host: '127.0.0.1',
         port: 5173,
-    },
+        strictPort: true,
+        cors: true,
+    }
+
+    // TEST SERVER HOST
+    // server:{
+    //     host: 'http://localhost:8000',
+    //     port: 5173,
+    // }
+
+    // server: {
+    //     host: '127.0.0.1',
+    //     port: 5173,
+    //     strictPort: true,
+    //     cors: true,
+    //     hmr: {
+    //         host: '127.0.0.1',
+    //         protocol: 'ws',
+    //         port: 5173,
+    //     },
+    // }
+
+//     server: {
+//   host: '127.0.0.1',
+//   port: 5173,
+//   strictPort: true,
+// //   cors: true,
+//   hmr: {
+//     host: '127.0.0.1',
+//     protocol: 'ws',
+//     port: 5173,
+//   },
+// }
+
+//   server: {
+//     host: '127.0.0.1',
+//     port: 5173,
+//     strictPort: true,
+//     cors: true,
+//     hmr: {
+//       host: '127.0.0.1',
+//       protocol: 'ws',
+//       port: 5173,
+//     },
+//   },
+
+
+
 });

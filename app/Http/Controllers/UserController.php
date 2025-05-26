@@ -20,14 +20,12 @@ use App\Models\Shipping;
 use App\Models\Shop;
 use Illuminate\Support\Facades\Log;
 
-
-
 class UserController extends Controller
 {
     public function registerForm()
     {
-        return view('user.register');
-        // return Inertia::render('Auth/Register');
+        // return view('user.register');
+        return Inertia::render('Auth/Register');
     }
 
     public function register(Request $request)
@@ -48,7 +46,7 @@ class UserController extends Controller
             'password.confirmed' => 'Passwords do not match',
         ]);
 
-Log::info('show request ---------->', $request->all());
+        Log::info('show request ---------->', $request->all());
 
         $user = User::create([
             'name' => $request->name,
@@ -66,8 +64,8 @@ Log::info('show request ---------->', $request->all());
 
     public function loginForm()
     {
-        return view('user.login');
-        // return Inertia::render('Auth/Login');
+        // return view('user.login');
+        return Inertia::render('Auth/Login');
     }
 
     public function login(Request $request)
@@ -75,38 +73,32 @@ Log::info('show request ---------->', $request->all());
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-
-             return redirect()->route('user.dashboard')->with('success', 'Logged in successfully.');
-
+            return redirect()->route('user.dashboard')->with('success', 'Logged in successfully.');
             // return redirect()
             //     ->route('user.dashboard')
             //     ->with('success', 'Logged in successfully.');
-
         }
 
+        // Check if user with that email exists
+        $user = User::where('email', $request->email)->first();
 
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Invalid email address.',
+            ]);
+        }
 
-      // Check if user with that email exists
-    $user = User::where('email', $request->email)->first();
+        // If user exists, check password
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => 'Incorrect password.',
+            ]);
+        }
 
-    if (!$user) {
+        // Fallback (should not normally reach here)
         return back()->withErrors([
-            'email' => 'Invalid email address.',
+            'login' => 'Login failed. Please check your credentials.',
         ]);
-    }
-
-    // If user exists, check password
-    if (!Hash::check($request->password, $user->password)) {
-        return back()->withErrors([
-            'password' => 'Incorrect password.',
-        ]);
-    }
-
-    // Fallback (should not normally reach here)
-    return back()->withErrors([
-        'login' => 'Login failed. Please check your credentials.',
-    ]);
-
 
         // return back()->withErrors(['error' => 'backend validation error']);
         // return redirect()->back()->with('error', 'Invalid credentials.');
@@ -114,82 +106,145 @@ Log::info('show request ---------->', $request->all());
 
     public function dashboard(Request $request)
     {
-        $user = Auth::user();
+        // $user = Auth::user();
         $categories = Category::all();
-        $product = Product::all();
+        // $product = Product::all();
 
-        return view('user.dashboard', compact('user', 'categories'));
+        // // return view('user.dashboard', compact('user', 'categories'));
 
+        // $unreadNotifications = $user->unreadNotifications;
+        // $unreadNotifications->markAsRead();
 
-        // if ($request->has('category_id')){
-        //     $product = Product::where('category_id', $request->category_id)->get();
-        // } else {
-        //     $product = Product::all();
-        // }
+        // $notifications = $user->notifications()->latest()->take(10)->get();
 
-        // return Inertia::render('Dashboard/Dashboard', [
-        //     'user' => $user,
-        //     'categories' => $categories,
-        //     'products' => $product,
-        // ]);
+        // return view('user.dashboard', compact('user', 'categories', 'notifications', 'unreadNotifications'));
+
+        // Get authenticated user
+        $user = Auth::user();
+
+        // Get all products with image URLs
+        $products = Product::all();
+        $products->transform(function ($product) {
+            $product->image_url = $product->image
+                ? asset('storage/' . $product->image)
+                : null;
+            return $product;
+        });
+
+        // Get top 10 products ordered by number of reviews (highest first), then by average review rating (highest first)
+        $reviewedProducts = Review::selectRaw('product_id, AVG(rating) as avg_rating, COUNT(*) as review_count')
+            ->groupBy('product_id')
+            ->orderByDesc('review_count')   // 1. Order by number of reviews
+            ->orderByDesc('avg_rating')     // 2. Then by average rating
+            ->take(10)
+            ->get()
+            ->map(function ($item) {
+                $product = Product::find($item->product_id);
+                $latestReview = Review::where('product_id', $item->product_id)
+                    ->orderByDesc('created_at')
+                    ->first();
+
+                if ($product) {
+                    $product->image_url = $product->image
+                        ? asset('storage/' . $product->image)
+                        : asset('images/default.png');
+                }
+
+                return [
+                    'product' => $product,
+                    'latest_review' => $latestReview,
+                    'avg_rating' => round($item->avg_rating, 2),
+                    'review_count' => $item->review_count,
+                ];
+            });
+
+        return Inertia::render('Dashboard/Dashboard', [
+            'user' => $user,
+            'categories' => $categories,
+            'products' => $products,
+            'reviewedProducts' => $reviewedProducts,
+        ]);
     }
 
     public function becomeSellerView()
     {
-        return view('user.become_seller');
+        $user = Auth::user();
 
+        if (!$user) {
+            return redirect()->route('login');
+        }
 
-    //   $user = Auth::user();
+        // Get all products belonging to the current seller
+        $products = Product::where('seller_id', $user->id)->get();
 
+        // Add image_url to products
+        $products->transform(function ($product) {
+            $product->image_url = $product->image
+                ? asset('storage/' . $product->image)
+                : null;
+            return $product;
+        });
 
+        // Extract the IDs of the seller's products
+        $productIds = $products->pluck('id');
 
-    //     // Ensure user is a seller
-    //     if (!$user->isSeller()) {
-    //         abort(403, 'Unauthorized');
-    //     }
+        // Retrieve OrderItems that contain the seller's products
+        $orderItems = OrderItem::whereIn('product_id', $productIds)
+            ->with(['order', 'product'])
+            ->get();
 
-    //     // Get products sold by this seller (via shop)
-    //     $products = Product::where('seller_id', $user->id)->pluck('id');
+        // Transform orderItems to add image_url to each product
+        $orderItems->transform(function ($orderItem) {
+            if ($orderItem->product) {
+                $orderItem->product->image_url = $orderItem->product->image
+                    ? asset('storage/' . $orderItem->product->image)
+                    : null;
+            }
+            return $orderItem;
+        });
 
-    //     // Get all order items that include the seller's products
-    //     $orderItems = OrderItem::whereIn('product_id', $products)
-    //         ->with(['order', 'product'])
-    //         ->get();
+        // Extract the unique orders from the OrderItems
+        $orders = $orderItems->pluck('order')->unique('id')->values();
 
-    //     // Extract unique orders
-    //     $orders = $orderItems->pluck('order')->unique('id')->values();
+        $shop = $user->shop; // assumes a User hasOne Shop relationship
+        $categories = Category::all(); // if relevant to seller
+        $seller_id = $user->id;
 
-    //     // Pass data to Inertia
-    //     return Inertia::render('Seller/Seller', [
-    //         'user' => $user,
-    //         'orders' => $orders,
-    //         'products' => $products,
-    //     ]);
+        $shippings = Shipping::all();
+        $allUsers = User::all();
+
+        return Inertia::render('Seller/Seller', [
+            'user' => $user,
+            'seller_id' => $seller_id,
+            'shop' => $shop,
+            'categories' => $categories,
+            'orderItems' => $orderItems,
+            'products' => $products,
+            'orders' => $orders,
+            'shippings' => $shippings,
+            'allUsers' => $allUsers,
+        ]);
     }
 
     public function becomeSeller(Request $request)
     {
-
         $user = Auth::user();
 
-        $user->update([
-            'role' => 'seller',
-        ]);
+        User::where('id', $user->id)->update(['role' => 'seller']);
 
         // return redirect()->route('shop.create')->with('success', 'You are now a seller.');
-        return redirect()->route('user.become_seller');
+
+        return back();
     }
-
-
     public function logout()
     {
         Auth::logout();
         return redirect()->route('login')->with('success', 'Logged out successfully.');
     }
 
-
     // --- React Test ---
-    public function test(){
+    public function test()
+    {
         $carts = Cart::all();
         $cartItems = CartItem::all();
         $categories = Category::all();
@@ -217,4 +272,3 @@ Log::info('show request ---------->', $request->all());
         ]);
     }
 }
-
