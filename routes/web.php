@@ -97,6 +97,5 @@ Route::middleware(['auth', 'seller'])->group(function () {
 
 
 
-
 // react
 Route::get('/', [UserController::class, 'test']);
