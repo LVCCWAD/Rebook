@@ -17,16 +17,17 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
-    public function storeOrder(Request $request)
+  public function storeOrder(Request $request)
     {
         $request->validate([
             'selected_items' => 'required|array|min:1',
             'selected_items.*' => 'exists:products,id',
+            'shipping_address_id' => 'required|exists:shippings,id', // Ensure shipping address is provided
         ]);
 
         $user = Auth::user();
 
-        $cart = Cart::where('user_id', $user->id)->with('products')->first();
+        $cart = Cart::where('user_id', $user->id)->with('products.seller')->first();
 
         if (!$cart || $cart->products->isEmpty()) {
             return response()->json([
@@ -34,47 +35,49 @@ class OrderController extends Controller
             ]);
         }
 
-        $selectedProductsIds = $request->input('selected_items');
-
-        $selectedProducts = $cart->products->whereIn('id', $selectedProductsIds);
+        $selectedProductIds = $request->input('selected_items');
+        $selectedProducts = $cart->products->whereIn('id', $selectedProductIds);
 
         if ($selectedProducts->isEmpty()) {
             return redirect()->back()->with('error', 'No products selected.');
         }
 
-        $total = $selectedProducts->sum(function ($product) {
-            return $product->price * $product->pivot->quantity;
-        });
+        // Group selected products by seller
+        $productsBySeller = $selectedProducts->groupBy('seller_id');
 
+        foreach ($productsBySeller as $sellerId => $products) {
+            $total = $products->sum(function ($product) {
+                return $product->price * $product->pivot->quantity;
+            });
 
-        $order = Order::create([
-            'user_id' => $user->id,
-            'cart_id' => $cart->id,
-            'status' => 'pending',
-            'total' => $total
-        ]);
-
-        Shipping::where('id', $request->shipping_address_id)
-        ->update(['order_id' => $order->id]);
-
-
-        foreach ($selectedProducts as $product) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-                'quantity' => $product->pivot->quantity,
-                'price' => $product->price,
+            // Create a new order for each seller
+            $order = Order::create([
+                'user_id' => $user->id,
+                'cart_id' => $cart->id,
+                'seller_id' => $sellerId, // Associate the order with the seller
+                'status' => 'pending',
+                'total' => $total,
+                'shipping_address_id' => $request->shipping_address_id, // Apply the same shipping address to all orders for now
             ]);
 
-            // Remove the product from the cart
-            $cart->products()->detach($product->id);
+            // Create order items for the products in this seller's group
+            foreach ($products as $product) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $product->pivot->quantity,
+                    'price' => $product->price,
+                ]);
+
+                // Remove the product from the cart
+                $cart->products()->detach($product->id);
+            }
         }
 
         // Optionally, you can reload the cart to reflect the changes
         $cart->load('products');
 
-        // return redirect()->route('order.show', $order->id)->with('success', 'Order placed successfully.');
-        return redirect()->back()->with('success', 'Order placed successfully and items removed from cart.');
+        return redirect()->back()->with('success', 'Orders placed successfully and items removed from cart.');
     }
 
     public function showOrder($id)

@@ -3,7 +3,6 @@ import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 
 // reviewedProducts should be an array of objects like:
-// [{ key: 'WirelessEarbuds', label: 'Wireless Earbuds' }, ...]
 
 export default function Navigation({ reviewedProducts = [] }) {
     const [products, setProducts] = useState(reviewedProducts);
@@ -31,7 +30,7 @@ export default function Navigation({ reviewedProducts = [] }) {
                 {/* --- Dynamically Rendered Product Links --- */}
                 {reviewedProducts.map(product => (
                     <div
-                        key={product.product.id} // ✅ use the actual product ID
+                        key={product.product.id}
                         className="hover:bg-red-800 hover:text-white hover:rounded-2xl hover:px-2 px-2"
                     >
                         <Link

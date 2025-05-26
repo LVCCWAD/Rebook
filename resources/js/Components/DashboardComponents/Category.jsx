@@ -44,7 +44,18 @@ function Category({ onSendData, categories, products }) {
                             className="flex flex-col items-center w-52 flex-shrink-0"
                         >
                             <div className="rounded-full shadow-lg p-8 bg-white">
-                                <img src={category.image || notebook} alt={category.name} className="w-30 h-30 object-contain" />
+
+                                {categories.image_url ? (
+                                    <img
+                                        src={category.image_url}
+                                        alt={category.name}
+                                        className="w-30 h-30 object-contain"
+                                    />
+                                ) : (
+                                    <div className="w-30 h-30 flex items-center justify-center rounded-full shadow-md bg-gray-100 text-gray-500">
+                                        No image preview
+                                    </div>
+                                )}
                             </div>
                             <p className="mt-2 text-xl text-[#5a1c1c] text-center">{category.name}</p>
                         </button>

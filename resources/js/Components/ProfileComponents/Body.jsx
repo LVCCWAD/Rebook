@@ -32,14 +32,19 @@ export default function Body({ user, orders, orderItems, products }) {
     // This will determine which component to render in the main area
     const [activeComponent, setActiveComponent] = useState('profile')
 
+    // Function to get the first letter of user's name
+    const getFirstLetter = () => {
+        return user?.name ? user.name.charAt(0).toUpperCase() : 'U'
+    }
+
     return (
         <>
             <div className="mx-[10%] flex h-auto mt-20 rounded-xl bg-white shadow-md mb-20">
                 <div className="w-md flex flex-col items-center m-4">
                     <div className="w-full h-24 flex flex-row justify-start items-center bg-white shadow-md rounded-xl mb-4">
-                        <div className="bg-purple-500 ml-4 text-white w-12 h-12 rounded-full shadow-md flex items-center justify-center">
+                        <div className="bg-purple-500 ml-4 text-white w-14 h-12 rounded-full shadow-md flex items-center justify-center">
                             {/* First letter of user without uploaded image */}
-                            <span className="m-12 text-xl font-semibold">A</span>
+                            <span className="text-xl font-semibold">{getFirstLetter()}</span>
                         </div>
                         {/* --- ACCOUNT DESCRIPTION --- */}
                         <div className="w-full flex flex-row justify-around ">
