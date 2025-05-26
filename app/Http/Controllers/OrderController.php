@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Events\OrderPlaced;
 use App\Models\Cart;
 use App\Models\Order;
@@ -12,12 +11,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\OrderPlacedNotification;
-
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Event;
 
 class OrderController extends Controller
 {
-  public function storeOrder(Request $request)
+    public function storeOrder(Request $request)
     {
         $request->validate([
             'selected_items' => 'required|array|min:1',
@@ -60,6 +59,9 @@ class OrderController extends Controller
                 'shipping_address_id' => $request->shipping_address_id, // Apply the same shipping address to all orders for now
             ]);
 
+            // Eager load the user relationship immediately after creating the order
+            $order->load('user');
+
             // Create order items for the products in this seller's group
             foreach ($products as $product) {
                 OrderItem::create([
@@ -72,6 +74,9 @@ class OrderController extends Controller
                 // Remove the product from the cart
                 $cart->products()->detach($product->id);
             }
+
+            // **Dispatch the OrderPlaced event for the current order**
+            Event::dispatch(new OrderPlaced($order));
         }
 
         // Optionally, you can reload the cart to reflect the changes
@@ -82,7 +87,6 @@ class OrderController extends Controller
 
     public function showOrder($id)
     {
-
         $user = Auth::user();
 
         $order = Order::with('orderItems.product', 'payment', 'shipping')->findOrFail($id);
@@ -120,8 +124,8 @@ class OrderController extends Controller
 
         // Get the shipping address directly from the database instead of using the relationship
         $shipping = Shipping::where('user_id', Auth::id())
-                           ->where('id', $request->shipping_id)
-                           ->firstOrFail();
+            ->where('id', $request->shipping_id)
+            ->firstOrFail();
 
         $order->shipping_id = $shipping->id;
         $order->save();
