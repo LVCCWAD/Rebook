@@ -43,6 +43,13 @@
         <h2>Manage Cart</h2>
         @foreach ($cart->products as $product)
             <!-- Update quantity form -->
+
+            {{-- error if quantity exceeds the stocks--}}
+            @if (session('error'))
+                <div style="color: red; margin-bottom: 10px;">
+                    {{ session('error') }}
+                </div>
+            @endif
             <form action="{{ route('cart.update', $product->id) }}" method="POST" style="margin-bottom: 10px;">
                 @csrf
                 @method('PUT')
