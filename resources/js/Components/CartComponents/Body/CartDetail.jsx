@@ -6,8 +6,9 @@ import CartActions from "./CartAction"
 import CartItemList from "./CartItemList"
 import CartSummary from "./CartSummary"
 import CheckoutButton from "./CheckoutButton"
+import SendorderConfirmation from "./ShowEvents/SendorderConfirmation"
 
-function CartDetail({ user, cart, cart_Items, shippingAddresses, orders, checkout, products }) {
+function CartDetail({ user, cart, cart_Items, shippingAddresses, orders, checkout, products, orderPlacedNotification, orderPlacedMessage }) {
     const [selectedAddress, setSelectedAddress] = useState(null)
     const [showSuccessMessage, setShowSuccessMessage] = useState(false)
     const [isCheckingOut, setIsCheckingOut] = useState(false)
@@ -237,6 +238,9 @@ function CartDetail({ user, cart, cart_Items, shippingAddresses, orders, checkou
                     subtotal={subtotal}
                     selectedAddress={selectedAddress}
                 />
+
+                {/* order place event and listener */}
+                <SendorderConfirmation orderPlacedNotification={orderPlacedNotification} orderPlacedMessage={orderPlacedMessage} />
 
                 {/* Checkout Button */}
                 <CheckoutButton

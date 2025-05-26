@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\Session;
+
 class CartController extends Controller
 {
 
@@ -49,6 +51,9 @@ class CartController extends Controller
             return $product;
         });
 
+        $orderPlacedNotification = Session::get('order_placed_notification');
+        $orderPlacedMessage = Session::get('order_placed_message');
+
         return Inertia::render('Cart/Cart', [
             'user' => $user,
             'cart' => $cart,
@@ -56,6 +61,8 @@ class CartController extends Controller
             'shippingAddresses' => $shippingAddresses,
             'orders' => $orders,
             'products' => $products,
+            'orderPlacedNotification' => $orderPlacedNotification,
+            'orderPlacedMessage' => $orderPlacedMessage,
         ]);
     }
 

@@ -5,7 +5,15 @@ import Body from "../../Components/CartComponents/Body"
 import { usePage } from "@inertiajs/react"
 
 export default function Cart() {
-    const { user, cart, cartItems, shippingAddresses, orders , products} = usePage().props
+    const { user,
+        cart,
+        cartItems,
+        shippingAddresses,
+        orders ,
+        products,
+        orderPlacedNotification,
+        orderPlacedMessage
+    } = usePage().props
     return (
         <>
             <Header />
@@ -18,6 +26,8 @@ export default function Cart() {
                 shippingAddresses={shippingAddresses}
                 orders={orders}
                 products={products}
+                orderPlacedNotification={orderPlacedNotification}
+                orderPlacedMessage={orderPlacedMessage}
             />
         </>
     )

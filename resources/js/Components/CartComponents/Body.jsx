@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import CartDetail from "../CartComponents/Body/CartDetail"
 
-function Body({ user, cart, cart_Items, shippingAddresses, orders, products}) {
+function Body({ user, cart, cart_Items, shippingAddresses, orders, products, orderPlacedNotification, orderPlacedMessage }) {
     return (
         <>
             <CartDetail
@@ -11,6 +11,8 @@ function Body({ user, cart, cart_Items, shippingAddresses, orders, products}) {
                 shippingAddresses={shippingAddresses}
                 orders={orders}
                 products={products}
+                orderPlacedNotification={orderPlacedNotification}
+                orderPlacedMessage={orderPlacedMessage}
             />
         </>
     );
