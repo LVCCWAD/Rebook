@@ -42,6 +42,7 @@ class PaymentController extends Controller
             'status' => 'completed', 
         ]);
 
+        
         //conditions whether it will be cancelled or not(not required yet)
 
         $user->notify(new OrderPlacedNotification($order));
