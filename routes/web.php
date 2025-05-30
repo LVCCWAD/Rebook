@@ -14,6 +14,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShippingController;
+use App\Http\Controllers\GoogleAuthController;
+
+// FRONTEND
 use App\Models\Shipping;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
@@ -114,6 +117,10 @@ Route::get('/check-sales-reminder', function () {
 
 //Notification
 Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->middleware('auth')->name('notifications.index');
+
+//GoogleSocialite
+Route::get('/auth', [GoogleAuthController::class, 'redirect'])->name('google-auth');
+Route::get('/auth/google/call-back', [GoogleAuthController::class, 'redirect'])->name('google-auth');
 
 // react
 Route::get('/', [UserController::class, 'test']);

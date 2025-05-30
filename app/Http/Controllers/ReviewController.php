@@ -66,7 +66,7 @@ class ReviewController extends Controller
         if ($review->user_id !== Auth::id()) {
             abort(403, 'Unauthorized');
         }
-
+      
         $review->update([
             'rating' => $request->rating,
             'comment' => $request->comment,
