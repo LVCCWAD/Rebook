@@ -4,7 +4,7 @@ import pen from "../../../../public/Assets/Dashboard/Product/pen.jpg"
 import iconCart from "../../../../public/Assets/Dashboard/Product/iconCart.png"
 import iconStar1 from "../../../../public/Assets/Dashboard/Product/iconStar1.png"
 
-function Product({ title, products }) {
+function Product({ title, products, productsRating }) {
     return (
         <>
             <h2 className="shadow-md border-b mt-20 text-3xl font-bold text-[#5a1c1c] border-gray-300 py-4 uppercase text-center mb-8">
@@ -47,7 +47,9 @@ function Product({ title, products }) {
                                 {/* --- NUMBER --- */}
                                 <span>
                                     {/* logic rating */}
-                                    {5}
+                                    {parseFloat((productsRating?.[product.id] || 0).toFixed(2))
+                                        ? parseFloat((productsRating?.[product.id] || 0).toFixed(2))
+                                        : "No rating yet"}
                                 </span>
                             </div>
 

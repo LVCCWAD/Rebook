@@ -13,6 +13,7 @@ use inertia\Inertia;
 
 class ProfileController extends Controller
 {
+    
     public function showProfile()
     {
         // $user = Auth::user();
@@ -58,25 +59,6 @@ class ProfileController extends Controller
             'image' => $request->file('image') ? $request->file('image')->store('images/users', 'public') : $user->image,
         ]);
         return redirect()->route('user.profile')->with('success', 'Profile updated successfully.');
-
-    }
-
-     public function placeOrder(Request $request){
-
-        //Validate and Create Order
-        $order = Order::create([
-            'user_id' =>Auth::id(),
-            'total' => $request->input('total'),
-        ]);
-
-        //Notify the User
-        $user = Auth::user();
-        if ($user) {
-            \Illuminate\Support\Facades\Notification::send($user, new OrderPlacedNotification($order));
-        }
-
-        return redirect()->route('order.show', $order->id)
-                         ->with('success', 'Order placed successfully!');
 
     }
 

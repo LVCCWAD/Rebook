@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react"
+import { Link, usePage } from "@inertiajs/react"
+import ShowSaleReminder from "./ShowSalesReminder"
 import Header from "../../Components/DashboardComponents/Header"
 import Navigation from "../../Components/DashboardComponents/Navigation"
 import Body from "../../Components/DashboardComponents/Body"
-import { Link, usePage } from "@inertiajs/react"
 
 export default function Dashboard() {
     // Extracting props from the page using Inertia's usePage hook
@@ -10,7 +11,9 @@ export default function Dashboard() {
         user,
         categories,
         products,
-        reviewedProducts
+        reviewedProducts,
+        productsRating,
+        showSalesPopup,
     } = usePage().props
 
     // State to manage filtered products and search status
@@ -21,6 +24,7 @@ export default function Dashboard() {
     useEffect(() => {
         setFilteredProducts(products)
     }, [products])
+
 
     // Function to handle product search logic
     function handleSearchProduct(searchTerm) {
@@ -39,17 +43,22 @@ export default function Dashboard() {
 
     return (
         <>
+
             {/* Rendering the dashboard components */}
             <Header user={user} searchProduct={handleSearchProduct}/>
             {/* Navigation component with filtered products passed as props */}
             <Navigation reviewedProducts={reviewedProducts} />
             {/* Body component with user, categories, and filtered products passed as props */}
+
+            <ShowSaleReminder showSalesPopup={showSalesPopup}/>
+
             <Body
                 user={user}
                 categories={categories}
                 products={filteredProducts}
                 searchProduct={handleSearchProduct}
                 isSearching={isSearching}
+                productsRating={productsRating}
             />
         </>
     )
