@@ -18,6 +18,7 @@ use Inertia\Inertia;
 use App\Models\Review;
 use App\Models\Shipping;
 use App\Models\Shop;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -106,18 +107,7 @@ class UserController extends Controller
 
     public function dashboard(Request $request)
     {
-        // $user = Auth::user();
         $categories = Category::all();
-        // $product = Product::all();
-
-        // // return view('user.dashboard', compact('user', 'categories'));
-
-        // $unreadNotifications = $user->unreadNotifications;
-        // $unreadNotifications->markAsRead();
-
-        // $notifications = $user->notifications()->latest()->take(10)->get();
-
-        // return view('user.dashboard', compact('user', 'categories', 'notifications', 'unreadNotifications'));
 
         // Get authenticated user
         $user = Auth::user();
@@ -158,11 +148,21 @@ class UserController extends Controller
                 ];
             });
 
+        $showSalesPopup = Cache::get('show_sales_popup', false);
+
         return Inertia::render('Dashboard/Dashboard', [
             'user' => $user,
             'categories' => $categories,
             'products' => $products,
             'reviewedProducts' => $reviewedProducts,
+            'productsRating' => $products
+                ->mapWithKeys(function ($product) {
+                    $averageRating = Review::where('product_id', $product->id)
+                        ->avg('rating');
+                    $roundedRating = round($averageRating * 2) / 2;
+                    return [$product->id => $roundedRating];
+                }),
+            'showSalesPopup' => $showSalesPopup
         ]);
     }
 
@@ -177,7 +177,7 @@ class UserController extends Controller
         // Get all products belonging to the current seller
         $products = Product::where('seller_id', $user->id)->get();
 
-        // Add image_url to products
+        // Transform products to include image URLs
         $products->transform(function ($product) {
             $product->image_url = $product->image
                 ? asset('storage/' . $product->image)

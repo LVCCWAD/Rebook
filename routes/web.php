@@ -18,6 +18,7 @@ use App\Http\Controllers\GoogleAuthController;
 
 // FRONTEND
 use App\Models\Shipping;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use inertia\Inertia;
@@ -57,6 +58,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/product/{id}/review/edit', [ReviewController::class, 'editReview'])->name('product.review.edit');
     Route::delete('/product/{id}/review/delete', [ReviewController::class, 'deleteReview'])->name('product.review.delete');
 
+
+    // Route::put('/product/{id}/review/edit', [ReviewController::class, 'editReview'])->name('product.review.edit');
+    // Route::delete('/product/{id}/review/delete', [ReviewController::class, 'deleteReview'])->name('product.review.destroy');
 
     //cart management
     Route::get('/cart/{id}', [CartController::class, 'viewCart'])->name('cart.view');
@@ -110,25 +114,58 @@ Route::middleware(['auth', 'seller'])->group(function () {
     Route::get('/shop/business-analytics', [ShopController::class, 'businessAnalytics'])->name('shop.analytics');
 });
 
-//Task Scheduling
-Route::get('/check-sales-reminder', function () {
-    return response()->json(['show' => Cache::get('show_sales_popup', false)]);
+Route::middleware(['auth', 'is_admin'])->group(function () {
+    //admin dashboard
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+    //user management
+    Route::get('/admin/users', [UserController::class, 'userManagement'])->name('admin.users');
+    Route::put('/admin/users/{id}/update', [UserController::class, 'updateUser'])->name('admin.user.update');
+    Route::delete('/admin/users/{id}/delete', [UserController::class, 'deleteUser'])->name('admin.user.delete');
+
+    //product management
+    Route::get('/admin/products', [ProductController::class, 'productManagement'])->name('admin.products');
+    Route::put('/admin/products/{id}/update', [ProductController::class, 'updateProduct'])->name('admin.product.update');
+    Route::delete('/admin/products/{id}/delete', [ProductController::class, 'deleteProduct'])->name('admin.product.delete');
+
+    //category management
+    Route::get('/admin/categories', [CategoryController::class, 'categoryManagement'])->name('admin.categories');
+    Route::post('/admin/categories/create', [CategoryController::class, 'createCategory'])->name('admin.category.create');
+    Route::put('/admin/categories/{id}/update', [CategoryController::class, 'updateCategory'])->name('admin.category.update');
+    Route::delete('/admin/categories/{id}/delete', [CategoryController::class, 'deleteCategory'])->name('admin.category.delete');
+});
+
+    //Task Scheduling
+    Route::get('/check-sales-reminder', function () {
+        return response()->json(['show' => Cache::get('show_sales_popup', false)]);
     });
 
-//Notification
-Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->middleware('auth')->name('notifications.index');
+    //Notification
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->middleware('auth')->name('notifications.index');
+    //Notification
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->middleware('auth')->name('notifications.index');
 
-//GoogleSocialite
-Route::get('/auth', [GoogleAuthController::class, 'redirect'])->name('google-auth');
-Route::get('/auth/google/call-back', [GoogleAuthController::class, 'redirect'])->name('google-auth');
 
-// react
-Route::get('/', [UserController::class, 'test']);
-Route::get('/cart-react', function() {
-    return inertia::render('Cart/Cart');
-});
-Route::get('/images/{path}', [ReviewController::class, 'image']);
+    //GoogleSocialite
+    Route::get('/auth', [GoogleAuthController::class, 'redirect'])->name('google-auth');
+    Route::get('/auth/google/call-back', [GoogleAuthController::class, 'redirect'])->name('google-auth-call-bqck');
 
-Route::get('/test', function () {
-    return response('Laravel is working!')->header('Content-Type', 'text/plain');
-});
+    // react
+    Route::get('/', [UserController::class, 'test']);
+    Route::get('/cart-react', function() {
+        return inertia::render('Cart/Cart');
+    });
+    Route::get('/images/{path}', [ReviewController::class, 'image']);
+
+        Route::get('/images/{path}', [ReviewController::class, 'image']);
+        Route::get('/test', function () {
+            return response('Laravel is working!')->header('Content-Type', 'text/plain');
+        });
+
+        // react
+        Route::get('/', [UserController::class, 'test']);
+        Route::get('/cart-react', function() {
+            return inertia::render('Cart/Cart');
+        });
+
+

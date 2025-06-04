@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\Session;
+
 class CartController extends Controller
 {
 
@@ -49,6 +51,9 @@ class CartController extends Controller
             return $product;
         });
 
+        $orderPlacedNotification = Session::get('order_placed_notification');
+        $orderPlacedMessage = Session::get('order_placed_message');
+
         return Inertia::render('Cart/Cart', [
             'user' => $user,
             'cart' => $cart,
@@ -56,6 +61,8 @@ class CartController extends Controller
             'shippingAddresses' => $shippingAddresses,
             'orders' => $orders,
             'products' => $products,
+            'orderPlacedNotification' => $orderPlacedNotification,
+            'orderPlacedMessage' => $orderPlacedMessage,
         ]);
     }
 
@@ -151,6 +158,16 @@ class CartController extends Controller
 
         $user = Auth::user();
         $cart = $user->cart;
+
+        //same error handling as in addToCart where the stock shouldn't exceed the available stock
+        if ($request->input('quantity') > $product->stock)  {
+            return redirect()->back()->with('error', 'Not enough stock available.');
+        }
+
+        if ($request->input('quantity') <= 0) {
+            return redirect()->back()->with('error', 'Quantity must be atleast 1.');
+        }
+        //check if the product is in the cart
 
         if (!$cart || !$cart->products->contains($product->id)) {
             return redirect()->back()->with('error', 'Product not found in cart.');

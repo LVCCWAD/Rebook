@@ -3,7 +3,7 @@ import Slider from "./Slider"
 import Category from "./Category"
 import Product from "./Product"
 
-function Body({user, categories, products, searchProduct, isSearching }) {
+function Body({user, categories, products, searchProduct, isSearching, productsRating }) {
     // State to manage the selected category
     const [selectedCategory, setSelectedCategory] = useState(null)
 
@@ -55,6 +55,7 @@ function Body({user, categories, products, searchProduct, isSearching }) {
                 // Title for the product section
                 title={productTitle}
                 products={productList}
+                productsRating={productsRating}
             />
         </div>
     )
