@@ -18,13 +18,18 @@ export default function Purchase({ user, orders = [], orderItems = [], products 
     });
 
     // Filter orders
-    const newFilteredOrders = ordersWithItems.filter(order => {
+    let newFilteredOrders = ordersWithItems.filter(order => {
       const matchesSearch = !searchTerm || order.items.some(item => {
         const product = products.find(p => p.id === item.product_id);
         return product && product.name && product.name.toLowerCase().includes(searchTerm.toLowerCase());
       });
       const matchesStatus = statusFilter === "all" || order.status === statusFilter;
       return matchesSearch && matchesStatus;
+    });
+
+    // Sort orders by created_at in descending order (newest first)
+    newFilteredOrders = newFilteredOrders.sort((a, b) => {
+      return new Date(b.created_at) - new Date(a.created_at);
     });
 
     setFilteredOrders(newFilteredOrders);
@@ -157,6 +162,9 @@ export default function Purchase({ user, orders = [], orderItems = [], products 
         <div className="m-4 mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600">
           Showing {filteredOrders.length} of {orders.length} orders
           {statusFilter !== 'all' && ` with status "${statusFilter}"`}
+          {filteredOrders.length > 0 && (
+            <span className="ml-2 text-blue-600">• Sorted by newest first</span>
+          )}
         </div>
       )}
     </div>

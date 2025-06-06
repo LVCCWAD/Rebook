@@ -8,11 +8,12 @@ use App\Models\Product;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use inertia\Inertia;
 
-class ReviewController extends Controller 
+class ReviewController extends Controller
 {
     public function viewOneProduct($id)
     {
@@ -28,10 +29,31 @@ class ReviewController extends Controller
 
         $reviews = Review::where('product_id', $id)->with('user')->get();
 
+         // Check if user has already ordered this product
+        $hasOrdered = false;
+        $hasReviewed = false;
+
+        if ($user) {
+            // Check if user has ordered this product (assuming you have Order and OrderItem models)
+            $hasOrdered = DB::table('orders')
+                ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+                ->where('orders.user_id', $user->id)
+                ->where('order_items.product_id', $id)
+                ->exists();
+
+            // Also check if user has already reviewed this product
+            $hasReviewed = Review::where('product_id', $id)
+                ->where('user_id', $user->id)
+                ->exists();
+        }
+
         return inertia('Product/Product', [
             'product' => $product,
             'reviews' => $reviews,
             'user' => $user,
+            'hasOrdered' => $hasOrdered,
+            'hasReviewed' => $hasReviewed,
+            'canReview' => $user && $hasOrdered && !$hasReviewed,
         ]);
     }
 

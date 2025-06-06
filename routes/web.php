@@ -16,14 +16,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ShippingController;
 use App\Models\Shipping;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GoogleController;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use inertia\Inertia;
 
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+// redirect to Google OAuth
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 Route::middleware(['guest'])->group(function () {
     //login and register
@@ -149,7 +149,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 
      // react
     Route::get('/', [UserController::class, 'test']);
-    Route::get('/cart-react', function() {
-        return inertia::render('Cart/Cart');
-    });
+    // Route::get('/cart-react', function() {
+    //     return inertia::render('Cart/Cart');
+    // });
 
