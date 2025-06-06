@@ -27,7 +27,7 @@ function Product({
         price: 0,
         description: "",
         category_id: "",
-        stock: 0,
+        stock: 1, // Set default minimum stock to 1
         image: null
     })
 
@@ -36,7 +36,7 @@ function Product({
         id: null,
         name: "",
         price: null,
-        stock: null,
+        stock: 1, // Set default minimum stock to 1
         description: "",
         category_id: "",
         image: null,
@@ -50,7 +50,7 @@ function Product({
             id: product.id,
             name: product.name,
             price: product.price,
-            stock: product.stock,
+            stock: Math.max(1, product.stock), // Ensure minimum stock of 1
             description: product.description || "",
             category_id: product.category_id || "",
             image: null,
@@ -70,10 +70,26 @@ function Product({
         return () => document.removeEventListener("mousedown", handleClickOutside)
     }, [])
 
+    // Custom validation function for stock
+    const validateStock = (stockValue) => {
+        const numStock = Number(stockValue)
+        return numStock >= 1 ? numStock : 1
+    }
+
     const handleAddProduct = (e) => {
         e.preventDefault()
 
+        // Validate stock before submission
+        const validatedStock = validateStock(data.stock)
+
+        // Update data with validated stock
+        const submitData = {
+            ...data,
+            stock: validatedStock
+        }
+
         post('/shop/create-product', {
+            data: submitData,
             onSuccess: (page) => {
                 console.log("Add response:", page)
                 if (page.props && page.props.flash && page.props.flash.newProduct) {
@@ -84,7 +100,7 @@ function Product({
                         id: Date.now(),
                         name: data.name,
                         price: data.price,
-                        stock: data.stock || 0,
+                        stock: validatedStock,
                         description: data.description,
                         category_id: data.category_id,
                         image_url: data.image instanceof File ? URL.createObjectURL(data.image) : null
@@ -96,6 +112,7 @@ function Product({
                 }
                 setShowAddModal(false)
                 reset()
+                setData('stock', 1) // Reset stock to minimum value
             },
             onError: (errors) => {
                 console.error("Validation errors:", errors)
@@ -106,7 +123,17 @@ function Product({
     const handleSaveEdit = (e) => {
         e.preventDefault()
 
+        // Validate stock before submission
+        const validatedStock = validateStock(editForm.data.stock)
+
+        // Update editForm data with validated stock
+        const submitData = {
+            ...editForm.data,
+            stock: validatedStock
+        }
+
         editForm.post(`/shop/${editingProductId}/edit-product`, {
+            data: submitData,
             onSuccess: (page) => {
                 console.log("Edit response:", page)
                 if (page.props && page.props.flash && page.props.flash.updatedProduct) {
@@ -120,6 +147,7 @@ function Product({
                     const tempUpdatedProduct = {
                         ...editForm.data,
                         id: editingProductId,
+                        stock: validatedStock,
                         image_url: editForm.data.image instanceof File
                             ? URL.createObjectURL(editForm.data.image)
                             : products.find(p => p.id === editingProductId)?.image_url
@@ -167,6 +195,18 @@ function Product({
                 setEditImagePreview(e.target.result)
             }
             reader.readAsDataURL(file)
+        }
+    }
+
+    // Handle stock input changes with validation
+    const handleStockChange = (value, isEdit = false) => {
+        const numValue = Number(value)
+        const validatedValue = numValue < 1 ? 1 : numValue
+
+        if (isEdit) {
+            editForm.setData('stock', validatedValue)
+        } else {
+            setData('stock', validatedValue)
         }
     }
 
@@ -256,6 +296,8 @@ function Product({
                                 <label className="block text-sm font-medium mb-1">Price (₱)</label>
                                 <input
                                     type="number"
+                                    min="0"
+                                    step="0.01"
                                     className={`w-full p-4 bg-white shadow-md rounded-xl ${errors.price ? 'border-red-500' : ''}`}
                                     value={data.price}
                                     onChange={(e) => setData('price', Number(e.target.value))}
@@ -263,14 +305,16 @@ function Product({
                                 {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
                             </div>
                             <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Stock</label>
+                                <label className="block text-sm font-medium mb-1">Stock (Minimum: 1)</label>
                                 <input
                                     type="number"
+                                    min="1"
                                     className={`w-full p-4 bg-white shadow-md rounded-xl ${errors.stock ? 'border-red-500' : ''}`}
                                     value={data.stock}
-                                    onChange={(e) => setData('stock', Number(e.target.value))}
+                                    onChange={(e) => handleStockChange(e.target.value, false)}
                                 />
                                 {errors.stock && <p className="text-red-500 text-xs mt-1">{errors.stock}</p>}
+                                <p className="text-xs text-gray-500 mt-1">Minimum stock allowed is 1</p>
                             </div>
                             <div className="mb-4">
                                 <label className="block text-sm font-medium mb-1">Description</label>
@@ -318,6 +362,7 @@ function Product({
                                     onClick={() => {
                                         setShowAddModal(false)
                                         reset()
+                                        setData('stock', 1) // Reset to minimum stock
                                     }}
                                     className="px-4 py-2 border rounded-md"
                                 >
@@ -385,6 +430,8 @@ function Product({
             <label className="block mb-1 text-sm">Product Price</label>
             <input
               type="number"
+              min="0"
+              step="0.01"
               className={`w-full p-4 bg-white shadow-md rounded-xl ${editForm.errors.price ? 'border-red-500' : ''}`}
               value={editForm.data.price}
               onChange={(e) => editForm.setData('price', Number(e.target.value))}
@@ -393,14 +440,16 @@ function Product({
           </div>
 
           <div>
-            <label className="block mb-1 text-sm">Product Stock</label>
+            <label className="block mb-1 text-sm">Product Stock (Minimum: 1)</label>
             <input
               type="number"
+              min="1"
               className={`w-full p-4 bg-white shadow-md rounded-xl ${editForm.errors.stock ? 'border-red-500' : ''}`}
               value={editForm.data.stock}
-              onChange={(e) => editForm.setData('stock', Number(e.target.value))}
+              onChange={(e) => handleStockChange(e.target.value, true)}
             />
             {editForm.errors.stock && <p className="text-red-500 text-xs mt-1">{editForm.errors.stock}</p>}
+            <p className="text-xs text-gray-500 mt-1">Minimum stock allowed is 1</p>
           </div>
 
           <div>

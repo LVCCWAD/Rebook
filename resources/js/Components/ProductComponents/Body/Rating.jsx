@@ -37,6 +37,9 @@ function Rating({ product, reviews, user }) {
     const [editingReview, setEditingReview] = useState(null)
     const matchingReviews = reviews.filter((review) => review.product_id === product.id)
 
+    // Check if the current user already has a review for this product
+    const userHasReview = user && matchingReviews.some(review => review.user_id === user.id)
+
     // Sort reviews to show logged-in user's review first
     const sortedReviews = matchingReviews.sort((a, b) => {
         if (user && a.user_id === user.id) return -1
@@ -248,73 +251,78 @@ function Rating({ product, reviews, user }) {
                     </div>
                 </div>
 
-                <h3 className="text-lg font-medium mb-4">
-                    {reviews ? 'Write a Review' : 'Edit Your Review'}
-                </h3>
+                {/* Only show the review form if user doesn't already have a review */}
+                {!userHasReview && (
+                    <>
+                        <h3 className="text-lg font-medium mb-4">
+                            Write a Review
+                        </h3>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Rating <span className="text-red-500">*</span>
-                        </label>
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Rating <span className="text-red-500">*</span>
+                                </label>
 
-                        <div className="flex gap-1">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                                <button
-                                    key={star}
-                                    type="button"
-                                    onClick={() => setData('rating', star)}
-                                    onMouseEnter={() => setHoverRating(star)}
-                                    onMouseLeave={() => setHoverRating(0)}
-                                    className="focus:outline-none"
+                                <div className="flex gap-1">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => setData('rating', star)}
+                                            onMouseEnter={() => setHoverRating(star)}
+                                            onMouseLeave={() => setHoverRating(0)}
+                                            className="focus:outline-none"
+                                        >
+                                            <StarIcon
+                                                size={24}
+                                                filled={(hoverRating || data.rating) >= star}
+                                                color="#ccc"
+                                                fillColor="#FF5722"
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {errors.rating && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.rating}</p>
+                                )}
+                            </div>
+
+                            <div className="mb-4">
+                                <label
+                                    htmlFor="comment"
+                                    className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    <StarIcon
-                                        size={24}
-                                        filled={(hoverRating || data.rating) >= star}
-                                        color="#ccc"
-                                        fillColor="#FF5722"
-                                    />
+                                    Your Review
+                                </label>
+
+                                <textarea
+                                    id="comment"
+                                    rows={4}
+                                    value={data.comment}
+                                    onChange={(e) => setData('comment', e.target.value)}
+                                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 focus:ring-opacity-50 px-3 py-2 border"
+                                    placeholder="Share your experience with this product..."
+                                />
+
+                                {errors.comment && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.comment}</p>
+                                )}
+                            </div>
+
+                            <div className="flex justify-end">
+                                <button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md transition duration-200 disabled:opacity-75"
+                                >
+                                    {processing ? 'Submitting...' : 'Send Review'}
                                 </button>
-                            ))}
-                        </div>
-
-                        {errors.rating && (
-                            <p className="text-red-500 text-xs mt-1">{errors.rating}</p>
-                        )}
-                    </div>
-
-                    <div className="mb-4">
-                        <label
-                            htmlFor="comment"
-                            className="block text-sm font-medium text-gray-700 mb-2"
-                        >
-                            Your Review
-                        </label>
-
-                        <textarea
-                            id="comment"
-                            rows={4}
-                            value={data.comment}
-                            onChange={(e) => setData('comment', e.target.value)}
-                            className="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 focus:ring-opacity-50 px-3 py-2 border"
-                            placeholder="Share your experience with this product..."
-                        />
-
-                        {errors.comment && (
-                            <p className="text-red-500 text-xs mt-1">{errors.comment}</p>
-                        )}
-                    </div>
-
-                    <div className="flex justify-end">
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md transition duration-200 disabled:opacity-75"
-                        >
-                            {processing ? 'Submitting...' : reviews ? 'Send Review' : 'Submit Review'}
-                        </button>
-                    </div>
-                </form>
+                            </div>
+                        </form>
+                    </>
+                )}
             </div>
         </>
     )

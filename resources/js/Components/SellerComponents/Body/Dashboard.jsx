@@ -1,6 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-export default function Dashboard({ setCurrentComponent }){
+export default function Dashboard({ setCurrentComponent, orders, overallRating }) {
+    console.log('orders', orders);
+
+    // State to track statistics
+    const [stats, setStats] = useState({
+        pendingOrders: 0,
+        cancelledOrders: 0,
+        completedOrders: 0,
+        totalSales: 0,
+        totalOrders: 0
+    });
+
+    // useEffect to recalculate statistics when orders change
+    useEffect(() => {
+        if (orders && orders.length > 0) {
+            const pendingOrders = orders.filter(order => order.status === 'pending').length;
+            const cancelledOrders = orders.filter(order => order.status === 'cancelled').length;
+            const completedOrders = orders.filter(order => order.status === 'completed').length;
+            const totalSales = orders
+                .filter(order => order.status === 'completed')
+                .reduce((sum, order) => sum + order.total, 0);
+            const totalOrders = orders.length;
+
+            setStats({
+                pendingOrders,
+                cancelledOrders,
+                completedOrders,
+                totalSales,
+                totalOrders
+            });
+        } else {
+            // Reset stats if no orders
+            setStats({
+                pendingOrders: 0,
+                cancelledOrders: 0,
+                completedOrders: 0,
+                totalSales: 0,
+                totalOrders: 0
+            });
+        }
+    }, [orders]); // Dependency array - runs when orders change
 
     const handleClick = (target) => {
         setCurrentComponent(target); // Calls parent directly
@@ -8,8 +48,6 @@ export default function Dashboard({ setCurrentComponent }){
 
     return(
         <>
-            {/* --- DASHBOARD --- */}
-            {/* grid based design */}
             <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mt-20">
 
                 {/* --- CONTAINER: TO DO LIST --- */}
@@ -17,16 +55,19 @@ export default function Dashboard({ setCurrentComponent }){
                     <h2 className="text-lg font-semibold mb-4">To Do List</h2>
                     <div className="flex justify-between text-center">
                         <div>
-                            <p className="text-xl font-bold">1</p>
+                            {/* Count all seller pending orders */}
+                            <p className="text-xl font-bold">{stats.pendingOrders}</p>
                             <p className="text-sm text-gray-600">To-Process Shipment</p>
                         </div>
                         <div>
-                            <p className="text-xl font-bold">1</p>
-                            <p className="text-sm text-gray-600">Processed Shipment</p>
+                            {/* Count all seller cancelled orders */}
+                            <p className="text-xl font-bold">{stats.cancelledOrders}</p>
+                            <p className="text-sm text-gray-600">Cancelled Orders</p>
                         </div>
                         <div>
-                            <p className="text-xl font-bold">1</p>
-                            <p className="text-sm text-gray-600">Order Delivered</p>
+                            {/* Count all completed orders */}
+                            <p className="text-xl font-bold">{stats.completedOrders}</p>
+                            <p className="text-sm text-gray-600">Order Completed</p>
                         </div>
                     </div>
                 </div>
@@ -35,9 +76,7 @@ export default function Dashboard({ setCurrentComponent }){
                 <div className="bg-white p-6 rounded-xl shadow-md">
                     <h2 className="text-lg font-semibold mb-2">Order Details</h2>
 
-
                     <button onClick={() => handleClick('order')} className="text-blue-600 font-medium">Check</button>
-
 
                     <p className="text-sm text-gray-600">Specifies items, stock, and prices</p>
                 </div>
@@ -47,19 +86,19 @@ export default function Dashboard({ setCurrentComponent }){
                     <h2 className="text-lg font-semibold mb-4">Business Insights</h2>
                     <div className="flex justify-between text-center">
                         <div>
-                            <p className="text-xl font-bold">₱150</p>
+                            {/* Calculate the total price of completed orders */}
+                            <p className="text-xl font-bold">₱{stats.totalSales}</p>
                             <p className="text-sm text-gray-600">Sales</p>
-                            <p className="text-xs text-gray-500">30.00%</p>
                         </div>
                         <div>
-                            <p className="text-xl font-bold">3</p>
-                            <p className="text-sm text-gray-600">Orders</p>
-                            <p className="text-xs text-gray-500">30.00%</p>
+                            {/* Count all the orders made by seller */}
+                            <p className="text-xl font-bold">{stats.totalOrders}</p>
+                            <p className="text-sm text-gray-600">Orders made</p>
                         </div>
                         <div>
-                            <p className="text-xl font-bold">4.8</p>
+                            {/* Calculate the overall rating of seller */}
+                            <p className="text-xl font-bold">{overallRating || 0}</p>
                             <p className="text-sm text-gray-600">Ratings</p>
-                            <p className="text-xs text-gray-500">35.00%</p>
                         </div>
                     </div>
                 </div>

@@ -9,9 +9,9 @@ function CartItem({
     handleQuantityChange,
     products,
 }) {
-    console.log('Cart Item:', item);
-    console.log('All Products:', products);
-    console.log('Looking for product_id:', item.product_id);
+    // console.log('Cart Item:', item);
+    // console.log('All Products:', products);
+    // console.log('Looking for product_id:', item.product_id);
 
     // Find the matching product for this cart item - try different possible field names
     const matchingProduct = products?.find(product =>
@@ -19,7 +19,7 @@ function CartItem({
         product.id === item.id ||
         product.id === item.pivot?.product_id
     );
-    console.log('Matching Product:', matchingProduct);
+    // console.log('Matching Product:', matchingProduct);
 
     return (
         <section className="m-4">

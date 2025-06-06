@@ -5,6 +5,8 @@ import iconCart from "../../../../public/Assets/Dashboard/Product/iconCart.png"
 import iconStar1 from "../../../../public/Assets/Dashboard/Product/iconStar1.png"
 
 function Product({ title, products, productsRating }) {
+    // list the product based on the created date
+    const sortedProducts = products?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     return (
         <>
             <h2 className="shadow-md border-b mt-20 text-3xl font-bold text-[#5a1c1c] border-gray-300 py-4 uppercase text-center mb-8">
