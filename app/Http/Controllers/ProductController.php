@@ -29,7 +29,6 @@ class ProductController extends Controller
         return view('seller.product.product_create', compact('categories'));
     }
 
-
     public function productStore(Request $request)
     {
         $this->authorize('create', Product::class);
