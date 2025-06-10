@@ -67,23 +67,23 @@ function Category({ onSendData, categories, products }) {
                             <button
                                 key={category.id}
                                 onClick={() => selectCategory(category.name)}
-                                class="flex flex-col items-center flex-shrink-0 w-32 sm:w-40 md:w-48 lg:w-56"
+                                className="flex flex-col items-center flex-shrink-0 w-32 sm:w-40 md:w-48 lg:w-56"
                                 // Removed mb-6 here as we want a single row
                             >
-                                <div class="rounded-full shadow-lg p-4 sm:p-6 md:p-8 bg-white flex items-center justify-center aspect-square overflow-hidden">
+                                <div className="rounded-full shadow-lg p-4 sm:p-6 md:p-8 bg-white flex items-center justify-center aspect-square overflow-hidden">
                                     {categoryImageSrc ? (
                                         <img
                                             src={categoryImageSrc}
                                             alt={category.name}
-                                            class="w-full h-full object-contain"
+                                            className="w-full h-full object-contain"
                                         />
                                     ) : (
-                                        <div class="w-full h-full flex items-center justify-center rounded-full shadow-md bg-gray-100 text-gray-500 text-center text-sm p-2">
+                                        <div className="w-full h-full flex items-center justify-center rounded-full shadow-md bg-gray-100 text-gray-500 text-center text-sm p-2">
                                             No image for {category.name}
                                         </div>
                                     )}
                                 </div>
-                                <p class="mt-3 text-base sm:text-lg md:text-xl text-[#5a1c1c] text-center font-semibold whitespace-normal leading-tight">
+                                <p className="mt-3 text-base sm:text-lg md:text-xl text-[#5a1c1c] text-center font-semibold whitespace-normal leading-tight">
                                     {category.name}
                                 </p>
                             </button>

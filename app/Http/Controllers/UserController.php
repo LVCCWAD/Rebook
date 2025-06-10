@@ -125,6 +125,8 @@ class UserController extends Controller
             return $product;
         });
 
+        // dd($products->pluck('image', 'image_url'));
+
         // Get top 10 products ordered by number of reviews (highest first), then by average review rating (highest first)
         $reviewedProducts = Review::selectRaw('product_id, AVG(rating) as avg_rating, COUNT(*) as review_count')
             ->groupBy('product_id')
