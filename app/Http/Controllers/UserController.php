@@ -106,73 +106,101 @@ class UserController extends Controller
     }
 
     public function dashboard(Request $request)
-    {
-        // Get authenticated user
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('login');
-        }
+{
+    // Get authenticated user
+    $user = Auth::user();
+    if (!$user) {
+        return redirect()->route('login');
+    }
 
-        // generate category
+    // Generate categories if they don't exist
+    $this->generateCategoriesIfNeeded();
 
+    $categories = Category::all();
 
-        $categories = Category::all();
+    // Get all products with image URLs
+    $products = Product::all();
+    $products->transform(function ($product) {
+        $product->image_url = $product->image
+            ? asset('storage/' . $product->image)
+            : null;
+        return $product;
+    });
 
-        // Get all products with image URLs
-        $products = Product::all();
-        $products->transform(function ($product) {
-            $product->image_url = $product->image
-                ? asset('storage/' . $product->image)
-                : null;
-            return $product;
+    // Get top 10 products ordered by number of reviews (highest first), then by average review rating (highest first)
+    $reviewedProducts = Review::selectRaw('product_id, AVG(rating) as avg_rating, COUNT(*) as review_count')
+        ->groupBy('product_id')
+        ->orderByDesc('review_count')
+        ->orderByDesc('avg_rating')
+        ->take(10)
+        ->get()
+        ->map(function ($item) {
+            $product = Product::find($item->product_id);
+            $latestReview = Review::where('product_id', $item->product_id)
+                ->orderByDesc('created_at')
+                ->first();
+
+            if ($product) {
+                $product->image_url = $product->image
+                    ? asset('storage/' . $product->image)
+                    : asset('images/default.png');
+            }
+
+            return [
+                'product' => $product,
+                'latest_review' => $latestReview,
+                'avg_rating' => round($item->avg_rating, 2),
+                'review_count' => $item->review_count,
+            ];
         });
 
-        // dd($products->pluck('image', 'image_url'));
+    $showSalesPopup = Cache::get('show_sales_popup', false);
 
-        // Get top 10 products ordered by number of reviews (highest first), then by average review rating (highest first)
-        $reviewedProducts = Review::selectRaw('product_id, AVG(rating) as avg_rating, COUNT(*) as review_count')
-            ->groupBy('product_id')
-            ->orderByDesc('review_count')
-            ->orderByDesc('avg_rating')
-            ->take(10)
-            ->get()
-            ->map(function ($item) {
-                $product = Product::find($item->product_id);
-                $latestReview = Review::where('product_id', $item->product_id)
-                    ->orderByDesc('created_at')
-                    ->first();
+    return Inertia::render('Dashboard/Dashboard', [
+        'user' => $user,
+        'categories' => $categories,
+        'products' => $products,
+        'reviewedProducts' => $reviewedProducts,
+        'productsRating' => $products
+            ->mapWithKeys(function ($product) {
+                $averageRating = Review::where('product_id', $product->id)
+                    ->avg('rating');
+                $roundedRating = round($averageRating * 2) / 2;
+                return [$product->id => $roundedRating];
+            }),
+        'showSalesPopup' => $showSalesPopup
+    ]);
+}
 
-                if ($product) {
-                    $product->image_url = $product->image
-                        ? asset('storage/' . $product->image)
-                        : asset('images/default.png');
-                }
+/**
+ * Generate default categories if they don't exist
+ */
+private function generateCategoriesIfNeeded()
+{
+    // Check if categories already exist
+    if (Category::count() > 0) {
+        return; // Categories already exist, don't generate
+    }
 
-                return [
-                    'product' => $product,
-                    'latest_review' => $latestReview,
-                    'avg_rating' => round($item->avg_rating, 2),
-                    'review_count' => $item->review_count,
-                ];
-            });
+    // Default categories that match your React component's categoryImageMap
+    $defaultCategories = [
+        'Fashion',
+        'Books & Stationery',
+        'Electronics',
+        'Health & Beauty',
+        'Toys & Hobbies',
+        'Automotive',
+        'Sports & Outdoors',
+        'Home & Garden',
+    ];
 
-        $showSalesPopup = Cache::get('show_sales_popup', false);
-
-        return Inertia::render('Dashboard/Dashboard', [
-            'user' => $user,
-            'categories' => $categories,
-            'products' => $products,
-            'reviewedProducts' => $reviewedProducts,
-            'productsRating' => $products
-                ->mapWithKeys(function ($product) {
-                    $averageRating = Review::where('product_id', $product->id)
-                        ->avg('rating');
-                    $roundedRating = round($averageRating * 2) / 2;
-                    return [$product->id => $roundedRating];
-                }),
-            'showSalesPopup' => $showSalesPopup
+    // Create categories with only the name field
+    foreach ($defaultCategories as $categoryName) {
+        Category::create([
+            'name' => $categoryName,
         ]);
     }
+}
 
     public function becomeSellerView()
     {
