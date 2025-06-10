@@ -53,13 +53,11 @@ function Category({ onSendData, categories, products }) {
             <h2 className="mt-20 text-4xl font-bold text-[#5a1c1c] border-b border-gray-300 pb-4 uppercase text-center shadow-md rounded-xl">
                 Categories
             </h2>
-            {/* Re-introducing overflow-x-auto for horizontal scroll */}
-            {/* Adding 'hide-scrollbar' back (ensure you have this utility or provide custom CSS) */}
-            {/* Adding py-2 to give vertical padding if there's any scrollbar space */}
-            <div className="overflow-x-auto hide-scrollbar mt-6 py-2">
-                {/* flex-nowrap forces items onto a single line */}
-                {/* gap-8 px-4 justify-center are maintained */}
-                <div className="flex flex-nowrap gap-8 px-4 justify-center">
+
+            {/* Centered horizontal scroll container with medium sizing */}
+            <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 mt-6 py-2">
+                {/* Centered flex container with medium sizing */}
+                <div className="flex flex-nowrap gap-6 pb-4 min-w-max justify-center px-4">
                     {categories.map(category => {
                         const categoryImageSrc = categoryImageMap[category.name];
 
@@ -67,10 +65,9 @@ function Category({ onSendData, categories, products }) {
                             <button
                                 key={category.id}
                                 onClick={() => selectCategory(category.name)}
-                                className="flex flex-col items-center flex-shrink-0 w-32 sm:w-40 md:w-48 lg:w-56"
-                                // Removed mb-6 here as we want a single row
+                                className="flex flex-col items-center flex-shrink-0 w-56"
                             >
-                                <div className="rounded-full shadow-lg p-4 sm:p-6 md:p-8 bg-white flex items-center justify-center aspect-square overflow-hidden">
+                                <div className="rounded-full shadow-lg p-4 bg-white flex items-center justify-center w-50 h-50 overflow-hidden">
                                     {categoryImageSrc ? (
                                         <img
                                             src={categoryImageSrc}
@@ -78,12 +75,12 @@ function Category({ onSendData, categories, products }) {
                                             className="w-full h-full object-contain"
                                         />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center rounded-full shadow-md bg-gray-100 text-gray-500 text-center text-sm p-2">
+                                        <div className="w-full h-full flex items-center justify-center rounded-full shadow-md bg-gray-100 text-gray-500 text-center text-xs p-2 break-words">
                                             No image for {category.name}
                                         </div>
                                     )}
                                 </div>
-                                <p className="mt-3 text-base sm:text-lg md:text-xl text-[#5a1c1c] text-center font-semibold whitespace-normal leading-tight">
+                                <p className="mt-2 text-sm text-[#5a1c1c] text-center font-semibold leading-tight w-full break-words hyphens-auto">
                                     {category.name}
                                 </p>
                             </button>

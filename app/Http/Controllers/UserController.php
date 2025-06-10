@@ -113,6 +113,8 @@ class UserController extends Controller
             return redirect()->route('login');
         }
 
+        // generate category
+
 
         $categories = Category::all();
 
