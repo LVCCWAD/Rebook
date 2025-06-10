@@ -131,12 +131,12 @@ function Product({ product, reviews }) {
                     </div>
 
                     <div className="flex gap-4 pt-4">
-                        <button
-                            type="button"
-                            className="flex-1 border border-red-500 text-pink-red py-3 rounded-lg font-medium hover:bg-red-50 transition"
+                        <div
+                            // type="button"
+                            className="flex-1 text-pink-red py-3 rounded-lg font-medium"
                         >
-                            Buy Now
-                        </button>
+                            {/* Buy Now */}
+                        </div>
                         <button
                             type="button"
                             onClick={handleAddToCart}

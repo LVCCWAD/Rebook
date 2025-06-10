@@ -335,13 +335,11 @@ function Product({
                                 >
                                     <option value="">Select category</option>
                                     {categories && categories.length > 0 ? (
-                                        categories.map(category => (
-                                            <option key={category.id} value={category.id}>{category.name}</option>
+                                        categories.map((category, index) => (
+                                            <option key={index} value={category}>{category}</option>
                                         ))
                                     ) : (
-                                        <>
-                                            <p className="text-center">No Category existing</p>
-                                        </>
+                                        <option disabled>No categories available</option>
                                     )}
                                 </select>
                                 {errors.category_id && <p className="text-red-500 text-xs mt-1">{errors.category_id}</p>}
@@ -464,30 +462,23 @@ function Product({
           </div>
 
           <div>
-            <label className="block mb-1 text-sm">Product Category</label>
-            <select
-              className={`w-full p-4 bg-white shadow-md rounded-xl ${editForm.errors.category_id ? 'border-red-500' : ''}`}
-              value={editForm.data.category_id}
-              onChange={(e) => editForm.setData('category_id', e.target.value)}
-            >
-              <option value="">Select category</option>
-              {categories && categories.length > 0 ? (
-                categories.map(category => (
-                  <option key={category.id} value={category.id}>{category.name}</option>
-                ))
-              ) : (
-                <>
-                  <option value="1">Stationary</option>
-                  <option value="2">Bags</option>
-                  <option value="3">Writing Tools</option>
-                  <option value="4">Desk Supplies</option>
-                  <option value="5">Health and Safety</option>
-                  <option value="6">Technology and Gadgets</option>
-                </>
-              )}
-            </select>
-            {editForm.errors.category_id && <p className="text-red-500 text-xs mt-1">{editForm.errors.category_id}</p>}
-          </div>
+                <label className="block mb-1 text-sm">Product Category</label>
+                <select
+                    className={`w-full p-4 bg-white shadow-md rounded-xl ${editForm.errors.category_id ? 'border-red-500' : ''}`}
+                    value={editForm.data.category_id}
+                    onChange={(e) => editForm.setData('category_id', e.target.value)}
+                >
+                    <option value="">Select category</option>
+                    {categories && categories.length > 0 ? (
+                        categories.map((category, index) => (
+                            <option key={index} value={category}>{category}</option>
+                        ))
+                    ) : (
+                        <option disabled>No categories available</option>
+                    )}
+                </select>
+                {editForm.errors.category_id && <p className="text-red-500 text-xs mt-1">{editForm.errors.category_id}</p>}
+            </div>
 
           <div className="flex justify-end space-x-2 mt-6">
             <button

@@ -20,9 +20,11 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
-             $table->dropForeign(['order_id']);               // drop FK constraint first
-            $table->unsignedBigInteger('order_id')->nullable()->change();  // make nullable
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');  // re-add FK
+             $table->foreignId('order_id')->nullable()->constrained()->onDelete('cascade');
+
+            //  $table->dropForeign(['order_id']);               // drop FK constraint first
+            // $table->unsignedBigInteger('order_id')->nullable()->change();  // make nullable
+            // $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');  // re-add FK
 
             $table->timestamps();
         });

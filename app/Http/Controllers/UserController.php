@@ -210,7 +210,18 @@ class UserController extends Controller
         $orders = $orderItems->pluck('order')->unique('id')->values();
 
         $shop = $user->shop; // assumes a User hasOne Shop relationship
-        $categories = Category::all(); // if relevant to seller
+        // $categories = Category::all(); // if relevant to seller
+        $categories = [
+            'Electronics',
+            'Fashion',
+            'Home & Garden',
+            'Sports & Outdoors',
+            'Health & Beauty',
+            'Toys & Hobbies',
+            'Automotive',
+            'Books & Stationery',
+        ];
+
         $seller_id = $user->id;
 
         $shippings = Shipping::all();

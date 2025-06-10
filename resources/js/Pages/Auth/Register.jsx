@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { Link, useForm } from "@inertiajs/react"
 import logo from "../../../../public/Assets/logo.png"
 
@@ -15,22 +15,8 @@ export default function Register() {
         password_confirmation: '',
     })
 
-    // Enhanced validation: validate on field change and on submit
-    useEffect(() => {
-        // Validate all fields when any field changes, but only after initial mount
-        if (
-            data.name !== '' ||
-            data.email !== '' ||
-            data.password !== '' ||
-            data.password_confirmation !== ''
-        ) {
-            validateAllFields()
-        }
-        // eslint-disable-next-line
-    }, [data])
-
-    // Validate all fields at once
-    const validateAllFields = () => {
+    // Debounced validation function
+    const validateAllFields = useCallback(() => {
         const newErrors = {}
         let isValid = true
 
@@ -69,9 +55,26 @@ export default function Register() {
 
         setErrors(newErrors)
         return isValid
-    }
+    }, [data.name, data.email, data.password, data.password_confirmation])
 
-    // Validate a single field on change and always keep errors fresh
+    // Enhanced validation with debouncing
+    useEffect(() => {
+        // Only validate if at least one field has content
+        if (
+            data.name !== '' ||
+            data.email !== '' ||
+            data.password !== '' ||
+            data.password_confirmation !== ''
+        ) {
+            const timer = setTimeout(() => {
+                validateAllFields()
+            }, 300) // 300ms debounce
+
+            return () => clearTimeout(timer)
+        }
+    }, [data, validateAllFields])
+
+    // Validate a single field on change
     const validateField = (field, value) => {
         let error = ''
         switch (field) {
@@ -96,24 +99,39 @@ export default function Register() {
         setErrors(prev => ({ ...prev, [field]: error }))
     }
 
-    // Always validate field on input change
+    // Handle input changes with immediate field validation
     const handleChange = (e) => {
         const { name, value } = e.target
         setData(name, value)
-        validateField(name, value)
+
+        // Immediate validation for current field
+        setTimeout(() => {
+            validateField(name, value)
+        }, 100)
     }
 
+    // Handle form submission
     const submit = (e) => {
         e.preventDefault()
+
+        // Final validation before submission
         if (validateAllFields()) {
             post("/register", {
                 onSuccess: () => {
                     console.log("Registration successful")
-                    // Optionally redirect or show a success message
+                    // Clear form on success
+                    setData({
+                        name: '',
+                        email: '',
+                        password: '',
+                        password_confirmation: '',
+                    })
+                    setErrors({})
                 },
-                onError: (errors) => {
-                    console.log("Registration failed", errors)
-                    setErrors(errors)
+                onError: (serverErrors) => {
+                    console.log("Registration failed", serverErrors)
+                    // Handle server-side validation errors
+                    setErrors(prev => ({ ...prev, ...serverErrors }))
                 }
             })
         }
@@ -128,12 +146,34 @@ export default function Register() {
                     className="w-[15%] m-4"
                 />
 
-                {/* inertia useform */}
+                {/* Registration Form */}
                 <form
                     onSubmit={submit}
                     noValidate
                     className="bg-white shadow-xl flex flex-col w-[25%] p-6 pt-8 pb-8 rounded-xl space-y-4 mb-40"
                 >
+                    {/* Name Field */}
+                    <div>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                            Full Name
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={data.name}
+                            onChange={handleChange}
+                            className={`mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                errors.name ? 'border-red-500' : 'border-gray-300'
+                            }`}
+                            placeholder="Enter your full name"
+                        />
+                        {errors.name && (
+                            <div className="text-sm text-red-500 mt-1">{errors.name}</div>
+                        )}
+                    </div>
+
+                    {/* Email Field */}
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                             Email Address
@@ -144,28 +184,17 @@ export default function Register() {
                             name="email"
                             value={data.email}
                             onChange={handleChange}
-                            className="mt-1 w-full px-4 py-2 border border-red-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                errors.email ? 'border-red-500' : 'border-gray-300'
+                            }`}
+                            placeholder="Enter your email address"
                         />
                         {errors.email && (
-                            <div className="text-sm text-red-500">{errors.email}</div>
+                            <div className="text-sm text-red-500 mt-1">{errors.email}</div>
                         )}
                     </div>
-                    <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                            Name
-                        </label>
-                        <input
-                            type="name"
-                            id="name"
-                            name="name"
-                            value={data.name}
-                            onChange={handleChange}
-                            className="mt-1 w-full px-4 py-2 border border-red-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        {errors.name && (
-                            <div className="text-sm text-red-500">{errors.name}</div>
-                        )}
-                    </div>
+
+                    {/* Password Field */}
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                             Password
@@ -176,12 +205,17 @@ export default function Register() {
                             name="password"
                             value={data.password}
                             onChange={handleChange}
-                            className="mt-1 w-full px-4 py-2 border border-red-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                errors.password ? 'border-red-500' : 'border-gray-300'
+                            }`}
+                            placeholder="Enter your password (min. 6 characters)"
                         />
                         {errors.password && (
-                            <div className="text-sm text-red-500">{errors.password}</div>
+                            <div className="text-sm text-red-500 mt-1">{errors.password}</div>
                         )}
                     </div>
+
+                    {/* Confirm Password Field */}
                     <div>
                         <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700">
                             Confirm Password
@@ -192,24 +226,35 @@ export default function Register() {
                             name="password_confirmation"
                             value={data.password_confirmation}
                             onChange={handleChange}
-                            className="mt-1 w-full px-4 py-2 border border-red-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className={`mt-1 w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                errors.password_confirmation ? 'border-red-500' : 'border-gray-300'
+                            }`}
+                            placeholder="Confirm your password"
                         />
                         {errors.password_confirmation && (
-                            <div className="text-sm text-red-500">{errors.password_confirmation}</div>
+                            <div className="text-sm text-red-500 mt-1">{errors.password_confirmation}</div>
                         )}
                     </div>
+
+                    {/* Submit Button */}
                     <button
                         type="submit"
-                        className="shadow-md w-full bg-red-800 text-white py-2 rounded-md hover:bg-red-400 transition duration-300"
+                        className={`shadow-md w-full py-2 rounded-md transition duration-300 font-medium ${
+                            processing
+                                ? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                                : 'bg-red-800 text-white hover:bg-red-700'
+                        }`}
                         disabled={processing}
                     >
-                        Sign In
+                        {processing ? 'Creating Account...' : 'Create Account'}
                     </button>
+
+                    {/* Back to Login Link */}
                     <Link
                         href="/login"
-                        className="shadow-md border-2 border-blue-500 hover:bg-blue-500 hover:text-white rounded-md p-2 block text-center text-blue-500 font-bold"
+                        className="shadow-md border-2 border-blue-500 hover:bg-blue-500 hover:text-white rounded-md p-2 block text-center text-blue-500 font-bold transition duration-300"
                     >
-                        Back to login
+                        Back to Login
                     </Link>
                 </form>
             </div>
