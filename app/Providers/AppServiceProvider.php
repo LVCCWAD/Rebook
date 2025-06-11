@@ -7,6 +7,7 @@ use App\Policies\ProductPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 
 
@@ -29,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //Policies for products
         Gate::policy(ProductPolicy::class, Product::class);
+        URL::forceScheme('https');
     }
 }
