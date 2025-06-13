@@ -30,6 +30,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //Policies for products
         Gate::policy(ProductPolicy::class, Product::class);
-        URL::forceScheme('https');
+        // URL::forceScheme('https');
     }
 }

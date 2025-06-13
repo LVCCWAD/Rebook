@@ -24,6 +24,9 @@ export default function Register() {
         if (!data.name.trim()) {
             newErrors.name = 'Name is required'
             isValid = false
+        } else if (/^\d+$/.test(data.name)) { // Added validation: checks if name contains only numbers
+            newErrors.name = 'Name cannot be only numbers'
+            isValid = false
         }
 
         // Email validation
@@ -80,6 +83,7 @@ export default function Register() {
         switch (field) {
             case 'name':
                 if (!value.trim()) error = 'Name is required'
+                else if (/^\d+$/.test(value)) error = 'Name cannot be only numbers' // Added validation for single field
                 break
             case 'email':
                 if (!value.trim()) error = 'Email is required'

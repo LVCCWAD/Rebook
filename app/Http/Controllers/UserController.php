@@ -184,14 +184,13 @@ private function generateCategoriesIfNeeded()
 
     // Default categories that match your React component's categoryImageMap
     $defaultCategories = [
-        'Fashion',
-        'Books & Stationery',
-        'Electronics',
-        'Health & Beauty',
-        'Toys & Hobbies',
-        'Automotive',
-        'Sports & Outdoors',
-        'Home & Garden',
+        'Writing & Drawing Supplies',
+        'Paper & Notebooks',
+        'Organization & Storage',
+        'Tools & Accessories',
+        'Art & Craft Supplies',
+        'Specific Subject Supplies',
+        'Miscellaneous & Personal Items',
     ];
 
     // Create categories with only the name field
@@ -244,14 +243,13 @@ private function generateCategoriesIfNeeded()
         $shop = $user->shop; // assumes a User hasOne Shop relationship
         // $categories = Category::all(); // if relevant to seller
         $categories = [
-            'Electronics',
-            'Fashion',
-            'Home & Garden',
-            'Sports & Outdoors',
-            'Health & Beauty',
-            'Toys & Hobbies',
-            'Automotive',
-            'Books & Stationery',
+            'Writing & Drawing Supplies',
+            'Paper & Notebooks',
+            'Organization & Storage',
+            'Tools & Accessories',
+            'Art & Craft Supplies',
+            'Specific Subject Supplies',
+            'Miscellaneous & Personal Items',
         ];
 
         $seller_id = $user->id;

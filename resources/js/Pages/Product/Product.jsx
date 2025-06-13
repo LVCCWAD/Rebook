@@ -5,7 +5,7 @@ import Body from "../../Components/ProductComponents/Body";
 
 import { usePage } from "@inertiajs/react";
  function Product({}){
-    const { product, reviews, user } = usePage().props
+    const { product, reviews, user, hasReviewed, canReview} = usePage().props
 
     console.log("check data comming product stock: ", product.stock)
 
@@ -14,7 +14,7 @@ import { usePage } from "@inertiajs/react";
             <Header />
             <Navigation />
 
-            <Body product={product} reviews={reviews} user={user}/>
+            <Body product={product} reviews={reviews} user={user} canReview={canReview}/>
         </>
     )
 }

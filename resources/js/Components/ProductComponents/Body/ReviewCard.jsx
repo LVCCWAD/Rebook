@@ -1,6 +1,6 @@
-import react from "react";
+import React from "react";
 
-function ReviewCard({ review, user, isOwn = false }) {
+function ReviewCard({ review, user, isOwn = false, hasPurchased = false }) {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return isNaN(date) ? dateString : date.toLocaleString('en-US', {
@@ -65,7 +65,8 @@ function ReviewCard({ review, user, isOwn = false }) {
           </div>
         </div>
 
-        {isOwn && (
+        {/* Only show edit/delete buttons if user owns the review AND has purchased */}
+        {isOwn && hasPurchased && (
           <div className="flex items-center justify-end space-x-2">
             <button className="p-1 px-4 rounded-lg text-white font-bold bg-green-400">
               Edit
@@ -76,6 +77,43 @@ function ReviewCard({ review, user, isOwn = false }) {
           </div>
         )}
       </div>
+
+      {/* Review input field - only visible if user has purchased */}
+      {hasPurchased && (
+        <div className="mt-6 p-4 border rounded-lg bg-gray-50">
+          <h3 className="font-semibold mb-3 text-gray-800">Write a Review</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+              <div className="flex space-x-1">
+                {[1, 2, 3, 4, 5].map(star => (
+                  <svg
+                    key={star}
+                    className="h-6 w-6 text-gray-300 hover:text-yellow-500 cursor-pointer transition-colors"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                  </svg>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Comment</label>
+              <textarea
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                rows="4"
+                placeholder="Share your experience with this product..."
+              />
+            </div>
+            <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md font-medium transition-colors">
+              Submit Review
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+export default ReviewCard;
