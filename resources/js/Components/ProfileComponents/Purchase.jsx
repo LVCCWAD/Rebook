@@ -142,14 +142,14 @@ export default function Purchase({ user, orders = [], orderItems = [], products 
                   <p className="text-xs text-gray-500 mb-4">Total Amount</p>
                 </div>
                 <div className="space-x-2">
-                  <button className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
+                  {/* <button className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
                     View Details
                   </button>
                   {order.status === 'completed' && (
                     <button className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
                       Buy Again
                     </button>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

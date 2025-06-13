@@ -69,13 +69,13 @@ export default function Body({ user, orders, orderItems, products }) {
                         </button>
                         {expandedMenu.myAccount && (
                             <div className="ml-8 mt-1 space-y-1">
-                                <button className="w-full text-left py-2 text-gray-700 hover:text-orange-500 transition-colors">
+                                {/* <button className="w-full text-left py-2 text-gray-700 hover:text-orange-500 transition-colors">
                                     Profile
                                 </button>
-                                {/* <button className="w-full text-left py-2 text-gray-700 hover:text-orange-500 transition-colors">
+                                <button className="w-full text-left py-2 text-gray-700 hover:text-orange-500 transition-colors">
                                     Change Password
-                                </button> */}
-                                {/* <button className="w-full text-left py-2 px-1 text-gray-700 hover:text-orange-500 transition-colors">
+                                </button>
+                                <button className="w-full text-left py-2 px-1 text-gray-700 hover:text-orange-500 transition-colors">
                                     Privacy Settings
                                 </button>
                                 <button className="w-full text-left py-2 px-1 text-gray-700 hover:text-orange-500 transition-colors">

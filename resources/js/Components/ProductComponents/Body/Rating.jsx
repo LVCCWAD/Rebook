@@ -32,7 +32,7 @@ const ReadOnlyStars = ({ rating }) => {
     )
 }
 
-function Rating({ product, reviews, user }) {
+function Rating({ product, reviews, user, canReview }) {
     const [hoverRating, setHoverRating] = useState(0)
     const [editingReview, setEditingReview] = useState(null)
     const matchingReviews = reviews.filter((review) => review.product_id === product.id)
@@ -155,8 +155,8 @@ function Rating({ product, reviews, user }) {
                                             </span>
                                         </div>
 
-                                        {/* Edit form for the review */}
-                                        {editingReview === review.id ? (
+                                        {/* Edit form for the review - only show if user has purchased */}
+                                        {editingReview === review.id && canReview ? (
                                             <form onSubmit={(e) => handleEditSubmit(e, review.id)} className="mt-4 space-y-4">
                                                 <div>
                                                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -221,7 +221,8 @@ function Rating({ product, reviews, user }) {
                                             <>
                                                 <p className="text-gray-700">{review.comment}</p>
 
-                                                {user && user.id === review.user_id && (
+                                                {/* Only show edit/delete buttons if user has purchased */}
+                                                {user && user.id === review.user_id && canReview && (
                                                     <div className="mt-2 flex justify-end gap-2">
                                                         <button
                                                             onClick={() => handleEditStart(review)}
@@ -251,8 +252,8 @@ function Rating({ product, reviews, user }) {
                     </div>
                 </div>
 
-                {/* Only show the review form if user doesn't already have a review */}
-                {!userHasReview && (
+                {/* Only show the review form if user doesn't already have a review AND has purchased the product */}
+                {!userHasReview && canReview && (
                     <>
                         <h3 className="text-lg font-medium mb-4">
                             Write a Review
@@ -322,6 +323,19 @@ function Rating({ product, reviews, user }) {
                             </div>
                         </form>
                     </>
+                )}
+
+                {/* Show message when user hasn't purchased the product */}
+                {!canReview && (
+                    <div className="text-center py-8 bg-gray-50 rounded-lg">
+                        <div className="text-gray-500">
+                            <svg className="h-12 w-12 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <p className="text-lg font-medium">Purchase Required</p>
+                            <p className="text-sm">You need to purchase this product to write a review.</p>
+                        </div>
+                    </div>
                 )}
             </div>
         </>

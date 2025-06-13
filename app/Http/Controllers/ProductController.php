@@ -33,15 +33,15 @@ class ProductController extends Controller
     {
         $this->authorize('create', Product::class);
 
+        // Updated allowed category names with school item categories
         $allowedCategoryNames = [
-            'Electronics',
-            'Fashion',
-            'Home & Garden',
-            'Sports & Outdoors',
-            'Health & Beauty',
-            'Toys & Hobbies',
-            'Automotive',
-            'Books & Stationery',
+            'Writing & Drawing Supplies',
+            'Paper & Notebooks',
+            'Organization & Storage',
+            'Tools & Accessories',
+            'Art & Craft Supplies',
+            'Specific Subject Supplies',
+            'Miscellaneous & Personal Items',
         ];
 
         // --- Category Creation/Existence Check (within controller) ---
@@ -61,6 +61,9 @@ class ProductController extends Controller
             'description' => 'required|string|max:1000',
             'price' => 'required|numeric|min:0',
             // Validate that the submitted category name exists in your fetched list
+            // Note: If you're submitting the category_id (integer) from the frontend,
+            //       this validation might need to change to 'exists:categories,id'.
+            //       If you're submitting the category name as a string, this is correct.
             'category_id' => 'required|in:' . implode(',', $categoryNamesForValidation),
             'stock' => 'nullable|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -125,7 +128,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
             'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required|exists:categories,id', // This correctly expects an ID
             'stock' => 'nullable|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -163,7 +166,7 @@ class ProductController extends Controller
     public function productShow($id)
     {
         $product = Product::findOrFail($id);
-        $category = Category::all();
+        $category = Category::all(); // This should likely be $product->category if you only need the specific product's category
         return view('seller.product.product_show', compact('product', 'category'));
     }
 

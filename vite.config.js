@@ -15,8 +15,8 @@ export default defineConfig({
 
     server: {
         port: 5173,
-        strictPort: true,
-        cors: true,
+        // strictPort: true,
+        // cors: true,
     }
 
     // TEST SERVER HOST

@@ -24,7 +24,7 @@ function Product({
     // Initialize useForm for adding a new product
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
-        price: 0,
+        price: 1,
         description: "",
         category_id: "",
         stock: 1, // Set default minimum stock to 1
@@ -121,28 +121,29 @@ function Product({
     }
 
     const handleSaveEdit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         // Validate stock before submission
-        const validatedStock = validateStock(editForm.data.stock)
+        const validatedStock = validateStock(editForm.data.stock); // Assuming validateStock is defined elsewhere
 
         // Update editForm data with validated stock
         const submitData = {
             ...editForm.data,
             stock: validatedStock
-        }
+        };
 
-        editForm.post(`/shop/${editingProductId}/edit-product`, {
+        // --- CRITICAL CHANGE HERE: Use editForm.put() instead of .post() ---
+        editForm.put(`/shop/${editingProductId}/edit-product`, {
             data: submitData,
             onSuccess: (page) => {
-                console.log("Edit response:", page)
+                console.log("Edit response:", page);
                 if (page.props && page.props.flash && page.props.flash.updatedProduct) {
-                    const updatedProduct = page.props.flash.updatedProduct
+                    const updatedProduct = page.props.flash.updatedProduct;
                     setProducts(prevProducts =>
                         prevProducts.map(product =>
                             product.id === editingProductId ? updatedProduct : product
                         )
-                    )
+                    );
                 } else {
                     const tempUpdatedProduct = {
                         ...editForm.data,
@@ -151,25 +152,27 @@ function Product({
                         image_url: editForm.data.image instanceof File
                             ? URL.createObjectURL(editForm.data.image)
                             : products.find(p => p.id === editingProductId)?.image_url
-                    }
+                    };
                     setProducts(prevProducts =>
                         prevProducts.map(product =>
                             product.id === editingProductId ? tempUpdatedProduct : product
                         )
-                    )
+                    );
+                    // The router.reload is good for ensuring fresh data after a successful update
                     setTimeout(() => {
-                        router.reload({ only: ['products'] })
-                    }, 300)
+                        router.reload({ only: ['products'] });
+                    }, 300);
                 }
-                setShowEditModal(false)
-                setEditingProductId(null)
-                setEditImagePreview(null)
+                setShowEditModal(false);
+                setEditingProductId(null);
+                setEditImagePreview(null);
             },
             onError: (errors) => {
-                console.error("Edit operation failed:", errors)
+                console.error("Edit operation failed:", errors);
+                // You might want to display validation errors to the user here
             }
-        })
-    }
+        });
+    };
 
     const handleDeleteProduct = (id) => {
         if (confirm('Are you sure you want to delete this product?')) {
@@ -294,13 +297,14 @@ function Product({
                             </div>
                             <div className="mb-4">
                                 <label className="block text-sm font-medium mb-1">Price (₱)</label>
-                                <input
+                               <input
                                     type="number"
-                                    min="0"
+                                    min="1"
                                     step="0.01"
                                     className={`w-full p-4 bg-white shadow-md rounded-xl ${errors.price ? 'border-red-500' : ''}`}
                                     value={data.price}
                                     onChange={(e) => setData('price', Number(e.target.value))}
+                                    onFocus={(e) => e.target.select()} // Add this line
                                 />
                                 {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
                             </div>
@@ -312,6 +316,7 @@ function Product({
                                     className={`w-full p-4 bg-white shadow-md rounded-xl ${errors.stock ? 'border-red-500' : ''}`}
                                     value={data.stock}
                                     onChange={(e) => handleStockChange(e.target.value, false)}
+                                    onFocus={(e) => e.target.select()}
                                 />
                                 {errors.stock && <p className="text-red-500 text-xs mt-1">{errors.stock}</p>}
                                 <p className="text-xs text-gray-500 mt-1">Minimum stock allowed is 1</p>
@@ -351,6 +356,7 @@ function Product({
                                     accept="image/*,video/*"
                                     className={`w-full p-4 bg-white shadow-md rounded-xl ${errors.image ? 'border-red-500' : ''}`}
                                     onChange={(e) => setData('image', e.target.files[0])}
+
                                 />
                                 {errors.image && <p className="text-red-500 text-xs mt-1">{errors.image}</p>}
                             </div>
@@ -420,6 +426,7 @@ function Product({
               className={`w-full p-4 bg-white shadow-md rounded-xl ${editForm.errors.name ? 'border-red-500' : ''}`}
               value={editForm.data.name}
               onChange={(e) => editForm.setData('name', e.target.value)}
+              onFocus={(e) => e.target.select()}
             />
             {editForm.errors.name && <p className="text-red-500 text-xs mt-1">{editForm.errors.name}</p>}
           </div>
@@ -428,11 +435,12 @@ function Product({
             <label className="block mb-1 text-sm">Product Price</label>
             <input
               type="number"
-              min="0"
+              min="1"
               step="0.01"
               className={`w-full p-4 bg-white shadow-md rounded-xl ${editForm.errors.price ? 'border-red-500' : ''}`}
               value={editForm.data.price}
               onChange={(e) => editForm.setData('price', Number(e.target.value))}
+              onFocus={(e) => e.target.select()}
             />
             {editForm.errors.price && <p className="text-red-500 text-xs mt-1">{editForm.errors.price}</p>}
           </div>
@@ -445,6 +453,7 @@ function Product({
               className={`w-full p-4 bg-white shadow-md rounded-xl ${editForm.errors.stock ? 'border-red-500' : ''}`}
               value={editForm.data.stock}
               onChange={(e) => handleStockChange(e.target.value, true)}
+              onFocus={(e) => e.target.select()}
             />
             {editForm.errors.stock && <p className="text-red-500 text-xs mt-1">{editForm.errors.stock}</p>}
             <p className="text-xs text-gray-500 mt-1">Minimum stock allowed is 1</p>

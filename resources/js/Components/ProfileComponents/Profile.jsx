@@ -106,7 +106,7 @@ export default function Profile({ user }) {
                                 </div>
                             </div>
 
-                            <div className="flex items-center">
+                            {/* <div className="flex items-center">
                                 <label className="w-32 text-right text-gray-500 text-sm pr-4">Phone Number</label>
                                 <div className="flex-1">
                                     <input
@@ -121,9 +121,9 @@ export default function Profile({ user }) {
                                         <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
                                     )}
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className="flex items-center">
+                            {/* <div className="flex items-center">
                                 <label className="w-32 text-right text-gray-500 text-sm pr-4">Address</label>
                                 <div className="flex-1">
                                     <input
@@ -138,9 +138,9 @@ export default function Profile({ user }) {
                                         <p className="text-red-500 text-xs mt-1">{errors.address}</p>
                                     )}
                                 </div>
-                            </div>
+                            </div> */}
 
-                            <div className="flex items-center">
+                            {/* <div className="flex items-center">
                                 <label className="w-32 text-right text-gray-500 text-sm pr-4">Gender</label>
                                 <div className="flex-1 flex space-x-4">
                                     <label className="flex items-center">
@@ -183,9 +183,9 @@ export default function Profile({ user }) {
                                 {errors.gender && (
                                     <p className="text-red-500 text-xs mt-1">{errors.gender}</p>
                                 )}
-                            </div>
+                            </div> */}
 
-                            <div className="flex items-center">
+                            {/* <div className="flex items-center">
                                 <label className="w-32 text-right text-gray-500 text-sm pr-4">Date of birth</label>
                                 <div className="flex-1 flex space-x-2">
                                     <div className="relative w-full">
@@ -249,7 +249,7 @@ export default function Profile({ user }) {
                                 {(errors.birth_date || errors.birth_month || errors.birth_year) && (
                                     <p className="text-red-500 text-xs mt-1">Please complete your birth date</p>
                                 )}
-                            </div>
+                            </div> */}
 
                             <div className="pt-4 flex justify-end">
                                 <button
